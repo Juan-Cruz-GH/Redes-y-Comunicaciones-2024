@@ -1,5 +1,3 @@
-# Recursos
-
 <center>
 
 # Clase 1
