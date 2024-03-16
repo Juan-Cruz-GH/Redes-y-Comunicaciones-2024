@@ -6,4 +6,5 @@
 
 ## TODO
 
--   ?
+-   Revisar práctica 1 ya resuelta (en la carpeta)
+-   Consultar ejercicios práctica 1
