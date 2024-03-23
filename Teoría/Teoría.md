@@ -159,6 +159,8 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 
 ## HTTP
 
+-   [Video HTTP y curl vimeo](https://vimeo.com/209457973)
+
 #### Elementos
 
 -   Recurso u Objeto HTTP, por ej. una página, una imágen, un gif, archivos multimedia, etc.
