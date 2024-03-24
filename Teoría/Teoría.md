@@ -126,27 +126,50 @@ También utiliza routers y switches, y puede usar fibra óptica, wireless, cobre
         - Define el diálogo (intercambio de mensajes).
         - Por ejemplo: HTTP.
     2. Capa de Presentación:
-       ...
+        - Convierte y codifica datos a ASCII, UTF-8, etc.
+        - Comprime y descomprime datos.
+        - Cifra y de-cifra datos.
+        - Define formatos y algoritmos para JPEG, MPEG, LZW, etc.
+        - Está integrada en las aplicaciones de red mismas.
     3. Capa de Sesión:
-       ...
+        - Administra conversaciones entre aplicaciones.
+        - Maneja actividad.
+        - Informa excepciones.
+        - Integrada en las aplicaciones de red mismas.
+        - En general no se usa.
 
 #### Modelos de comunicación
 
 ###### Mainframe
 
-...
+-   Una computadora central como único núcleo (el mainframe).
+-   Los clientes interactúan con el mainframe vía terminales de E/S.
+-   El mainframe procesa todo y muestra el resultado en la terminal.
 
 ###### Cliente/Servidor
 
-...
+-   Se comparte la carga.
+-   El cliente pone procesamiento de interfaz de usuario.
+-   El servidor hace el resto.
+-   El servidor corre servicio esperando de forma pasiva la conexión.
+-   El cliente se conecta al servidor y se comunican a través de este.
 
 ###### Peer To Peer (P2P)
 
-...
+-   La carga es completamente compartida y distribuida.
+-   Los peers pueden ser clientes, servidores, o ambos a la vez.
+-   Muy escalable en rendimiento.
+-   Poco escalable en términos de administración.
+-   Por ejemplo: BitTorrent.
 
-###### Híbrido
+###### Peer To Peer Híbrido
 
-...
+-   La carga es completamente compartida y distribuida.
+-   Los peers pueden ser clientes, servidores, o ambos a la vez.
+-   Muy escalable en rendimiento.
+-   Más escalable que P2P en términos de administración.
+-   Nodos comunes.
+-   Nodos centrales.
 
 #### Requerimientos de las aplicaciones
 
@@ -174,7 +197,7 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 -   Modelo cliente/servidor, request/response.
 -   No tiene estado.
 -   Corre sobre TCP, en el puerto 80 por default.
--   El cliente elige cualquier puerto no privilegiado (> 1024)
+-   El cliente elige cualquier puerto no privilegiado (> 1024).
 
 #### Versión 0.9
 
@@ -194,12 +217,12 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 
 ###### Métodos
 
--   GET: ...
--   HEAD:
--   POST:
--   PUT:
--   DELETE:
--   LINK/UNLINK:
+-   GET: Obtiene el documento requerido. Puede enviar información via la URL (query args).
+-   HEAD: Similar a GET pero solo requiere los metadatos del documento y no el documento en sí.
+-   POST: Como GET, pero además envía información en el Body. Se suele usar en los formularios.
+-   PUT: Reemplaza un documento en el servidor. En general no se usa.
+-   DELETE: Borra un documento en el servidor. En general no se usa.
+-   LINK/UNLINK: Establece o desestablece relaciones entre documentos.
 
 ###### Host virtuales
 
@@ -220,7 +243,7 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 -   No necesita esperar la respuesta del primer requerimiento para realizar el segundo requerimiento, y así.
 -   Solo se utiliza con conexiones persistentes.
 -   Mejora la performance.
--   **Insertar imagen de pipelining (slide 30)**
+    ![Pipelining](https://i.imgur.com/oSRFwQp.png)
 
 ###### TRACE y CONNECT
 
@@ -229,20 +252,34 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 
 ###### Redirects
 
-...
+-   Los códigos 3XX indican redirecciones, es decir que un documento no se encuentra en la URL solicitada, pero sí se encuentra en una nueva URL que el servidor indicará.
 
 #### CGIs Scripts y JavaScript
 
 ###### Server-side scripts
 
 -   Un CGI (Common Gateway Interface) es una aplicación que interactúa con un servidor web.
-    ...
+-   Los CGIs leen de STDIN (método POST) o de variables de entorno (método GET).
+-   Escriben la respuesta en el STDOUT.
+-   Deben anteponer content-Type en el header.
+-   POST permite enviar más datos.
+-   Lenguajes de scripting seguros y flexibles: PHP, ASP, JSP.
 
 ###### Client-side scripts
 
-...
+-   JavaScript estándar W3C.
+-   Usan el DOM.
+-   Permiten extensiones como AJAX, el cual hace requerimientos particulares y no necesita recargar toda la página.
+-   Parsean XML para comunicarse.
+-   Existen muchos frameworks que encapsulan esta funcionalidad brindando una interfaz programación y API fácil de usar.
 
 ###### Server-side to Server-side scripts
+
+-   Permiten comunicación entre servidores.
+-   Modelo de objetos y servicios distribuidos.
+-   SOAP.
+-   REST.
+-   Web Services.
 
 #### Cookies
 
@@ -265,3 +302,6 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 -   Consiste en proxiar y cachear recursos HTTP.
 -   Se solicita un objeto HTTP, si está en caché y está "fresco" (HIT) se retorna desde allí sin que el servidor tenga que hacer nada. Si el objeto no está en caché o está "viejo" (MISS) se solicita al servidor y una vez retornado se cachea.
 -   Mejora el tiempo de respuesta, reduce la carga en la red, y balancea los requests, intentando atender a todos los clientes.
+-   Actuan como servidores para los clientes y como clientes para los servidores web.
+-   En general suelen correr sobre UDP.
+-   Ejemplo: CDN.
