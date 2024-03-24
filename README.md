@@ -6,7 +6,6 @@
 
 ## TODO
 
--   Terminar apuntes teoría 2 (sábado).
 -   Instalar máquina virtual de la materia (domingo):
 
 ```
