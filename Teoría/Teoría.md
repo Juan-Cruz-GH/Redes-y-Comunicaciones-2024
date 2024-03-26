@@ -305,3 +305,130 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 -   Actuan como servidores para los clientes y como clientes para los servidores web.
 -   En general suelen correr sobre UDP.
 -   Ejemplo: CDN.
+
+## HTTP 2.0
+
+- Reemplaza cómo HTTP se transporta.
+- No reemplaza al protocolo por completo.
+- Los métodos y semántica permanecen igual que antes.
+
+#### Problemas de HTTP 1.0 y 1.1
+
+- Un request por conexión, muy lento.
+- Por ende se busca implementar el pipelining, conexiones persistentes y conexiones paralelas.
+- El pipelining sigue teniendo algunos problemas por ende se necesita algo más.
+
+#### Diferencias principales con 1.1
+
+- Usa binario en vez de ASCII (binary framing, más eficiente).
+- Multiplexa varios request en una petición en vez de que sea de forma secuencial y bloqueante. Es decir, se encolan los requests.
+- Usa una conexión para pedir/traer datos en paralelo, agrega datos fuera de orden, prioridad, flow control por frame.
+- Comprime los encabezados para optimizar.
+- Permite a los servidores pushear datos a los clientes.
+- Casi siempre requiere SSL/TLS.
+- Los mensajes HTTP2 se dividen en HEADERS y DATA, a diferencia de 1.1 que no había división.
+
+#### Mux stream, framing
+
+- Puede generar 1 o más conexiones TCP.
+- Un stream es como una sub-conexión: una conexión HTTP2 dentro de una conexión TCP.
+- Cada stream tiene su ID y su prioridad (opcional).
+- Los streams son bidireccionales.
+- Sobre cada conexión TCP se multiplexan 1 o más streams.
+- Los streams transportan mensajes (request, response) y éstos son dividos en frames.
+- Cada frame tiene un header fijo + payload variable.
+- El mismo stream puede llevar diferentes mensajes.
+
+#### Headers
+
+- Se mantienen la mayoría de headers de 1.1
+- Surgen nuevos pseudo-headers:
+- Por ejemplo, método HEAD /algo HTTP/1.1 se transforma en:
+    - :method: head
+    - :path: /algo
+    - :scheme: http // puede ser https
+    - :authority: www.site.com // reemplaza al header Host:
+- Para las respuestas surge el header status: código, por ejemplo **status: 404**.
+
+#### Priorización y flow control
+
+...
+
+#### Inline vs push
+
+...
+
+#### Compresión y soporte
+
+- Comprime encabezados.
+- Como el compresor que se usaba, GZIP, tiene vulnerabilidades, se usa HPACK.
+
+#### Otras características
+
+- HTTP2 permite negociar el protocolo de aplicación.
+- También permite negociar el protocolo alternativo. 
+
+## HTTP 3.0
+
+- Transporta sobre un nuevo protocolo QUIC, que corre sobre **UDP**.
+- Se vuelve a conservar métodos y semántica de HTTP 1.1.
+...
+
+---
+
+# Clase 3, 26 de marzo, 2024
+
+## DNS
+
+- DNS surge debido a la necesidad de usar nombres mnemónicos y amigables en vez de direcciones IPs para acceder a sitios.
+- Ergo, es un mecanismo para mappear nombres de dominio a direcciones IPs.
+
+#### Elementos
+
+- Espacio de nombres.
+- Procedimiento de delegación y arquitectura.
+- Base de datos distribuida y servidores.
+- Define las componentes y el protocolo para su comunicación.
+- Procedimiento de búsqueda/resolución (protocolos).
+
+#### FQDN
+
+- Significa Fully Qualified Domain Name.
+- Es una lista de etiquetas (labels) separadas por puntos.
+- Se leen desde el label de la izquierda hasta la raíz del arbol (punto implícito al final del FQDN). 
+- Construyen una estructura jerárquica con sub-nombres (niveles).
+- La sintaxis jerárquica implica la delegación de autoridad.
+- Las etiquetas no son case-sensitive y pueden ser de 63 caracteres como máximo.
+- Pueden tener 127 etiquetas como máximo, y la longitud total del FQDN puede ser como máximo 255 caracteres.
+- El punto implícito simboliza la raíz de la estructura jerárquica DNS.
+
+#### TLDs 
+
+- Los Top Level Domains son los labels siguientes al root ( . ).
+- Se clasifican en 3 tipos:
+    1. Generic: .com, .net, .edu, etc. 
+    2. Country Code: .ar .uk .fr, etc.
+    3. ARPA: Dominio especial.
+
+#### Organización
+
+...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
