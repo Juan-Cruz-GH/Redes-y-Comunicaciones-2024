@@ -6,4 +6,6 @@
 
 ## TODO
 
--   Hacer hasta el ejercicio 16 inclusive de la práctica 2 (martes).
+-   Hacer hasta el ejercicio 16 inclusive de la práctica 2 (jueves).
+-   Terminar práctica 2 (viernes).
+-   Terminar teoría HTTP2, HTTP3 y DNS (sábado).
