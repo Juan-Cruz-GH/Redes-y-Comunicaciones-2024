@@ -334,8 +334,8 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 -   Un stream es como una sub-conexión: una conexión HTTP2 dentro de una conexión TCP.
 -   Cada stream tiene su ID y su prioridad (opcional).
 -   Los streams son bidireccionales.
--   Sobre cada conexión TCP se multiplexan 1 o más streams.
--   Los streams transportan mensajes (request, response) y éstos son dividos en frames.
+-   Sobre cada conexión TCP se multiplexan 1 o más streams (de ahí la palabra **mux**).
+-   Cada stream transporta mensajes (request, response) y éstos son dividos en frames.
 -   Cada frame tiene un header fijo + payload variable.
 -   El mismo stream puede llevar diferentes mensajes.
 
@@ -350,13 +350,23 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
     -   :authority: www.site.com // reemplaza al header Host:
 -   Para las respuestas surge el header status: código, por ejemplo **status: 404**.
 
-#### Priorización y flow control
+#### Priorización
 
-...
+-   Los streams pueden tener prioridades asignadas.
+-   El cliente puede especificar qué resources son más importantes que otros, permitiendole al servidor alocar recursos eficientemente.
+-   Esto es particularmente útil para optimizar la carga de páginas de forma fluida.
+
+#### Flow control
+
+-   El control de flujo busca prevenir sobrecargar al cliente o al servidor.
+-   Se introduce el concepto de ventanas de control de flujo para datos salientes y datos entrantes, para cada stream.
+-   El tamaño de estas dos ventanas se va ajustando dinámicamente según la capacidad de los buffers de ambos lados de la comunicación (el del cliente y del servidor).
 
 #### Inline vs push
 
-...
+-   HTTP 2.0 introduce una feature llamada "Server Push" que le permite al servidor enviar datos al cliente antes de que el cliente los pida explicitamente.
+-   En el modo Inline, el cliente pide explicitamente los requerimientos usando tags como < link > o < script >.
+-   En el modo Push, el servidor anticipa las cosas que el cliente necesitará según el request inicial y se las pushea proactivamente.
 
 #### Compresión y soporte
 
@@ -372,7 +382,7 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 
 -   Transporta sobre un nuevo protocolo QUIC, que corre sobre **UDP**.
 -   Se vuelve a conservar métodos y semántica de HTTP 1.1.
-    ...
+-   UDP presenta algunas vulnerabilidades.
 
 ---
 
@@ -413,4 +423,35 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 
 #### Organización
 
-...
+-   El sistema global de DNS es distribuido pero regido por organizaciones.
+-   Se utilizan dominios, sub-dominios, y host o servicios (jerarquía).
+-   La IANA (Internet Assigned Numbers Authority) controla el funcionamiento.
+-   Cada continente tiene su RIR (Regional Internet Register):
+    -   ARIN (Norteamérica)
+    -   LACNIC (Sudamérica)
+    -   RIPE (Europa)
+    -   AFRINIC (África)
+    -   APNIC (Asia)
+-   DNS debe mantener una gran cantidad de información en una base de datos distribuida. Por ende debe ser tolerante a fallos, escalable, y altamente cacheable. Esto último ya que se realizan muchas lecturas pero pocas escrituras.
+
+#### Delegación de autoridad
+
+Por ejemplo:
+
+-   ada.info.unlp.edu.ar fue registrada por la administración de la red de la facultad de informática.
+-   El administrador de la facultad tuvo que obtener previamente la autoridad del dominio info.unlp.edu.ar a partir de la administración de la UNLP.
+-   La UNLP tuvo que obtener previamente la autoridad del dominio unlp.edu.ar a partir de la administración de "edu.ar", la RIU (Red Inter-universitaria).
+-   La RIU tuvo que obtener previamente la autoridad del dominio edu.ar a partir de la administración de ".ar" que depende de alguna organización del gobierno.
+-   La administración de nombres gubernamental de la Argentina tuvo que obtener autoridad delegada a partir del IANA o ICANN (organismos internacionales).
+
+#### Raíz
+
+-   Es el punto de inicio ( . ) de cualquier consulta DNS.
+-   Se manejan por 13 ROOT servers distribuidos en el mundo.
+
+#### Funcionamiento de DNS
+
+-   Sigue el modelo Cliente/Servidor.
+-   DNS corre sobre UDP y TCP en el puerto 53.
+-   No utiliza texto ASCII.
+-   Los clientes utilizan un Resolver + cualquier aplicación que requiera la resolución de nombres.
