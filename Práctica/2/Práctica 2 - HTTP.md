@@ -100,11 +100,11 @@ Los atributos href contienen URLs y al clickearlos realizan un requerimiento HTT
 
 ##### c. Para visualizar la página completa con imágenes como en un navegador, ¿alcanza con realizar un único requerimiento?
 
-No, no alcanza, ya que se hace un requerimiento HTTP por cada tag **link, src y img**. En este ejemplo deberían realizarse 7 requerimientos en total para visualizar la página en su totalidad, con imágenes, estilos, etc.
+No, no alcanza, ya que se hace un requerimiento HTTP por cada tag **link, src y img**. En este ejemplo deberían realizarse 8 requerimientos en total para visualizar la página en su totalidad, con imágenes, estilos, etc.
 
 ##### d. ¿Cuántos requerimientos serían necesarios para obtener una página que tiene dos CSS, dos Javascript y tres imágenes? Diferencie cómo funcionaría un navegador respecto al comando curl ejecutado previamente.
 
-Se necesitarían 2 (CSS) + 2 (JS) + 3 (imágenes) = 7 requerimientos.
+Se necesitarían 1 (la página en sí) + 2 (CSS) + 2 (JS) + 3 (imágenes) = 8 requerimientos.
 
 La diferencia entre el navegador y curl es que curl solo obtiene el html en sí, no realiza todos los requerimientos anterior mencionados, si no que uno solo, a no ser que se le especifique realizar más requerimientos. El navegador realiza todos los requerimientos.
 
@@ -137,9 +137,9 @@ La cabecera Date indica la fecha y hora exacta en la que el servidor envió la r
 
 ### 11. En HTTP/1.0, ¿cómo sabe el cliente que ya recibió todo el objeto solicitado de manera completa? ¿Y en HTTP/1.1?
 
-En HTTP/1.0 el cliente sabe que ya recibió todo el objeto solicitado vía el header Content-Length el cual especifica la longitud de la respuesta que el servidor envió. El problema es que para esto el cliente debe saber de antemano qué tan grande debe ser la respuesta, para poder comparar.
+En HTTP/1.0 el cliente sabe que ya recibió todo el objeto solicitado vía el header Content-Length el cual especifica la longitud de la respuesta que el servidor envió. El problema es que para esto el cliente debe saber de antemano qué tan grande debe ser la respuesta, para poder comparar. **En caso de no saberlo, el cliente sabrá que ya recibió todo el objeto cuando se percate de que el servidor cerró la conexión.**
 
-En HTTP/1.1 el cliente sabe que ya recibió todo el objeto gracias a una nueva técnica llamada Chunked Transfer Encoding que le permite al servidor enviar pedazos de la respuesta uno a uno.
+En HTTP/1.1 el cliente sabe que ya recibió todo el objeto gracias a una nueva técnica llamada Chunked Transfer Encoding que le permite al servidor enviar pedazos de la respuesta uno a uno. **La transmisión de la respuesta termina con un chunk de longitud cero.**
 
 ### 12. Investigue los distintos tipos de códigos de retorno de un servidor web y su significado. Considere que los mismos se clasifican en categorías (2XX, 3XX, 4XX, 5XX).
 
@@ -264,6 +264,12 @@ Con HTTP 1.0 una vez que se obtuvo la respuesta la conexión finalizó. En cambi
 
 La diferencia principal es que el GET envía los datos ingresados en el formulario a través de la URL vía querys (?clave=valor) mientras que POST envía los datos ingresados en el Body del request, por ende es más seguro.
 
+Otras diferencias:
+
+-   Los POST requests no se cachean, los GET pueden cachearse.
+-   Los POST request no permanecen en el historial del browser, los GET si.
+-   Los POST requests no tienen límites de longitud en cuanto a los datos a enviar, los GET si, ya que las URLs (donde los query parameters se colocan) tienen límites de longitud.
+
 ##### e. ¿Observó alguna diferencia en el browser si se utiliza un mensaje u otro?
 
 No, ninguna.
@@ -330,7 +336,7 @@ curl -X ?? www.redes.unlp.edu.ar/??
 
 ##### a. ¿Qué versión de HTTP podría estar utilizando el servidor?
 
-Probablemente HTTP 1.0, ya que éste no utiliza conexiones persistentes, y como podemos ver, el servidor cerró la conexión luego de enviar su respuesta.
+Probablemente HTTP 1.1, ya que éste no utiliza conexiones persistentes, y como podemos ver, el servidor cerró la conexión luego de enviar su respuesta. Además, podemos ver la cabecera Host. Ésta no existe en HTTP 1.0, por ende no puede ser esa versión.
 
 ##### b. ¿Qué método está utilizando? Dicho método, ¿retorna el recurso completo solicitado?
 
@@ -338,7 +344,7 @@ Se está utilizando el método HEAD. Este método no retorna el recurso completo
 
 ##### c. ¿Cuál es el recurso solicitado?
 
-El recurso solicitado es /metodos/HTTP/1.0
+El recurso solicitado es /metodos/HTTP/1.1
 
 ##### d. ¿El método funcionó correctamente?
 
