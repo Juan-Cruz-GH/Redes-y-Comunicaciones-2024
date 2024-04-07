@@ -6,7 +6,28 @@
 
 ### 1. Investigue y describa cómo funciona el DNS. ¿Cuál es su objetivo?
 
+El sistema de DNS es un sistema distribuido de forma jerárquica y conformado por muchos servidores a lo largo del planeta. Cada servidor se ocupa de una parte de la jerarquía de nombres. De forma resumida, funciona como un árbol. Cuando un cliente necesita la IP de un nombre de dominio, se va consultando desde los servidores más generales (root servers) y bajando zona por zona hasta obtener la dirección.
+
+DNS tiene como objetivo traducir nombres de dominio a direcciones IP y de esta forma lograr que los usuarios puedan abstraerse de las IPs de los sitios a los que quieren acceder, ingresando simplemente estos nombres de dominio en la barra de búsqueda del navegador y no preocupándose por recordar secuencias de números. Además de esto, DNS permite que los nombres de dominio posean más de una IP.
+
 ### 2. ¿Qué es un root server? ¿Qué es un generic top-level domain (gtld)?
+
+Un root server es un servidor DNS que se encuentra en la cima de la jerarquía. Responde con la lista de servidores autoritativos para cualquier TLD (Top Level Domain). Existen 13 de estos servidores distribuidos en el mundo.
+
+Un Top Level Domain es un nombre de dominio que se encuentra en la siguiente zona luego de la zona root. Se dividen en Country, Generic, y otros.
+
+Un Generic Top Level Domain o GLTD es un TLD genérico, es decir de uso general. Por ejemplo .com, .net, etc.
+
+Resumiendo, cuando tenemos un nombre de dominio, los "." (puntos) separan los niveles o zonas de la jerarquía. Además, a la derecha del todo, luego de la última palabra, hay un punto implícito. Por ejemplo:
+
+```
+www.google.com
+
+"." es el nivel 1 o zona root.
+"com" es el nivel 2 o GTLD.
+"google" es el nivel 3.
+"www" es el nivel 4.
+```
 
 ### 3. ¿Qué es una respuesta del tipo autoritativa?
 
