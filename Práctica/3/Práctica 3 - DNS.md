@@ -16,7 +16,7 @@ Un root server es un servidor DNS que se encuentra en la cima de la jerarquía. 
 
 Un Top Level Domain es un nombre de dominio que se encuentra en la siguiente zona luego de la zona root. Se dividen en Country, Generic, y otros.
 
-Un Generic Top Level Domain o GLTD es un TLD genérico, es decir de uso general. Por ejemplo .com, .net, etc.
+Un Generic Top Level Domain o GLTD es un TLD genérico, es decir que indica el propósito general de la página. Por ejemplo .com para comercial, .net para network, etc.
 
 Resumiendo, cuando tenemos un nombre de dominio, los "." (puntos) separan los niveles o zonas de la jerarquía. Además, a la derecha del todo, luego de la última palabra, hay un punto implícito. Por ejemplo:
 
@@ -31,35 +31,79 @@ www.google.com
 
 ### 3. ¿Qué es una respuesta del tipo autoritativa?
 
+Una respuesta autoritativa es una que proviene de un servidor autoritativo, y éste es un servidor que posee toda la información actualizada de un dominio determinado. Los servidores autoritativos también suelen llamarse servidores de nombres o nameservers.
+
+Por ejemplo, un servidor autoritativo para example.com podría ser ns1.example.com.
+
 ### 4. ¿Qué diferencia una consulta DNS recursiva de una iterativa?
 
+Una consulta DNS es un pedido que realiza un cliente a un servidor de DNS para traducir un nombre de dominio a su IP.
+
+Una consulta DNS recursiva es aquella en la cual el servidor de DNS consultado primero chequea su caché, y si no encuentra la IP ahí, procede a consultar otros servidores de DNS automáticamente hasta encontrar la información pedida o hasta determinar que el nombre de dominio no existe.
+
+Una consulta DNS iterativa es aquella en la cual el servidor DNS consultado nuevamente primero chequea su caché, y si no encuentra la IP ahí, le devuelve al cliente uno o más servidores DNS alternativos a quienes consultar, no los consulta él.
+
 ### 5. ¿Qué es el resolver?
+
+El resolver es el primer paso en la resolución DNS y es previo a los servidores DNS propiamente dichos.
+
+Se trata de un componente de software integrado en el sistema operativo de cualquier cliente que utilice internet.
+
+Cuando el cliente ingresa un nombre de dominio en el browser o cualquier otra aplicación que necesite conectarse a un servidor de internet, el resolver chequeará primero su caché y si no encuentra la IP ahí, procederá a realizar consultas recursivas (a no ser que esté configurado para hacer consultas iterativas, aunque es raro).
 
 ### 6. Describa para qué se utilizan los siguientes tipos de registros de DNS:
 
 ##### a. A
 
+Mappea un nombre de dominio a una dirección IPv4.
+
 ##### b. MX
+
+Especifica el servidor de email responsable por **recibir** emails para un determinado dominio.
 
 ##### c. PTR
 
+Mappea una dirección IPv4 a un nombre de dominio.
+
 ##### d. AAAA
+
+Mappea un nombre de dominio a una dirección IPv6.
 
 ##### e. SRV
 
+Especifica la locación de determinados servicios de un dominio.
+
 ##### f. NS
+
+Especifica uno o más servidores autoritativos para un dominio.
 
 ##### g. CNAME
 
+Especifica un alias de un dominio.
+
 ##### h. SOA
+
+Especifica información esencial de un dominio, incluyendo el servidor autoritativo primario, el correo del administrador de ese dominio, y varios parámetros más sobre transferencias de zona y caching.
 
 ##### i. TXT
 
+Especifica información de texto plano asociada a un dominio.
+
 ### 7. En Internet, un dominio suele tener más de un servidor DNS, ¿por qué cree que esto es así?
+
+Un dominio suele tener más de un servidor autoritativo por 3 razones principales:
+
+1. Para tener mayor tolerancia a fallos, es decir que si deja de funcionar uno de los servidores, aún tenemos los demás.
+2. Para balancear la carga y evitar que un único servidor se sature con demasiadas consultas.
+3. Para poseer una mayor y más balanceada distribución geográfica y así reducir los tiempos de demora si las consultas se realizan de muchas partes del mundo.
 
 ### 8. Cuando un dominio cuenta con más de un servidor, uno de ellos es el primario (o maestro) y todos los demás son secundarios (o esclavos). ¿Cuál es la razón de que sea así?
 
+Cuando un dominio tiene más de un servidor DNS, uno de ellos, el primario, es el que posee la información original y siempre actualizada. Todos los demás son secundarios o esclavos, es decir que copian la información del servidor primario regularmente. Esto es así porque sería imposible que haya varios servidores primarios. No se podrían actualizar ambos a exactamente el mismo tiempo, e incluso si se pudiera generaría ambiguedad, ya que los secundarios no sabrían cuál de los dos primarios copiar.
+
 ### 9. Explique brevemente en qué consiste el mecanismo de transferencia de zona y cuál es su finalidad.
+
+La transferencia de zona consiste en que, periódicamente, el servidor primario envía copias de toda su información a todos sus servidores secundarios para que éstos estén actualizados y se mantenga la consistencia.
 
 ### 10. Imagine que usted es el administrador del dominio de DNS de la UNLP (unlp.edu.ar). A su vez, cada facultad de la UNLP cuenta con un administrador que gestiona su propio dominio (por ejemplo, en el caso de la Facultad de Informática se trata de info.unlp.edu.ar). Suponga que se crea una nueva facultad, Facultad de Redes, cuyo dominio será redes.unlp.edu.ar, y el administrador le indica que quiere poder manejar su propio dominio. ¿Qué debe hacer usted para que el administrador de la Facultad de Redes pueda gestionar el dominio de forma independiente? (Pista: investigue en qué consiste la delegación de dominios). Indicar qué registros de DNS se deberían agregar.
 
