@@ -386,7 +386,11 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 
 ---
 
+<center>
+
 # Clase 3, 26 de marzo, 2024
+
+</center>
 
 ## DNS
 
@@ -455,3 +459,11 @@ Por ejemplo:
 -   DNS corre sobre UDP y TCP en el puerto 53.
 -   No utiliza texto ASCII.
 -   Los clientes utilizan un Resolver + cualquier aplicación que requiera la resolución de nombres.
+
+---
+
+<center>
+
+# Clase 4, 9 de abril, 2024
+
+</center>
