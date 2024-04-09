@@ -451,6 +451,7 @@ Por ejemplo:
 #### Raíz
 
 -   Es el punto de inicio ( . ) de cualquier consulta DNS.
+-   También llamada "zona raíz" de la jerarquía DNS.
 -   Se manejan por 13 ROOT servers distribuidos en el mundo.
 
 #### Funcionamiento de DNS
@@ -460,6 +461,35 @@ Por ejemplo:
 -   No utiliza texto ASCII.
 -   Los clientes utilizan un Resolver + cualquier aplicación que requiera la resolución de nombres.
 
+#### Tipos de servidores DNS
+
+-   **Raiz**: Servidor que delega a todos los TLD. Generalmente no permite recursión.
+-   **Autoritativo**: Servidor con una zona o sub-dominio de nombres a cargo. Puede sub-delegar.
+-   **Servidor Local/Resolver Recursivo**: Servidor que es consultado dentro de una red. Mantiene caché. Puede ser autoritativo. Permite recursivas "internas".
+-   **Open Name Server**: Servidores que funcionan como locales para cualquier cliente en el mundo. Por ejemplo 8.8.8.8 (google).
+-   **Forwarder Name Server**: Servidores que interactúan directamente con el sistema de DNS exterior. Son DNS proxies de otros DNS internos.
+-   **Servidor Primario vs Secundario**: Cuestión de implementación. Dónde se modifican los datos realmente.
+
+#### Registros
+
+-   Son los datos que almacenan los servidores DNS.
+-   Poseen el formato:
+
+```
+clave | TTL | IN | tipoRegistro | valor
+```
+
+#### Otras características
+
+-   **Transferencia de zona**:
+    -   Se trata de actualizar los servidores DNS secundarios con el primario.
+    -   Utiliza AXFR.
+    -   Se realiza sobre **TCP** de forma periódica.
+-   **Dynamic DNS**:
+    -   Actualización dinámica de registros, usada con IP dinámicas.
+-   **Split DNS**:
+    -   Responde de acuerdo a de dónde proviene la consulta.
+
 ---
 
 <center>
@@ -467,3 +497,74 @@ Por ejemplo:
 # Clase 4, 9 de abril, 2024
 
 </center>
+
+## Email
+
+#### Introducción
+
+-   Es uno de los primeros servicios de Internet (cuando las conexiones eran vía modems) y fue creado por Ray Tomlinson en 1971.
+-   El formato era MACH2!MACH1!USER.
+-   En 1972 se escogió el "@" para denotar "at" (en).
+-   En 1982 surgió SMTP.
+
+#### Arquitectura
+
+##### Componentes principales
+
+1. MUA (Mail User Agent)
+2. MTA (Mail Transport Agent)
+3. MDA (Mail Delivery Agent) o LDA (Local Delivery Agent)
+4. MAA (Mail Access Agent)
+5. MRA (Mail Retrieval Agent)
+6. MSA (Mail Submission Agent)
+
+##### Componentes secundarios
+
+1. Servidor de autenticación externo.
+2. Web Mail (Frontend WWW).
+3. Servidor de antivirus, antispam, servidores de listas, etc.
+
+#### MUA
+
+-   Es el cliente, es decir la interfaz con el usuario.
+-   Es responsable de leer, editar y emitir correos locales.
+-   Posee intregado un MTA local para comunicarse con el servidor de mail saliente (MTA relay). El MTA relay pre-procesa el email recibido desde el MUA con el agente MSA.
+-   Posee intregado un MRA para comunicarse con el servidor de mail entrante (MAA).
+-   Agrega la mayoría de los campos del header (id, to, from, subject, etc).
+-   Utiliza protocolos SMTP, IMAP, POP y habla con MTA y MAA propios.
+-   Ejemplos: Outlook, Thunderbird.
+-   Ejemplos de WebMail: Squirrel, Gmail, Yahoo, Hotmail.
+
+#### MSA
+
+-   Es el servidor.
+-   Habitualmente integrado en el MTA.
+-   Recibe el mensaje del MUA y lo pre-procesa antes de pasarlo al MTA para que realice el transporte.
+-   Agrega headers que podrían faltar.
+-   Utiliza SMTP o ESMTP.
+-   Usa el puerto 25 o 587.
+-   Ejemplos: Componentes de Postfix (postdrop, pickup).
+
+#### MTA
+
+-   Es tanto cliente como servidor.
+-   Toma el email desde el MSA o directamente desde el MUA (MSA integrado).
+-   Se encarga de enviar el email al servidor de la casilla de destino, es decir que comunica de MTA a MTA.
+-   Almacena temporalmente el correo saliente.
+-   Se encarga de recibir y almacenar temporalmente los mensajes para las casillas que sirve desde el MTA remoto.
+-   Utiliza SMTP o ESMTP.
+-   Ejemplos: Postfix, Sendmail, MS Exchange, Exim, Qmail.
+
+#### MDA/LDA
+
+-   Servicio interno o servidor.
+-   Toma los emails recibidos por el MTA y los lleva al mailbox del usuario local.
+-   Se lo llama también LDA.
+-   Suele definir el formato del mailbox.
+-   Servicio de MDA puede hacer delivery remoto.
+-   Se integra con los protocolos POP y/o IMAP dejando los recursos disponibles al MAA o al usuario directamente.
+-   Ejemplos: procmail, postfix local, Sendmail, courrier, cyrus-IMAP, etc.
+
+#### MAA
+
+-
