@@ -6,7 +6,7 @@
 
 ### 1. Investigue y describa cómo funciona el DNS. ¿Cuál es su objetivo?
 
-El sistema de DNS es un sistema distribuido de forma jerárquica y conformado por muchos servidores a lo largo del planeta. Cada servidor se ocupa de una parte de la jerarquía de nombres. De forma resumida, funciona como un árbol. Cuando un cliente necesita la IP de un nombre de dominio, se va consultando desde los servidores más generales (root servers) y bajando zona por zona hasta obtener la dirección.
+El sistema de DNS es un sistema distribuido de forma jerárquica y conformado por muchos servidores a lo largo del planeta. Cada servidor se ocupa de una parte de la jerarquía de nombres. De forma resumida, funciona como un árbol. Cuando un cliente necesita la IP de un nombre de dominio, se va consultando desde los servidores más generales (root servers) y bajando sub-dominio por sub-dominio hasta obtener la dirección.
 
 DNS tiene como objetivo traducir nombres de dominio a direcciones IP y de esta forma lograr que los usuarios puedan abstraerse de las IPs de los sitios a los que quieren acceder, ingresando simplemente estos nombres de dominio en la barra de búsqueda del navegador y no preocupándose por recordar secuencias de números. Además de esto, DNS permite que los nombres de dominio posean más de una IP.
 
@@ -14,24 +14,24 @@ DNS tiene como objetivo traducir nombres de dominio a direcciones IP y de esta f
 
 Un root server es un servidor DNS que se encuentra en la cima de la jerarquía. Responde con la lista de servidores autoritativos para cualquier TLD (Top Level Domain). Existen 13 de estos servidores distribuidos en el mundo.
 
-Un Top Level Domain es un nombre de dominio que se encuentra en la siguiente zona luego de la zona root. Se dividen en Country, Generic, y otros.
+Un Top Level Domain es un sub-dominio que se encuentra en la siguiente zona luego de la zona root. Se dividen en Country, Generic, y otros.
 
 Un Generic Top Level Domain o GLTD es un TLD genérico, es decir que indica el propósito general de la página. Por ejemplo .com para comercial, .net para network, etc.
 
-Resumiendo, cuando tenemos un nombre de dominio, los "." (puntos) separan los niveles o zonas de la jerarquía. Además, a la derecha del todo, luego de la última palabra, hay un punto implícito. Por ejemplo:
+Resumiendo, cuando tenemos un nombre de dominio, los "." (puntos) separan los sub-dominios o zonas de la jerarquía. Además, a la derecha del todo, luego de la última palabra, hay un punto implícito. Por ejemplo:
 
 ```
 www.google.com
 
-"." es el nivel 1 o zona root.
-"com" es el nivel 2 o GTLD.
-"google" es el nivel 3.
-"www" es el nivel 4.
+"." es la zona root.
+"com" es la zona com (GTLD).
+"google" es la zona google.
+"www" es la zona www.
 ```
 
 ### 3. ¿Qué es una respuesta del tipo autoritativa?
 
-Una respuesta autoritativa es una que proviene de un servidor autoritativo, y éste es un servidor que posee toda la información actualizada de un dominio determinado y puede producir cambios sobre el mismo. Los servidores autoritativos también suelen llamarse servidores de nombres o nameservers.
+Una respuesta autoritativa es una que proviene de un servidor autoritativo, y éste es un servidor que posee toda la información actualizada de una zona determinada y puede producir cambios sobre la misma. Los servidores autoritativos también suelen llamarse servidores de nombres o nameservers.
 
 Por ejemplo, un servidor autoritativo para example.com podría ser ns1.example.com.
 
