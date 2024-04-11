@@ -1,0 +1,208 @@
+<center>
+
+# Capa de Enlace (Capa 2)
+
+</center>
+
+## Introducción
+
+-   La Capa de Enlace se encarga de la comunicación **directa** entre dispositivos/nodos a través de un **link**, que puede ser cableado, inalámbrico, o LAN.
+-   Su PDU es el frame o trama.
+-   Servicios que provee:
+    1. Framing del datagrama.
+    2. Acceso al enlace (direcciones MAC).
+    3. Entrega confiable entre nodos adyacentes.
+    4. Control de flujo entre nodos adyacentes.
+    5. Detección de errores.
+    6. Corrección de errores sin necesidad de retransmisión.
+
+---
+
+## Direcciones MAC
+
+-   Las direcciones Media Access Control son identificadores globalmente únicos de los interfaces de red (eth0, eth1, eth2, etc).
+-   Debido a lo de arriba, un dispositivo puede tener más de una dirección MAC: una **por cada interfaz de red que posee**.
+-   Las PCs tipicamente tienen una sola interfaz de red, mientras que los routers tienen muchas.
+-   Son direcciones de 48 bits, que se dividen en 6 bloques de 2 dígitos HEX cada uno. Cada bloque se separa con ":".
+-   La dirección MAC FF:FF:FF:FF:FF:FF es la dirección de **broadcast**.
+
+---
+
+## Algoritmo MAC
+
+-   Es el CSMA/CD, cuando un dispositivo quiere transmitir información, primero escucha la red para chequear si ya hay otro dispositivo transmitiendo. Si es así, espera que termine. Si no, empieza a transmitir de una. Evita colisiones.
+-   No es orientado a conexión.
+
+---
+
+## Dominios de Broadcast vs de Colisión
+
+-   Una colisión ocurre cuando 2 o más dispositivos en una misma red intentan transmitir datos al **mismo tiempo**. Lo podemos pensar como que dos o más dispositivos intentan usar **el mismo cable a la vez**.
+-   Un **dominio de broadcast** es el rango o scope en el cual un mensaje broadcast puede viajar y ser escuchado. Por ejemplo, si 2 personas hablan en una habitación privada, ese es su dominio de broadcast, ya que nadie fuera de esa habitación puede escuchar. **Los routers dividen dominios de broadcast**. Podemos contar los dominios de broadcast contando todas las flechitas que salen de los routers a los hosts/switches, y luego las flechas entre routers.
+-   Un **dominio de colisión** es un área donde colisiones de datos pueden ocurrir, es decir áreas donde dos o más dispositivos pueden intentar transmitir datos a la vez y colisionar. **Los switches dividen dominios de colisión**. Cada puerto en un hub pertenece a un solo dominio de colisión. Cada puerto en un switch tiene su propio dominio de colisión.
+
+---
+
+## Dispositivos
+
+#### Switch
+
+-   Hace forwarding de frames en una LAN usando las direcciones MAC de los dispositivos conectados a la red.
+-   Es más inteligentes que los Hubs ya que elige el/los destinos según la información del frame.
+-   Puede tener muchos puertos, pero no tiene interfaces.
+-   No tiene dirección MAC ni IP.
+-   Posee una tabla CAM donde guarda qué dispositivo (su MAC) está conectado a cada uno de sus puertos. **No guarda nunca MACs de hubs u otros switches conectados a él.**
+-   Cuando una trama Ethernet pasa por un Switch, éste usa la **MAC origen de la trama** para crear la fila en su tabla CAM, asociado al puerto por donde le enviaron esa trama.
+-   Cuando el Switch encuentra la MAC de la trama que le llegó en su tabla CAM, envía ese frame SOLO por el puerto asociado a esa MAC.
+-   **Cuando el Switch no encuentra la MAC de la trama que llegó en su tabla CAM, envía ese frame por TODOS los puertos que posee EXCEPTO el puerto por donde le llegó esa trama originalmente.**
+
+#### Bridge
+
+-   Conecta y filtra tráfico entre distintos segmentos de red, donde cada segmento tiene su dominio de colisión. Tiene la misma tabla que los Switches.
+
+#### Repetidor
+
+-   Extiende el alcance de una red amplificando y retransmitiendo señales. Son "tontos" porque no examinan los datos que amplifican.
+
+#### Hub
+
+-   Envia el frame que recibe a todos los dispositivos conectados a él.
+
+#### "Pasa por" vs "procesa"
+
+-   Las tramas ethernet pueden pasar por un dispositivo sin que ese dispositivo procese efectivamente esa trama, así como también puede ser que SI se procese.
+
+---
+
+## ARP
+
+-   Es un protocolo que mappea direcciones IPv4 a direcciones MAC.
+-   El destino siempre es broadcast y la respuesta va por unicast.
+-   Los **routers** y **hosts/computadoras** poseen tablas ARP, cuyas entradas suelen expirar luego de cierto tiempo.
+-   Cuando un dispositivo quiere enviar datos a otro **en la misma red**, necesita su MAC.
+-   Si la tiene en su tabla ARP, la obtiene y listo.
+-   Si no la tiene, envia un **ARP Request** a toda la red LOCAL mediante la dirección MAC de broadcast preguntando quién tiene la MAC de esa IP:
+    -   MAC origen.
+    -   MAC de interés (vacío inicialmente).
+    -   IP origen.
+    -   IP destino (Next Hop).
+-   El dispositivo que posee la MAC de la IP en cuestión envía un ARP Reply al emisor original con un paquete ARP que tiene:
+    -   MAC origen.
+    -   MAC de interés.
+    -   IP origen.
+    -   IP destino.
+-   El emisor original recibe la MAC que pidió y actualiza su tabla ARP.
+
+#### Aclaración ARP
+
+-   Si Router A está directamente conectado a Router B, y Router A hace un ARP Request va a conocer la MAC de Router B, **y al mismo tiempo Router B conocerá la MAC del Router A.** No hace falta hacer un segundo ARP Request.
+
+#### Aclaración tramas Ethernet
+
+-   Las tramas Ethernet solo envian información dentro de la red LAN. Una vez que atraviesan un router "desaparece" lo que tenía esa trama.
+
+#### Casos de problemas a resolver
+
+Tenemos 2 casos, asumiendo que las tablas ARP están vacías:
+
+###### Que Origen y Destino estén en la misma red:
+
+Se crea una trama Ethernet con datos:
+
+-   MAC origen: MAC_PC-Origen_eth0
+-   MAC destino: FF:FF:FF:FF:FF:FF
+
+Y un ARP Request con datos:
+
+-   MAC origen: MAC_PC-Origen_eth0
+-   MAC destino: ???
+-   IP origen: IP_PC-Origen
+-   IP destino: IP_PC-Destino
+
+**Como los routers no retransmiten mensajes broadcast, el ARP Request no pasará de la red local a ninguna otra red.**
+Aunque todos los dispositivos recibirán y procesarán el ARP Request enviado, el único que contestará será el que posee la MAC de PC-Destino. Ese dispositivo contestará con un ARP Reply:
+
+Trama:
+
+-   MAC origen: MAC_PC-Destino_eth0
+-   MAC destino: MAC_PC-Origen_eth0
+
+ARP Reply:
+
+-   MAC origen: MAC_PC-Destino_eth0
+-   MAC destino: MAC_PC-Origen_eth0
+-   IP origen: IP_PC-Destino
+-   IP destino: IP_PC-Origen
+
+###### Que Origen y Destino estén en distintas redes.
+
+Similar al anterior pero consulta por su Default gateway primero.
+
+Trama Ethernet:
+
+-   MAC origen: MAC_PC-Origen_eth0
+-   MAC destino: FF:FF:FF:FF:FF:FF
+
+Y un ARP Request con datos:
+
+-   MAC origen: MAC_PC-Origen_eth0
+-   MAC destino: ???
+-   IP origen: IP_PC-Origen
+-   IP destino: **IP_Router-DefaultGateway**
+
+Y luego en la vuelta:
+
+Trama Ethernet:
+
+-   MAC origen: **MAC_Router-DefaultGateway**
+-   MAC destino: MAC_PC-Origen_eth0
+
+ARP Reply:
+
+-   MAC origen: **MAC_Router-DefaultGateway**
+-   MAC destino: MAC_PC-Origen_eth0
+-   IP origen: **IP_Router-DefaultGateway**
+-   IP destino: IP_PC-Origen
+
+Despues de esto se va repitiendo el mismo proceso para los subsiguientes routers hasta llegar a la red destino.
+
+---
+
+## Neighbour Discovery
+
+-   Protocolo similar a ARP pero para IPv6.
+-   A diferencia de ARP, usa **multicast** y no broadcast.
+-   Posee los siguientes componentes principales:
+    1. Neighbour Solicitation: Similar al ARP Request.
+    2. Neighbour Advertisement: Similar al ARP Reply.
+    3. Router Advertisement: Anuncia la presencia de routers en la red y proporciona info necesaria para la autoconfiguración de direcciones.
+
+---
+
+## WiFi (802.11)
+
+-   802.11 es un conjunto de estándares de la IEEE donde se especifican los métodos de transmisión en redes inalámbricas. Comunmente conocido como WiFi.
+
+#### Access Points
+
+-   Un AP es un dispositivo que permite a los dispositivos WiFi conectarse a una red cableada. Actúa como un puente entre los clientes wireless y la red general que es cableada.
+
+#### Tramas WiFi
+
+Mientras que las tramas Ethernet contienen solo 2 direcciones MAC, origen y destino, las tramas WiFi pueden tener hasta 4:
+
+1. Receptor
+2. Emisor
+3.  - Si el mensaje va de un dispositivo -> Access Point, se indica el dispositivo receptor **final**.
+    - Si el mensaje va de un Access Point -> dispositivo, se indica el otro dispositivo emisor.
+    - Si el mensaje va de un Access Point -> Otro Access Point, se indica el dispositivo receptor.
+4. Solo está cuando hay intercambio entre 2 APs, se indica la MAC del dispositivo que generó la trama WiFi.
+
+Ejemplo:
+![Ejemplo tramas WiFi](https://i.gyazo.com/f17fc63a935d1d92f8b19f24791f2639.png)
+
+| Emisor y receptor | Receptor   | Emisor     | Dirección 3 | IP Origen | IP Destino | Tipo trama |
+| ----------------- | ---------- | ---------- | ----------- | --------- | ---------- | ---------- |
+| STA A -> AP       | MAC aptest | MAC STA A  | MAC STA B   | IP STA A  | IP STA B   | WiFi       |
+| AP -> STA B       | MAC STA B  | MAC aptest | MAC STA A   | IP STA A  | IP STA B   | WiFi       |
+| AP -> STA Z       | MAC STA Z  | MAC STA A  | -           | IP STA A  | IP STA Z   | Ethernet   |

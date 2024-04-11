@@ -1,0 +1,299 @@
+<center>
+
+# Capa de Red (Capa 3)
+
+</center>
+
+## Introducción
+
+Se ocupa de 5 tareas principales:
+
+1. **Direccionamiento:** asignar direcciones IP a dispositivos.
+2. **Ruteo:** determinar el mejor camino entre redes o entre una misma red local para enviar paquetes.
+3. **Forwarding:** enviar paquetes entre redes o entre una misma red local.
+4. **Manejo de errores básico:** detectar y manejar errores durante la transmisión de paquetes.
+5. **Fragmentación y reensamblado:** hacer y deshacer paquetes grandes.
+
+-   Su PDU es el paquete.
+
+---
+
+## IP
+
+-   Es el protocolo central de esta capa.
+-   Es Best Effort, porque similar a UDP, no garantiza que los paquetes lleguen ni que lleguen en orden.
+
+---
+
+## Clases
+
+Método obsoleto que consistía en dividir las direcciones IP entre 5 clases, A B C D E. Estas son direcciones IP públicas.
+
+| Clase | N° de redes                | N° de hosts por red             | 1° octeto | Máscara default (notación CIDR) |
+| ----- | -------------------------- | ------------------------------- | --------- | ------------------------------- |
+| A     | 2<sup>7</sup> = 128        | 2<sup>24</sup> - 2 = 16,777,214 | 0...      | /8                              |
+| B     | 2<sup>14</sup> = 16,384    | 2<sup>16</sup> - 2 = 65,534     | 10...     | /16                             |
+| C     | 2<sup>21</sup> = 2,097,152 | 2<sup>8</sup> - 2 = 254         | 11...     | /24                             |
+| D     | 2<sup>?</sup> = ?          | 2<sup>?</sup> - 2 = ?           | 1110...   | /4                              |
+| E     | 2<sup>?</sup> = ?          | 2<sup>?</sup> - 2 = ?           | 1111...   | /?                              |
+
+#### Direcciones IP privadas
+
+-   Son aquellas que no se usan en internet y que se usan dentro de una red privada.
+-   Las direcciones IP privadas presentan muchas desventajas.
+
+| Clase | Rango                         | Máscara |
+| ----- | ----------------------------- | ------- |
+| A     | 10.0.0.0 - 10.255.255.255     | /8      |
+| B     | 172.16.0.0 - 172.31.255.255   | /12     |
+| C     | 192.168.0.0 - 192.168.255.255 | /16     |
+
+#### Determinar clase de una IP
+
+Muy simple, pasamos el primer octeto de la IP a binario y chequeamos los primeros 2 bits. Para pasar a binario dividimos por 2 hasta llegar a 1.
+Por ejemplo:
+
+| 30  | -   |
+| --- | --- |
+| 15  | 0   |
+| 7   | 1   |
+| 3   | 1   |
+| 1   | 1   |
+
+y leemos de abajo hacia arriba -> 11110 = 0 + 2 + 4 + 8 + 16 = 30
+0001 1110 sería Clase A, porque su primer bit es 0.
+
+---
+
+## Subnetting
+
+-   Una subred es una subdivisión de una red más grande con el objetivo de hacer un mejor uso del N" de redes y hosts de un bloque y evitar desperdicios.
+-   Máscara: indica la cantidad de bits de la parte de red. Por ejemplo /30 indica que se usan 30 bits para red y 2 para hosts.
+-   Una red es consecutiva a otra cuando le sumamos 1 solo bit.
+
+#### Determinar dirección de subred de una IP
+
+```
+dirección IP
+AND
+máscara
+
+=== dirección de subred
+```
+
+Por ejemplo:
+
+```
+172.16.58.223/26
+AND
+/26
+
+---.---.---.11011111
+AND
+---.---.---.11000000
+
+172.16.58.192
+```
+
+#### Determinar dirección de broadcast de una subred
+
+Ponemos la cantidad de bits de la máscara en 1 de derecha a izquierda
+
+Por ejemplo:
+
+```
+10.1.0.0/24
+8 bits en 1 -> 10.1.0.255
+```
+
+#### Determinar rango de direcciones IP válidas de una subred
+
+```
+Desde (dirección de subred + 1) hasta (dirección de broadcast - 1)
+```
+
+#### Determinar la IP de la subred número X
+
+Pasamos X a binario y reemplazamos (de izquierda a derecha)
+
+Por ejemplo:
+
+```
+Tenemos la red 128.50.10.0/26 que tiene 2^10 subredes = 1024 (/16 + /10 por eso 2^10)
+Queremos la subred 25 -> 25 - 1 = 24 porque la primera es cero -> 0001 1000
+Reemplazamos los últimos 2 octetos
+128.50.00000001.00001000 = 128.50.1.8
+```
+
+---
+
+## CIDR
+
+-   Classless Inter Domain Routing es un método de alocación de direcciones IP y ruteo alternativo y mejor a las clases. Es más flexible y útil ya que permite VLSM, es decir máscaras de longitud variable y esto reduce masivamente el desperdicio de direcciones IP y reduce el tamaño de las tablas de ruteo.
+
+-   Las redes en CIDR se agrupan a partir del octeto donde difieren, y ajustando la máscara. Por ejemplo:
+
+```
+198.10.1.0/24 -> 11000110.00001010.00000001.00000000
+198.10.0.0/24 -> 11000110.00001010.00000000.00000000
+198.10.3.0/24 -> 11000110.00001010.00000011.00000000
+198.10.2.0/24 -> 11000110.00001010.00000010.00000000
+
+Se transforman en 198.10.0.0/22, ya que son iguales HASTA EL BIT 22. Lo que sucede es que teníamos 4 subredes de 254 hosts cada una, y ahora tenemos 1 sola subred de 1022 hosts, 6 más que 254 * 4.
+```
+
+-   Redes involucradas en bloques CIDR:
+
+```
+???
+```
+
+---
+
+## VLSM
+
+-   Variable Length Subnet Masking es una técnica que divide subredes en base a máscaras de longitud variable, es decir que podemos por ejemplo tener:
+    -   Red
+        -   Subred1/X
+        -   Subred2/Y
+        -   Subred3/Z
+-   Funciona así: Si tengo una red que quiero dividir en N subredes y una necesita 4 hosts, otra 62 y las demás 30, puedo usar máscara /30 para la primera, máscara /26 y /27 para las demás, minimizando el desperdicio.
+-   **CUIDADO!** las subredes usando VLSM no se pueden pisar, es decir asignar por ejemplo 172.32.0.0/30 a una red punto a punto y luego 172.32.0.0/27 a por ejemplo Red A **está mal** ya que se pisan. Mirar cuidadosamente las subredes **YA ASIGNADAS** de un bloque cuando nos dan ese bloque.
+
+---
+
+## ICMP
+
+-   Protocolo de la Capa de Red que transmite mensajes de error a través de los dispositivos de la red. Resulta útil sobretodo para informar sobre congestión o mensajes inalcanzables.
+-   **ping** hace que el emisor envíe un Echo Request al receptor y este conteste con Echo Reply. A partir de esto se calcula el tiempo que se tardó.
+
+#### Códigos ICMP
+
+| Código ICMP             | Descripción                                                          |
+| ----------------------- | -------------------------------------------------------------------- |
+| Echo Request (8)        | Lo usa el comando "ping" cuando un host quiere comunicarse con otro. |
+| Echo Reply (0)          | Respuesta exitosa a un "ping".                                       |
+| Destination Unreachable | No se puede rutear la IP destino.                                    |
+| Port unreachable        | El puerto de la IP destino no está escuchando.                       |
+
+---
+
+## Paquete IPv4
+
+![Paquete IP](https://www.tutorialspoint.com/ipv4/images/ip_header.jpg)
+
+---
+
+## Fragmentación
+
+-   La fragmentación ocurre cuando un paquete IP es demasiado grande para ser transmitido por la red. Esto ocurre cuando el MTU (Maximum Transmission Unit) de un router por ejemplo, es menor al Total Length del paquete. Debido a esto, hay que dividir el paquete en pedazos y enviar esos pedazos.
+-   Para fragmentar se toma el MTU en bytes y se le resta 20 bytes (tamaño del header). Luego se debe encontrar el múltiplo de 8 más cercano a ese número.
+-   Por ejemplo:
+
+```
+MTU = 600 bytes.
+Paquete IP a enviar = 1500 bytes.
+
+600 - 20 = 580.
+Múltiplo de 8 más cercano a 580 -> 576.
+576 + 20 del header = 596.
+
+Paquete fragmentado 1: 596 bytes
+Paquete fragmentado 2: 596 bytes
+Paquete fragmentado 3: 348 bytes
+
+La suma de los fragmentos siempre debe dar como resultado:
+Tamaño paquete original + (20 * cantidadFragmentos - 1)
+596 + 596 + 348 = 1540.
+1500 + (20 * 2) = 1540. Correcto.
+```
+
+---
+
+## Ruteo
+
+-   Rutear consiste en hallar el mejor camino (según distintos parámetros) entre 2 dispositivos. Ruteando se envian efectivamente los paquetes.
+-   Existen 2 tipos de ruteo:
+
+| Característica           | Ruteo estático             | Ruteo dinámico                                     |
+| ------------------------ | -------------------------- | -------------------------------------------------- |
+| Escalabilidad            | No es escalable.           | Es altamente escalable.                            |
+| Tolerancia a fallos      | No es tolerante a fallos.  | Es tolerante a fallos.                             |
+| Eficiencia               | Muy eficiente.             | Costoso.                                           |
+| Complejidad              | Útil para redes sencillas. | Debugging complejo.                                |
+| Establecimiento de rutas | Las establece el admin.    | Se establecen automáticamente mediante algoritmos. |
+
+#### Tablas de ruteo
+
+-   Es la tabla que posee cada router para poder direccionar paquetes. Se componen de 4 columnas:
+
+    1. Red Destino: La IP de la Red X o red punto a punto que queremos alcanzar desde el router. **Nunca se pone la IP de un host o dispositivo específico.**
+    2. Mask: La máscara de la Red Destino indicada.
+    3. Next Hop: La IP de la interfaz destino del próximo router.
+    4. Interface: El nombre de la interfaz por donde salir del router.
+
+-   Sumarizar es lo mismo que agrupar varias redes CIDR en una sola.
+-   Podemos sumarizar rows de la tabla siempre y cuando tengan **misma máscara, mismo Next Hop y misma interfaz**.
+-   También podemos sumarizar si Next Hop e Interfaz son iguales pero la máscara no, usando la ruta default (red destino 0.0.0.0 | máscara /0)
+-   Siempre hay que agregar la red 0.0.0.0/0 (Default Gateway) en la tabla, y su **Next-Hop debe ser el router que más cercano esté a salir a internet** (ISP por ejemplo).
+
+---
+
+## DHCP
+
+-   Dynamic Host Configuration Protocol es un protocolo por el cual un dispositivo solicita y obtiene una dirección IP dinámicamente durante cierto tiempo para conectarse a Internet.
+
+---
+
+## NAT
+
+-   Network Address Translation es un método que permite que muchos dispositivos en una red **local** tengan una misma, única IP pública cuando se conectan a Internet.
+-   Surge debido a que hay billones de dispositivos y cada uno requiere una IP, pero con IPv4 la cantidad no es suficiente.
+-   Se puede decir que la NAT traduce las conexiones que generan las direcciones privadas contra la pública del router.
+
+---
+
+## IPv6
+
+-   Versión más nueva del protocolo IP.
+-   Provee direcciones de 128 bits en vez de 32.
+-   Su header siempre es de 40 bytes, por lo cual el campo Header Length no es necesario.
+-   No tiene checksum.
+-   No tiene campo options, introduce las extensiones de cabecera (campo Next Header) que poseen info extra del paquete. Permite agregar funcionalidades a IPv6.
+
+#### Formato
+
+-   8 grupos de 4 dígitos HEX cada uno, separados por ":".
+-   "::" es una abreviación de 1 o más grupos consecutivos de "0000". Solo puede haber 1 "::".
+-   La dirección IPv6 "::1" es equivalente a 127.0.0.1 de IPv4 -> localhost.
+-   La dirección IPv6 "::" o "::/128" significa todo cero, IP indeterminada.
+-   Las direcciones IPv6 empezando con ff00 son multicast.
+
+#### EUI-64
+
+-   Extended Unique Identifier-64 es un identificador de 64 bits que se usa en IPv6 para generar un ID de interfaz automático para Stateless Address Autoconfiguration.
+-   Se crea a partir de una dirección MAC, de la siguiente forma:
+
+    1. Se invierte el 7° bit del primer octeto.
+    2. Se inserta FF:FE en la mitad de la dirección MAC.
+    3. Se agrega FE80 al inicio y con "::" siguiéndole, ya que quedaran vacíos esos próximos 3 octetos.
+    4. Se unen todos los octetos de 2 digitos que quedaron.
+
+-   Cada interfaz de red física de un host tiene 2 direcciones IPv6. La **local** y la **global**. El fe80:: es la dir. local. La global por lo general la proporciona el **router**.
+-   Ejemplo:
+
+```
+Interfaz eth0: 00:1b:77:b1:49:a1
+
+Transformarla en Identificador de Interfaz:
+
+02:1b:77:ff:fe:b1:49:a1 (invertimos el 7° bit del 1er octeto y luego insertamos ff:fe en el medio)
+
+Transformarla en dirección IPv6 de Link-Local:
+
+fe80::021b:77ff:feb1:49a1 (insertamos fe80 al inicio y agrupamos de a 16 bits)
+
+Transformarla en dirección IPv6 de Link-Global:
+
+Dirección IPv6 del router::021b:77ff:feb1:49a1 (concatenación)
+```
