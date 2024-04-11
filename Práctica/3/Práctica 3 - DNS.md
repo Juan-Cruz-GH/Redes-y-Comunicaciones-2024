@@ -31,7 +31,7 @@ www.google.com
 
 ### 3. ¿Qué es una respuesta del tipo autoritativa?
 
-Una respuesta autoritativa es una que proviene de un servidor autoritativo, y éste es un servidor que posee toda la información actualizada de un dominio determinado. Los servidores autoritativos también suelen llamarse servidores de nombres o nameservers.
+Una respuesta autoritativa es una que proviene de un servidor autoritativo, y éste es un servidor que posee toda la información actualizada de un dominio determinado y puede producir cambios sobre el mismo. Los servidores autoritativos también suelen llamarse servidores de nombres o nameservers.
 
 Por ejemplo, un servidor autoritativo para example.com podría ser ns1.example.com.
 
@@ -47,9 +47,9 @@ Una consulta DNS iterativa es aquella en la cual el servidor DNS consultado nuev
 
 El resolver es el primer paso en la resolución DNS y es previo a los servidores DNS propiamente dichos.
 
-Se trata de un componente de software integrado en el sistema operativo de cualquier cliente que utilice internet.
+Se trata de un componente de software integrado (una rutina, proceso o librería) en el sistema operativo de cualquier cliente que utilice internet.
 
-Cuando el cliente ingresa un nombre de dominio en el browser o cualquier otra aplicación que necesite conectarse a un servidor de internet, el resolver chequeará primero su caché y si no encuentra la IP ahí, procederá a realizar consultas recursivas (a no ser que esté configurado para hacer consultas iterativas, aunque es raro).
+Cuando el cliente ingresa un nombre de dominio en el browser o cualquier otra aplicación que necesite conectarse a un servidor de internet, el resolver chequeará primero su caché y si no encuentra la IP ahí, procederá a realizar consultas recursivas (a no ser que esté configurado para hacer consultas iterativas, aunque es raro) al servidor DNS configurado en la máquina (el servidor local).
 
 ### 6. Describa para qué se utilizan los siguientes tipos de registros de DNS:
 
@@ -110,6 +110,12 @@ La transferencia de zona consiste en que, periódicamente, el servidor primario 
 -   Soy administrador del dominio unlp.edu.ar.
 -   info.unlp.edu.ar es manejada por otro administrador de forma independiente.
 -   Tenemos un nuevo dominio, redes.unlp.edu.ar que nuevamente debe manejarse de forma independiente.
+-   El servidor autoritativo primario de unlp.edu.ar posee, entre otros registros:
+
+```
+info.unlp.edu.ar IN NS ns1.info.unlp.edu.ar
+ns1.info.unlp.edu.ar IN A X.X.X.X // IP del servidor autoritativo de informática.
+```
 
 Para que el administrador de redes.unlp.edu.ar pueda gestionar ese dominio de forma independiente debemos realizar una delegación de dominio:
 
@@ -117,7 +123,7 @@ Para que el administrador de redes.unlp.edu.ar pueda gestionar ese dominio de fo
 
 ```
 redes.unlp.edu.ar IN NS ns1.redes.unlp.edu.ar
-ns1.redes.unlp.edu.ar IN A ??? // IP del servidor autoritativo de redes.
+ns1.redes.unlp.edu.ar IN A X.X.X.X // IP del servidor autoritativo de redes.
 ```
 
 2. El administrador de la Facultad de Redes configura y administra ns1.redes.unlp.edu.ar.
