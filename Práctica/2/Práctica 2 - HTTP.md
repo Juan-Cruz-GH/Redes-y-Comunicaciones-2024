@@ -46,7 +46,7 @@ La información de capa de aplicación que nos indica si un mensaje HTTP es un r
 Si es un **requerimiento**, la primer linea posee el formato:
 
 ```
-MétodoHTTP /URL HTTP/Versión
+MétodoHTTP Recurso HTTP/Versión
 
 por ejemplo
 
@@ -336,7 +336,7 @@ curl -X ?? www.redes.unlp.edu.ar/??
 
 ##### a. ¿Qué versión de HTTP podría estar utilizando el servidor?
 
-Probablemente HTTP 1.1, ya que éste no utiliza conexiones persistentes, y como podemos ver, el servidor cerró la conexión luego de enviar su respuesta. Además, podemos ver la cabecera Host. Ésta no existe en HTTP 1.0, por ende no puede ser esa versión.
+Probablemente HTTP 1.1, ya que podemos ver la cabecera Host. Ésta no existe en HTTP 1.0, por ende no puede ser esa versión. No puede ser 2.0 porque 2.0 usa Authority y no Host.
 
 ##### b. ¿Qué método está utilizando? Dicho método, ¿retorna el recurso completo solicitado?
 
