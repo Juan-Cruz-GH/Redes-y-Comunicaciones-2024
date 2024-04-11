@@ -336,7 +336,11 @@ curl -X ?? www.redes.unlp.edu.ar/??
 
 ##### a. ¿Qué versión de HTTP podría estar utilizando el servidor?
 
-Probablemente HTTP 1.1, ya que podemos ver la cabecera Host. Ésta no existe en HTTP 1.0, por ende no puede ser esa versión. No puede ser 2.0 porque 2.0 usa Authority y no Host.
+No es HTTP 1.0, ya que la cabecera Host no existía en esta versión.
+
+No es HTTP 2.0, ya que la sintaxis es distinta.
+
+Por lo tanto, es HTTP 1.1.
 
 ##### b. ¿Qué método está utilizando? Dicho método, ¿retorna el recurso completo solicitado?
 
