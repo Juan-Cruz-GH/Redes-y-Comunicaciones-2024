@@ -51,6 +51,10 @@ Se trata de un componente de software integrado (una rutina, proceso o librería
 
 Cuando el cliente ingresa un nombre de dominio en el browser o cualquier otra aplicación que necesite conectarse a un servidor de internet, el resolver chequeará primero su caché y si no encuentra la IP ahí, procederá a realizar consultas recursivas (a no ser que esté configurado para hacer consultas iterativas, aunque es raro) al servidor DNS configurado en la máquina (el servidor local).
 
+El orden completo de resolución DNS sería:
+
+La PC chequea el archivo hosts, si no encuentra la IP ahí -> Resolver. Si éste no tiene la IP en caché le consulta al -> Servidor DNS local. Si éste no tiene la IP en caché le consulta al -> Servidor root -> etc etc.
+
 ### 6. Describa para qué se utilizan los siguientes tipos de registros de DNS:
 
 ##### a. A
@@ -99,7 +103,7 @@ Un dominio suele tener más de un servidor autoritativo por 3 razones principale
 
 ### 8. Cuando un dominio cuenta con más de un servidor, uno de ellos es el primario (o maestro) y todos los demás son secundarios (o esclavos). ¿Cuál es la razón de que sea así?
 
-Cuando un dominio tiene más de un servidor DNS, uno de ellos, el primario, es el que posee la información original y siempre actualizada. Todos los demás son secundarios o esclavos, es decir que copian la información del servidor primario regularmente. Esto es así porque sería imposible que haya varios servidores primarios. No se podrían actualizar ambos a exactamente el mismo tiempo, e incluso si se pudiera generaría ambiguedad, ya que los secundarios no sabrían cuál de los dos primarios copiar.
+Cuando un dominio tiene más de un servidor DNS, uno de ellos, el primario, es el que posee la información original y siempre actualizada. Todos los demás son secundarios o esclavos, es decir que copian la información del servidor primario regularmente. Esto es así para evitar ambiguedades. Tiene que haber un servidor "centralizador" del cual todos los demás puedan copiarse para mantener el orden.
 
 ### 9. Explique brevemente en qué consiste el mecanismo de transferencia de zona y cuál es su finalidad.
 
@@ -213,7 +217,7 @@ Este campo se usa como email del admin del dominio poniendo @ luego de root.
 
 ###### iv. ¿Qué valor tiene el TTL de caché negativa y qué significa?
 
-El último campo del SOA es el TTL de caché negativa y tiene valor 86400 que son 24 horas. Significa que las consultas de registros que no existan en el dominio se almacenarán en caché por 24 horas como máximo.
+El último campo del SOA es el TTL de caché negativa y tiene valor 86400 que son 24 horas. Significa que las consultas de registros que no existan en el dominio se almacenarán en caché por 24 horas como máximo. "Alguna vez se consultó por el registro, no se encontró y se guardó la consulta misma. Una vez pasado el tiempo de TTL negativo, se elimina esa consulta."
 
 ##### g. Indique qué valor tiene el registro TXT para el nombre saludo.redes.unlp.edu.ar. Investigue para qué es usado este registro.
 
@@ -319,16 +323,17 @@ El servidor de DNS (si no encuentra la IP en su caché) realiza consultas **iter
 
 Pasos en orden:
 
-1. PC-A le pide a DNS Server que resuelva la IP de www.unlp.edu.ar (consulta recursiva).
-2. DNS Server, como no tiene la respuesta en su caché, realiza una consulta iterativa al root server A (el de la izquierda en la imágen, por ser el más cercano) requiriendo el registro A de www.unlp.edu.ar.
-3. Root Server A le devuelve los NS de .ar: **a.dns.ar**.
-4. DNS Server realiza una consulta iterativa a a.dns.ar requiriendo el registro A de www.unlp.edu.ar.
-5. a.dns.ar le devuelve los NS de .edu.ar: **ns1.riu.edu.ar**.
-6. DNS Server realiza una consulta iterativa a ns1.riu.edu.ar requiriendo el registro A de www.unlp.edu.ar.
-7. ns1.riu.edu.ar le devuelve los NS de .unlp.edu.ar: **unlp.unlp.edu.ar**.
-8. DNS Server realiza una consulta iterativa a unlp.unlp.edu.ar requiriendo el registro A de www.unlp.edu.ar.
-9. unlp.unlp.edu.ar le devuelve el registro A de www.unlp.edu.ar.
-10. DNS Server le devuelve a PC-A la IP del dominio solicitado.
+1. PC-A chequea su archivo hosts y no encuentra la IP de www.unlp.edu.ar.
+2. PC-A le pide a DNS Server que resuelva la IP de www.unlp.edu.ar (consulta recursiva).
+3. DNS Server, como no tiene la respuesta en su caché, realiza una consulta iterativa al root server A (el de la izquierda en la imágen, por ser el más cercano) requiriendo el registro A de www.unlp.edu.ar.
+4. Root Server A le devuelve los NS de .ar: **a.dns.ar**.
+5. DNS Server realiza una consulta iterativa a a.dns.ar requiriendo el registro A de www.unlp.edu.ar.
+6. a.dns.ar le devuelve los NS de .edu.ar: **ns1.riu.edu.ar**.
+7. DNS Server realiza una consulta iterativa a ns1.riu.edu.ar requiriendo el registro A de www.unlp.edu.ar.
+8. ns1.riu.edu.ar le devuelve los NS de .unlp.edu.ar: **unlp.unlp.edu.ar**.
+9. DNS Server realiza una consulta iterativa a unlp.unlp.edu.ar requiriendo el registro A de www.unlp.edu.ar.
+10. unlp.unlp.edu.ar le devuelve el registro A de www.unlp.edu.ar.
+11. DNS Server le devuelve a PC-A la IP del dominio solicitado.
 
 ### 18. ¿A quién debería consultar para que la respuesta sobre www.google.com sea autoritativa?
 
