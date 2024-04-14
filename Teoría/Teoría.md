@@ -509,6 +509,8 @@ clave | TTL | IN | tipoRegistro | valor
 
 #### Arquitectura
 
+![Arquitectura email](https://i.imgur.com/c3SJvXU.png)
+
 ##### Componentes principales
 
 1. MUA (Mail User Agent)
@@ -527,6 +529,7 @@ clave | TTL | IN | tipoRegistro | valor
 #### MUA
 
 -   Es el cliente, es decir la interfaz con el usuario.
+-   Puede ser mobile, desktop, o web based.
 -   Es responsable de leer, editar y emitir correos locales.
 -   Posee intregado un MTA local para comunicarse con el servidor de mail saliente (MTA relay). El MTA relay pre-procesa el email recibido desde el MUA con el agente MSA.
 -   Posee intregado un MRA para comunicarse con el servidor de mail entrante (MAA).
@@ -567,4 +570,54 @@ clave | TTL | IN | tipoRegistro | valor
 
 #### MAA
 
--
+-   Servidor.
+-   Puede estar integrado en el MDA o separado.
+-   Autentica al MUA y lee los emails del mailbox local que dejó el MDA/LDA.
+-   Transporta los emails hacia el MUA.
+-   Implementa los protocolos POP y/o IMAP dejando acceder a los recursos y dialogando con el MUA.
+-   Ejemplos: courrier, cyrus-IMAP, dovecot, sieve, etc.
+
+#### SMTP
+
+-   Significa Simple Mail Transfer Protocol.
+-   Usa el modelo Cliente/Servidor.
+-   Utiliza el formato ASCII.
+-   Por defecto usa el puerto 25.
+-   Trabaja con TCP.
+-   Los servidores de email se comunican entre sí vía SMTP.
+-   Los MTA locales de los MUA se comunican con su servidor saliente vía SMTP.
+-   Usa conexiones persistentes.
+-   Puede trabajar de forma interactiva (request/response) o pipeline.
+-   Puede o no requerir auth.
+-   Puede o no ser seguro (SSL/TLS).
+
+#### Formato de los mails
+
+1. From:
+2. To:
+3. Subject:
+4. Date:
+5. MIME-Version:
+6. Content-Transfer-Encoding:
+7. Content-Type:
+
+#### Datos binarios
+
+Como los emails trabajan con ASCII, todo lo que sea binario (imagenes, archivos, etc) debe traducirse a un formato compatible, por ejemplo base64.
+
+#### Protocolos de acceso a emails
+
+-   POP vs IMAP.
+-   Ambos requieren autenticación.
+-   Ambos utilizan ASCII.
+-   POP usa el puerto 110, IMAP el 143.
+-   Ambos admiten SSL/TLS.
+-   IMAP permite el uso de carpetas y manipulación de mensajes en el servidor.
+
+---
+
+<center>
+
+# Clase 5, 16 de abril, 2024
+
+</center>
