@@ -621,3 +621,82 @@ Como los emails trabajan con ASCII, todo lo que sea binario (imagenes, archivos,
 # Clase 5, 16 de abril, 2024
 
 </center>
+
+## FTP
+
+-   FTP (File Transfer Protocol) es un protocolo antiguo cuyo objetivo es transferir archivos completos.
+-   Utiliza el modelo Cliente/Servidor.
+-   Corre sobre TCP.
+-   Los clientes FTP no requieren UI.
+-   Es soportado por los browsers mediante la URI: ftp://...
+
+#### Funcionamiento
+
+Usa 2 conexiones TCP:
+
+1. **Conexión de Control**: Donde viajan los comandos y el estado (éxito por ej) de cada operación. Utiliza por defecto el puerto 21.
+2. **Conexión de Datos**: Donde viajan los datos. Se crea y se cierra bajo demanda. Utiliza cualquier puerto no privilegiado (> 1024).
+
+#### Comandos
+
+-   **RETR**: Obtiene un archivo desde el servidor.
+-   **STOR**: Envía un archivo al servidor.
+-   **LIST**: Lista los archivos del directorio actual en el servidor.
+-   **DELE**: Borra un archivo en el servidor.
+-   **SIZE, STAT**: Obtiene información de un archivo en el servidor.
+-   **CD, PWD, RMD, MDK**: Cambia de directorio, obtiene el directorio actual, borra el directorio, crea un directorio.
+
+#### FTP Activo vs Pasivo
+
+FTP posee 2 modos, se diferencia cómo maneja la conexión de **datos**:
+
+En el modo Activo, el cliente abre uno de sus puertos para la conexión de datos, y **el servidor se conecta al cliente**.
+
+En el modo Pasivo, el servidor abre uno de sus puertos para la conexión de datos, y **el cliente se conecta al servidor**.
+
+| Aspecto                          | FTP Activo                                                                            | FTP Pasivo                             |
+| -------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------- |
+| Puerto de control de ambos lados | 21                                                                                    | 21                                     |
+| Puerto de datos del cliente      | > 1024                                                                                | > 1024                                 |
+| Puerto de datos del servidor     | 20                                                                                    | > 1024                                 |
+| Comando PORT                     | Lo utiliza el cliente para indicarle al servidor cuál de sus puertos está escuchando. | No se usa, se utiliza el comando PASV. |
+| NAT/firewall                     | Puede generar problemas.                                                              | No suele generar problemas.            |
+| Seguridad                        | Puede ser menos seguro.                                                               | Puede ser más seguro.                  |
+
+#### Formato de datos
+
+-   Se puede utilizar formato ASCII o binario según el tipo de archivo.
+-   Para imágenes, videos, programas ejecutables, etc se utiliza binario y los datos se transfieren byte a byte sin realizar ninguna conversión.
+-   Para archivos de texto, los caracteres se transmiten de acuerdo a la codificación ASCII estándar.
+
+#### Alternativas a FTP
+
+-   FTP seguro: FTPS (FTP con SSL/TLS).
+-   Versiones integradas con la suite de Open-SSH: SCP y SFTP.
+-   Aplicaciones para compartir recursos: NFS, SMB/CIFS, iSCI, etc.
+-   TFTP.
+
+#### FTP vs HTTP
+
+| Aspecto              | FTP                                            | HTTP                                   |
+| -------------------- | ---------------------------------------------- | -------------------------------------- |
+| Subida vs bajada     | Diseñado para subida pero soporta descarga.    | Se pueden ambos con PUT y POST.        |
+| Formato              | ASCII/Binario.                                 | meta-data, Content-Type, más flexible. |
+| Headers              | No los usa.                                    | Los usa.                               |
+| Performance          | Command/Response, archivos pequeños más lento. | Pipelining.                            |
+| NAT/firewalls        | Menos amigable.                                | Más amigable.                          |
+| Número de conexiones | 2.                                             | 1.                                     |
+| Ranges/resume        | Soportado.                                     | Soportado y más avanzado.              |
+| Autenticación        | Soportado.                                     | Soportado.                             |
+| Cifrado              | Soportado.                                     | Soportado.                             |
+| Compresión           | RLE.                                           | Deflate: LZ77 + Huffman.               |
+
+---
+
+<center>
+
+# Clase 6, 16 de abril, 2024
+
+</center>
+
+## TCP
