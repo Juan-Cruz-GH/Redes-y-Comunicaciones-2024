@@ -4,13 +4,13 @@
 
 </center>
 
-### 1. ¿Qué protocolos se utilizan para el envío de mails entre el cliente y su servidor de
+### 1. ¿Qué protocolos se utilizan para el envío de mails entre el cliente y su servidor de correo? ¿Y entre servidores de correo?
 
-correo? ¿Y entre servidores de correo?
+Para el envío de mails entre el cliente y su servidor de correo se utiliza el protocolo SMTP que opera con TCP.
 
-### 2. ¿Qué protocolos se utilizan para la recepción de mails? Enumere y explique
+Entre servidores de correo también se utiliza SMTP. Esto es porque SMTP puede actuar tanto como cliente (mail server del emisor) así como servidor (mail server del destino).
 
-características y diferencias entre las alternativas posibles.
+### 2. ¿Qué protocolos se utilizan para la recepción de mails? Enumere y explique características y diferencias entre las alternativas posibles.
 
 ### 3. Utilizando la VM y teniendo en cuenta los siguientes datos, abra el cliente de correo (Thunderbird) y configure dos cuentas de correo. Una de las cuentas utilizará POP para solicitar al servidor los mails recibidos para la misma mientras que la otra utilizará IMAP. Al crear cada una de las cuentas, seleccionar Manual config y luego de configurar las mismas según lo indicado, ignorar advertencias por uso de conexión sin cifrado.
 
