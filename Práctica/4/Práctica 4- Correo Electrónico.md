@@ -12,6 +12,21 @@ Entre servidores de correo también se utiliza SMTP. Esto es porque SMTP puede a
 
 ### 2. ¿Qué protocolos se utilizan para la recepción de mails? Enumere y explique características y diferencias entre las alternativas posibles.
 
+Existen 2 protocolos principales para la recepción de mails: POP3 e IMAP.
+
+**POP3**:
+
+-   Protocolo simple y limitado en ciertos aspectos.
+-   Los emails se descargan desde al servidor al dispositivo local.
+-   Una vez que se descargaron, se borran del servidor. Esto significa que no hay sincronización si utilizamos varios dispositivos para acceder a nuestra inbox.
+
+**IMAP**:
+
+-   Protocolo moderno y más complejo que POP3.
+-   Los emails se guardan en el servidor y se sincronizan a través de todos los dispositivos que accedan a la inbox.
+-   Como los emails no se borran a no ser que el usuario/cliente los borre, utiliza mucho más espacio físico que POP3.
+-   Permite crear carpetas y demás customizaciones.
+
 ### 3. Utilizando la VM y teniendo en cuenta los siguientes datos, abra el cliente de correo (Thunderbird) y configure dos cuentas de correo. Una de las cuentas utilizará POP para solicitar al servidor los mails recibidos para la misma mientras que la otra utilizará IMAP. Al crear cada una de las cuentas, seleccionar Manual config y luego de configurar las mismas según lo indicado, ignorar advertencias por uso de conexión sin cifrado.
 
 ● Datos para POP
@@ -46,11 +61,19 @@ Servidor de correo saliente (SMTP):
 
 ###### ii. Utilice el filtro SMTP para observar los paquetes del protocolo SMTP en la captura generada y analice el intercambio de dicho protocolo entre el cliente y el servidor para observar los distintos comandos utilizados y su correspondiente respuesta. Ayuda: filtre por protocolo SMTP y sobre alguna de las líneas del intercambio haga click derecho y seleccione Follow TCP Stream. . .
 
+![Wireshark](https://i.imgur.com/BuLwG5c.png)
+
+![TCP Stream](https://i.imgur.com/mjcrQwj.png)
+
 ##### c. Usando el cliente de correo Thunderbird del usuario alumnopop@redes.unlp.edu.ar envíe un correo electrónico alumnoimap@redes.unlp.edu.ar el cual debe tener: un asunto, datos en el body y una imagen adjunta.
 
 ###### i. Verifique las fuentes del correo recibido para entender cómo se utiliza el header “Content-Type: multipart/mixed“ para poder realizar el envío de distintos archivos adjuntos.
 
+El multipart/mixed indica que el body posee uno o más archivos adjuntos, cada uno con un Boundary que indica dónde terminan sus datos.
+
 ###### ii. Extraiga la imagen adjunta del mismo modo que lo hace el cliente de correo a partir de los fuentes del mensaje.
+
+Podemos copiar y pegar el código en base64 que se encuentra en el mail en cualquier decodificador de base64 online para obtener la imagen, tal cual hace el cliente de correo.
 
 ### 4. Análisis del protocolo POP
 
@@ -58,11 +81,19 @@ Servidor de correo saliente (SMTP):
 
 ##### b. Utilice el filtro POP para observar los paquetes del protocolo POP en la captura generada y analice el intercambio de dicho protocolo entre el cliente y el servidor para observar los distintos comandos utilizados y su correspondiente respuesta.
 
+![Wireshark](https://i.imgur.com/Ffi1txZ.png)
+
+![TCP Stream](https://i.imgur.com/QcqbnFF.png)
+
 ### 5. Análisis del protocolo IMAP
 
 ##### a. Utilizando Wireshark, capture el tráfico de red contra el servidor de correo mientras desde la cuenta alumnopop@redes.unlp.edu.ar le envía un correo a alumnoimap@redes.unlp.edu.ar y mientras alumnoimap@redes.unlp.edu.ar recepciona dicho correo.
 
 ##### b. Utilice el filtro IMAP para observar los paquetes del protocolo IMAP en la captura generada y analice el intercambio de dicho protocolo entre el cliente y el servidor para observar los distintos comandos utilizados y su correspondiente respuesta.
+
+![Wireshark](https://i.imgur.com/cZvqgwH.png)
+
+![TCP Stream](https://i.imgur.com/FD3Sxn8.png)
 
 ### 6. IMAP vs POP
 
@@ -72,20 +103,39 @@ Servidor de correo saliente (SMTP):
 
 ###### i. ¿Qué correos ve en el buzón de entrada de ambas cuentas? ¿Están marcados como leídos o como no leídos? ¿Por qué?
 
+En la cuenta POP los mensajes se encuentran sin leer. Esto es porque POP3 no guarda el estado del servidor.
+
+En la cuenta IMAP se muestra la inbox tal y como estaba en la otra cuenta, ya que sí guarda estado.
+
 ###### ii. ¿Qué pasó con las carpetas POP e IMAP que creó en el paso anterior?
 
+La carpeta POP desapareció y los mensajes que tenía se movieron a inbox.
+
+La carpeta IMAP se encuentra intacta.
+
+Nuevamente, la razón es la mencionada en 6. b. i.
+
 ##### c. En base a lo observado. ¿Qué protocolo le parece mejor? ¿POP o IMAP? ¿Por qué? ¿Qué protocolo considera que utiliza más recursos del servidor? ¿Por qué?
+
+Me parece mejor el protocolo IMAP ya que conserva el estado del servidor lo cual permite sincronizar los emails en múltiples dispositivos con una misma cuenta.
+
+También es cierto que IMAP usa muchos más recursos del servidor que POP, por ende si la performance es crítica, es mejor usar POP.
 
 ### 7. ¿En algún caso es posible enviar más de un correo durante una misma conexión TCP?
 
 Considere:
 ● Destinatarios múltiples del mismo dominio entre MUA-MSA y entre MTA-MTA
-● Destinatarios múltiples de diferentes dominios entre MUA-MSA y entre
-MTA-MTA
+● Destinatarios múltiples de diferentes dominios entre MUA-MSA y entre MTA-MTA
+
+En el primer caso si, en el segundo no.
 
 ### 8. Indique sí es posible que el MSA escuche en un puerto TCP diferente a los convencionales y qué implicancias tendría.
 
+Es posible, pero tendría que avisarle al MSA destino.
+
 ### 9. Indique sí es posible que el MTA escuche en un puerto TCP diferente a los convencionales y qué implicancias tendría.
+
+Es prácticamente imposible ya que ese MTA debería avisarle a todos los MTA que quieran hablar con él de los cuales hay una cantidad innumerable en el mundo.
 
 ### 10. Ejercicio integrador HTTP, DNS y MAIL
 
