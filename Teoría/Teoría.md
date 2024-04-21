@@ -699,4 +699,98 @@ En el modo Pasivo, el servidor abre uno de sus puertos para la conexión de dato
 
 </center>
 
-## TCP
+## Capa de Transporte
+
+#### Relación entre Capa de Aplicación, Capa de Transporte y Capa de Red
+
+-   La Capa de Aplicación comunica usuarios o agentes.
+-   La Capa de Transporte comunica procesos.
+-   La Capa de Red comunica hosts.
+
+#### Función de la Capa de Transporte
+
+1. Encapsulación: define su PDU, el segmento/datagrama.
+2. Multiplexación: puertos.
+3. Soporte de datos de tamaños arbitrarios.
+4. Control y detección de errores (pérdida, duplicación, corrupción).
+5. Control de flujo.
+6. Control de congestión.
+
+#### TCP vs UDP
+
+La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP, el cual es no confiable.
+
+#### UDP
+
+-   Significa User Datagram Protocol.
+-   Es un protocolo simple, con poco overhead.
+-   Comparte características del protocolo IP, como el ser Best-Effort.
+-   Su PDU es el Datagrama.
+-   Tiene poca detección de errores, aunque no nula.
+-   No establece conexión.
+-   Se suele utilizar en aplicaciones donde la pérdida de algunos datos no es crítica, por ejemplo: Streaming de voz o video, TFTP, DNS, Broadcast, Multicast, etc.
+
+##### Datagrama UDP
+
+![Datagrama UDP](https://i.imgur.com/ki8TkNr.png)
+
+-   Los puertos Source y Dest. permiten la multiplexación y de-multiplexación.
+-   Longitud datagrama = (Longitud header) + (Longitud payload).
+-   El checksum se utiliza para detección de errores y es opcional.
+
+#### TCP
+
+-   Significa Transmission Control Protocol.
+-   Es un protocolo complejo, confiable, ordenado y con buffering con mucho mayor overhead que UDP.
+-   Posee control de errores, de flujo y de congestión.
+-   Es orientado a streams.
+-   Su PDU es el Segmento.
+-   Provee multip. y de-multip. vía puertos.
+-   Requiere establecer conexión.
+-   Se suele utilizar en aplicaciones donde la confiabilidad de los datos es crítica, por ejemplo: Transferencia de archivos, FTP/HTTP/SMTP, acceso remoto (SSH, telnet), Unicast, etc.
+
+##### Segmento TCP
+
+![Segmento TCP](https://i.imgur.com/pRHP0hC.png)
+
+-   Los puertos proveen MUX y DEMUX.
+-   No posee longitud total constante, es variable.
+-   El tamaño del segmento se calcula dentro del datagrama IP.
+-   El checksum es obligatorio y sirve para detección de errores.
+-   Los flags SYN FIN y RST sirven para la sesión TCP.
+-   Los campos ACK, Num, Seq sirven para el control de errores.
+-   El campo Window sirve para control de flujo.
+-   Algunos otros flags sirven para control de congestión.
+
+##### Funcionamiento de TCP
+
+-   TCP entrega y envía los datos agrupados o separados de forma desasociada de la aplicación:
+    -   La aplicación puede enviar 3000 bytes en un write y TCP podría enviar 3 segmentos de 1000 bytes cada uno.
+    -   La aplicación puede enviar 100 bytes y luego 200 y TCP puede esperar para enviarlos todos juntos en un solo segmento de 300 bytes.
+    -   La aplicación puede intentar leer 200 bytes del buffer y TCP solo entregar 150 bytes y luego los restantes 50.
+-   TCP requiere mantener recursos en ambos extremos de la conexión:
+    -   Buffers de envio y de recepción.
+    -   Timers Retransmission Timeout (RTO).
+    -   Variables: datos enviados, no confirmados, retransmisiones, umbrales, RTT, etc.
+    -   Estado de la conexión.
+
+##### Establecimiento de la conexión TCP
+
+-   Se logra vía el 3WH (3 Way Handshake): el cliente envía el flag SYN, el servidor envía SYN + ACK, y por último el cliente envía ACK.
+-   En el tercer segmento se pueden enviar datos.
+-   El 3WH utiliza el ISN (Initial Sequence Number) el cual es aleatorio.
+-   Si un proceso no está en estado LISTEN y recibe una petición de establecimiento de conexión, devolverá un segmento vacío con flag RST.
+
+##### Cierre de la conexión TCP
+
+-   Se logra vía el 4WC o 3WC (4 Way Close o 3 Way Close).
+-   El flag RST se utiliza para comenzar el cierre de la conexión.
+
+##### Control de errores TCP
+
+- En IP pueden existir varios errores: pérdida de paquetes, desorden, retardos, datos duplicados, datos corruptos.
+- TCP intenta solucionar estos problemas vía su implementación del control de errores.
+
+##### Estados de conexión TCP
+
+![Estados de conexión TCP](https://i.imgur.com/awEzJF2.png)
