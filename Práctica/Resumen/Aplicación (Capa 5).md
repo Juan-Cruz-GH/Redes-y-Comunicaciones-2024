@@ -4,7 +4,17 @@
 
 </center>
 
-## Introducción
+## Definiciones
+
+-   Una **red** es un conjunto de dispositivos interconectados a través de distintos medios con el principal objetivo de transmitir información y compartir recursos y/o servicios.
+-   Un **protocolo** es un conjunto de reglas que define el formato y orden de los mensajes que se intercambian y las acciones que se llevan a cabo en la transmisión y/o recepción de un mensaje u otro evento.
+-   Un **PDU** (Protocol Data Unit) es el tipo de dato que utiliza cada capa.
+-   La **encapsulación** consiste en tomar el PDU de la capa anterior a la actual, agregarle información (headers) para convertirla en un nuevo PDU.
+-   Un **User Agent** es una interfaz de usuario entre el usuario y la aplicación de red.
+
+---
+
+## Función de la Capa de Aplicación
 
 -   La función de la Capa de Aplicación es proveer servicios para que las aplicaciones de usuario puedan comunicarse entre sí, ya sea que estén en una misma computadora o en computadoras distintas.
 -   La idea es hacer la comunicación más amigable y user-friendly.
@@ -19,6 +29,30 @@
 -   HTML es un **lenguaje** usado para estructurar páginas web mientras que HTTP es un **protocolo** para comunicar clientes con servidores.
 -   HTTP usa por defecto el puerto 80.
 -   HTTPS usa por defecto el puerto 443.
+
+#### Requerimientos vs Respuestas
+
+Existen 2 tipos de mensajes HTTP: requerimientos y respuestas.
+
+Los requerimientos son pedidos que se hacen de un cliente a un servidor e incluyen el formato:
+
+```
+MétodoHTTP RecursoHTTP/VersiónHTTP
+
+Por ejemplo
+
+GET /hola/test.html HTTP/1.1
+```
+
+Las respuestas son justamente lo que el servidor le responde al cliente, y tienen el siguiente formato:
+
+```
+HTTP/Versión CódigoDeRespuesta
+
+Por ejemplo
+
+HTTP/1.1 200 OK
+```
 
 #### Comando curl
 
@@ -40,26 +74,28 @@ Este comando sirve para realizar peticiones de varios protocolos a una URL. Cuan
 
 #### Códigos HTTP
 
-| Código | Significado           |
+Son valores que se envían en una respuesta HTTP que representan lo que ocurrió con el requerimiento, si fue exitoso, si falló por alguna razón, etc.
+| Código | Significado |
 | ------ | --------------------- |
-| 1XX    | Información de estado |
-| 2XX    | Éxito                 |
-| 3XX    | Redirección           |
-| 4XX    | Error del Cliente     |
-| 5XX    | Error del Servidor    |
+| 1XX | Información de estado |
+| 2XX | Éxito |
+| 3XX | Redirección |
+| 4XX | Error del Cliente |
+| 5XX | Error del Servidor |
 
 #### Headers HTTP
 
-| Header                               | Significado                                                                                                          |
+Son datos con el formato clave:valor que se intercambian en los requerimientos y respuestas HTTP.
+| Header | Significado |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| Accept: application/json, text/html  | Tipos de datos que el cliente espera como respuesta.                                                                 |
-| Content-Type: application/json       | Tipos de datos que se enviaron.                                                                                      |
-| Authorization: Bearer <token>        | Credenciales de autenticación que envía el cliente.                                                                  |
-| User-Agent: curl/7.88.1              | Datos del cliente que realizó el request.                                                                            |
-| Location: https://abc.com/index.html | Indica la nueva URL a la que el cliente debería redireccionarse.                                                     |
-| Server: Apache2                      | Datos del servidor.                                                                                                  |
-| Content-Length: 50                   | Tamaño de la respuesta en bytes.                                                                                     |
-| Host: www.example.com                | Especifica el dominio e interés, para evitar ambiguedades. Muy útil cuando un dominio tiene alojados más de 1 sitio. |
+| Accept: application/json, text/html | Tipos de datos que el cliente espera como respuesta. |
+| Content-Type: application/json | Tipos de datos que se enviaron. |
+| Authorization: Bearer <token> | Credenciales de autenticación que envía el cliente. |
+| User-Agent: curl/7.88.1 | Datos del cliente que realizó el request. |
+| Location: https://abc.com/index.html | Indica la nueva URL a la que el cliente debería redireccionarse. |
+| Server: Apache2 | Datos del servidor. |
+| Content-Length: 50 | Tamaño de la respuesta en bytes. |
+| Host: www.example.com | Especifica el dominio e interés, para evitar ambiguedades. Muy útil cuando un dominio tiene alojados más de 1 sitio. |
 
 #### Telnet
 
@@ -76,9 +112,10 @@ Este comando sirve para realizar peticiones de varios protocolos a una URL. Cuan
 
 #### Definición
 
--   DNS (Domain Name System) es un protocolo que traduce nombres de dominio (como www.example.com) a direcciones IP, que son identificadores numéricos separados por puntos. La idea es que no tengamos que buscar sitios web por su IP ya que sería muy engorroso de recordar. Recordamos los sitios web por sus nombres de dominio (url) y DNS los traduce a IPs.
+-   DNS (Domain Name System) es un protocolo que traduce nombres de dominio (como www.example.com) a direcciones IP, que son identificadores numéricos separados por puntos. La idea es que no tengamos que buscar sitios web por su IP ya que sería muy engorroso de recordar. Recordamos los sitios web por sus nombres de dominio (URL) y DNS los traduce a IPs.
 -   Por defecto usa el **puerto 53**.
 -   Usa UDP.
+-   Además de ser un protocolo, también es un sistema distribuido de forma jerárquica por todo el mundo.
 
 #### Root servers
 
@@ -94,14 +131,15 @@ Este comando sirve para realizar peticiones de varios protocolos a una URL. Cuan
 
 #### Servidores autoritativos
 
--   Son aquellos que poseen información original y oficial de los DNS records de un dominio.
--   Siempre tienen la información más actualizada y correcta. Esto es importante ya que las cachés de otros servidores pueden tener información desactualizada de un dominio, y pueden tardar bastante en actualizarse.
--   Se dividen en 1 primario y N-1 secundarios. El primario copia su información a los secundarios rutinariamente, esto se conoce como **transferencia de zona**.
+-   Son aquellos que poseen información original, actualizada y oficial de los registros DNS de un dominio.
+-   Las cachés de servidores no autoritativos pueden tener información desactualizada de un dominio, y pueden tardar bastante en actualizarse.
+-   Se dividen en 1 primario y N-1 secundarios. El primario copia su información a los secundarios regularmente, esto se conoce como **transferencia de zona**.
 
 #### Resolver
 
--   Es un servidor DNS que resuelve todas nuestras querys DNS (tanto recursivas como iterativas). Se comunica con otros servidores DNS via Internet.
--   Cada ISP ofrece su Resolver.
+-   Es un componente de software integrado (una rutina, proceso o librería) en el sistema operativo que resuelve todas nuestras consultas DNS (tanto recursivas como iterativas).
+-   Se comunica con otros servidores DNS via Internet.
+-   Cuando recibe una consulta, primero chequea su caché. Si no encuentra lo pedido ahí, realiza una consulta (usualmente recursiva) al servidor de DNS configurado como local.
 
 #### Consultas DNS recursivas vs iterativas
 
@@ -118,10 +156,10 @@ Este comando sirve para realizar peticiones de varios protocolos a una URL. Cuan
 
 -   Cuando tenemos subdominios como "example.com" - "test.example.com" hay que delegar.
 -   test.example.com tendrá sus propios servidores autoritativos separados de los de example.com.
--   Se crean registros NS en el servidor autoritativo de example.com que apuntan a los servidores autoritativos de test.example.com:
+-   Se crean registros NS en el servidor autoritativo de example.com que apuntan a los servidores autoritativos de test.example.com.
+-   En el servidor autoritativo para el dominio example.com tenemos:
 
 ```
-Servidor autoritativo para el dominio example.com:
 test.example.com IN NS ns1.test.example.com
 ns1.test.example.com IN A 192.168.1.0
 ```
@@ -159,8 +197,7 @@ ns1.test.example.com IN A 192.168.1.0
 
 #### Definición
 
--   Simple Mail Transfer Protocol es un protocolo que se usa cuando un cliente envía un email a su mail server.
--   También se usa cuando un servidor de mail le manda un email a otro servidor de mail. Esto es porque SMTP puede actuar como cliente o como servidor.
+-   Simple Mail Transfer Protocol es un protocolo que se usa cuando un **cliente envía un email a su mail server** y también **cuando un servidor de mail le manda un email a otro servidor de mail**. Esto es porque SMTP puede actuar como cliente o como servidor.
 -   Por defecto usa el **puerto 25**.
 -   Usa TCP.
 
@@ -168,6 +205,7 @@ ns1.test.example.com IN A 192.168.1.0
 
 -   Protocolo simple, cuando el usuario quiere acceder a sus emails los descarga y estos se borran del servidor.
 -   No guarda estado, por ende es eficiente.
+-   Ya que no guarda estado, no permite sincronización a través de multiples dispositivos.
 -   Por defecto usa el **puerto 110**.
 -   Usa TCP.
 
@@ -175,24 +213,30 @@ ns1.test.example.com IN A 192.168.1.0
 
 -   Protocolo más complejo que permite al usuario leer, borrar, y organizar sus emails en carpetas como si fuera un filesystem.
 -   Guarda estado, por ende es menos eficiente.
+-   Como guarda estado, permite sincronización a través de multiples dispositivos.
 -   Por defecto usa el **puerto 143**.
 -   Usa TCP.
 
 #### Encoding de imágenes
 
--   Tanto SMTP, POP3 e IMAP necesitan encodificar las imágenes para transformarlas a texto al enviar o recibir un email que las contenga, ya que así trabajan, con contenido de texto plano únicamente.
+-   Tanto SMTP como POP3 e IMAP necesitan encodificar las imágenes para transformarlas a texto al enviar o recibir un email que las contenga, ya que trabajan únicamente con contenido de texto plano.
 
 #### MUA, MSA, MTA, MDA
 
--   MUA o Mail User Agent es el cliente o programa user friendly que usan los clientes para enviar o recibir emails. Por ejemplo Outlook o Gmail.
+-   MUA o Mail User Agent es el cliente o programa user-friendly que usan los clientes para enviar o recibir emails. Por ejemplo Outlook o Gmail.
 -   MSA o Mail Submission Agent es el responsable de enviar emails salientes de los clientes hacia el MTA.
 -   MTA o Mail Transfer Agent es el responsable de enviar emails de un servidor de email a otro, es decir a otro MTA.
 -   MDA o Mail Delivery Agent es el responsable de recibir emails de los clientes.
 -   De MUA a MSA tenemos una sola conexión. De MTA a MTA depende a qué dominio van los emails. Si 2 emails van al mismo dominio pueden ir en una sola conexión TCP.
+-   Resumen de un envío típico de un solo email entre dominios distintos:
+
+```
+MUA Cliente -> MSA Cliente -> MTA Cliente -> MTA Servidor -> MDA Servidor -> MUA Servidor
+```
 
 #### Ejemplo simple
 
--   Si **a@test.com envía un email a b@gmail.com**, el MTA de test.com se encarga de consultar por el registro MX de gmail.com (agarra el de mayor prioridad es decir menor número) y una ves que lo obtiene consulta por la IP (registro A) de ese dominio obtenido. **Lo hace el MTA, no el Resolver.**
+-   Si **a@test.com envía un email a b@gmail.com**, el MTA de test.com se encarga de consultar por el registro MX de gmail.com (toma el de mayor prioridad es decir menor valor) y una ves que lo obtiene consulta por la IP (registro A) de ese dominio obtenido. **Lo hace el MTA, no el Resolver.**
 
     <img src="https://inquest.net/wp-content/uploads/how_email_works.png" alt="Diagrama MUA, MSA, MTA, MDA" width="1000" height="350"/>
 
@@ -202,6 +246,18 @@ ns1.test.example.com IN A 192.168.1.0
 
 -   Protocolo que permite transferir archivos.
 -   Necesita 2 conexiones TCP: una de **control** y otra de **datos**.
--   Tiene 2 modos, Pasivo y Activo:
-    -   Pasivo: el cliente inicia tanto la conexión de control como la de datos (la de datos en un puerto que el servidor le indica).
-    -   Activo: el cliente inicia solo la conexión de control en el puerto y el servidor inicia la conexión de datos en un puerto al azar.
+-   Tiene 2 modos, Activo y Pasivo, que difieren en cómo se maneja la conexión de datos.
+
+#### Modo Activo
+
+-   El cliente abre uno de sus puertos para la conexión de datos, y **el servidor se conecta al cliente**.
+-   Puede ser inseguro.
+-   Puede generar problemas de firewall/NAT.
+-   No se suele usar hoy en día.
+
+#### Modo Pasivo
+
+-   El servidor abre uno de sus puertos para la conexión de datos, y **el cliente se conecta al servidor**.
+-   Suele ser seguro.
+-   No suele causar problemas de firewall/NAT.
+-   Es el más usado actualmente.
