@@ -327,7 +327,7 @@ Si en el punto anterior smtp-5 recibiese varios MX y no solo uno, buscaría la I
 
 ###### i. Los datos de la cabecera de SMTP deben ser analizados por el servidor DNS para responder a la consulta de los registros MX
 
-???
+Falso. El servidor DNS no se interesa por los datos de otros protocolos.
 
 ###### ii. Al ser recibidos por el servidor smtp-5 los datos agregados por el protocolo SMTP serán analizados por cada una de las capas inferiores
 
