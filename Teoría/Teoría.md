@@ -788,9 +788,77 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 ##### Control de errores TCP
 
-- En IP pueden existir varios errores: pérdida de paquetes, desorden, retardos, datos duplicados, datos corruptos.
-- TCP intenta solucionar estos problemas vía su implementación del control de errores.
+-   En IP pueden existir varios errores: pérdida de paquetes, desorden, retardos, datos duplicados, datos corruptos.
+-   TCP intenta solucionar estos problemas vía su implementación del control de errores.
 
 ##### Estados de conexión TCP
 
 ![Estados de conexión TCP](https://i.imgur.com/awEzJF2.png)
+
+---
+
+<center>
+
+# Clase 7, 30 de abril, 2024
+
+</center>
+
+## Control de errores en TCP
+
+#### Posibles errores en Capa de Red o inferior
+
+-   Los errores pueden generarse en los extremos (host local y host remoto) o en la red misma debido a la congestión o a fallos en la red.
+-   Los posibles errores son los siguientes:
+    1. Pérdida total del paquete.
+    2. Duplicación del paquete.
+    3. Corrupción del paquete.
+    4. Desorden del arrivo de los paquetes.
+
+#### Mecanismos de control de errores
+
+-   El control de errores de TCP se realiza mediante estas 5 técnicas:
+    1. Acknowledgement: Se utilizan números de ACK para confirmar que los datos que se enviaron fueron efectivamente recibidos. **Busca solucionar el error de pérdida total del paquete.**
+    2. Números de Secuencia: Se asigna un número de secuencia a cada segmento TCP enviado para que el receptor sepa cuál es el orden correcto de los segmentos. **Busca solucionar el error de desorden de arrivo de los paquetes.**
+    3. Retransmisión: Si el emisor no recibe un ACK pasado un cierto tiempo (RTO o Retransmission TimeOut) procede a retransmitir ese segmento. **Busca solucionar los problemas de pérdida total del paquete y también de corrupción del paquete.**
+    4. Ventana: Se utiliza un mecanismo de ventana deslizante que permite enviar varios segmentos juntos en vez de enviar solo uno y esperar el ACK. **Esto ayuda de forma indirecta a reducir la pérdida de paquetes ya que reduce la congestión de la red, causa principal de ese error.**
+    5. Checksum: Cada segmento posee un checksum para que el receptor chequee que el segmento que se envió es exactamente el mismo que el que se recibió. **Busca solucionar el problema de corrupción del paquete.**
+
+#### ARQs
+
+-   Automatic Repeat reQuest son una serie de técnicas usadas en TCP para asegurar la confiabilidad de la transmisión de datos sobre canales no confiables como IP.
+-   Existen 3 técnicas ARQ principales: Stop & Wait, Go-Back-N y Selective Repeat.
+-   La idea general de los ARQ es la siguiente:
+    1. El emisor envía el segmento.
+    2. El receptor recibe el segmento y lo chequea. Si posee errores devuelve un ACK negativo.
+    3. Si el emisor recibe un ACK negativo o se acaba el RTO, retransmite el segmento.
+
+#### ARQ Stop & Wait
+
+-   Es el más simple pero el más ineficiente.
+-   Se transmiten datos de a un segmento por vez.
+-   El emisor envía un segmento y hasta no recibir un ACK no vuelve a enviar otro segmento.
+-   Si el emisor no recibe un ACK luego de que se acabe el RTO o recibe un ACK negativo, asume que el segmento se perdió o tuvo errores, así que lo retransmite.
+
+#### ARQ Go-Back-N
+
+-   Más complejo para más eficiente ya que implementa pipelining.
+-   Se transmiten datos de a varios segmentos a la vez.
+-   El emisor envía N segmentos y luego espera un ACK cumulativo: El receptor envía un solo ACK para que el Sequence Number más alto que no tuvo errores.
+-   Si el emisor no recibe un ACK luego de que se acabe el RTO o recibe un ACK negativo, asume que uno o más de los segmentos se perdieron o tuvieron errores, así que retransmite todos ellos empezando por el primero de todos ellos que no recibió ACK.
+-   Utiliza una ventana deslizante (Sliding Window).
+
+#### ARQ Selective Repeat
+
+-   Similar a Go-Back-N pero más eficiente.
+-   Se transmiten datos de a varios segmentos a la vez.
+-   El emisor envía N segmentos y debe recibir un ACK por cada uno, a diferencia de Go-Back-N.
+-   Si el emisor no recibe un ACK para un segmento particular luego de que se acabe el RTO de ese segmento o recibe un ACK negativo, asume que ese segmento se perdió o tuvo errores, así que retransmite solo ese segmento.
+-   También utiliza una ventana deslizante (Sliding Window) aunque funciona de manera diferente.
+
+---
+
+<center>
+
+# Clase 8, 7 de mayo, 2024
+
+</center>
