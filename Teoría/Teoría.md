@@ -388,7 +388,7 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 
 <center>
 
-# Clase 3, 26 de marzo, 2024
+# Clase 3 - 26 de marzo, 2024
 
 </center>
 
@@ -494,7 +494,7 @@ clave | TTL | IN | tipoRegistro | valor
 
 <center>
 
-# Clase 4, 9 de abril, 2024
+# Clase 4 - 9 de abril, 2024
 
 </center>
 
@@ -618,7 +618,7 @@ Como los emails trabajan con ASCII, todo lo que sea binario (imagenes, archivos,
 
 <center>
 
-# Clase 5, 16 de abril, 2024
+# Clase 5 - 16 de abril, 2024
 
 </center>
 
@@ -695,7 +695,7 @@ En el modo Pasivo, el servidor abre uno de sus puertos para la conexión de dato
 
 <center>
 
-# Clase 6, 16 de abril, 2024
+# Clase 6 - 16 de abril, 2024
 
 </center>
 
@@ -799,7 +799,7 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 <center>
 
-# Clase 7, 30 de abril, 2024
+# Clase 7 - 30 de abril, 2024
 
 </center>
 
@@ -859,6 +859,37 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 <center>
 
-# Clase 8, 7 de mayo, 2024
+# Clase 8 - 7 de mayo, 2024
 
 </center>
+
+## Control de flujo en TCP
+
+#### Conceptos básicos
+
+-   Algoritmo que permite al receptor controlar la **tasa** a la que le envía datos el transmisor.
+-   Se usa para controlar cuánto puede enviar una aplicación sabiendo que la app receptora tiene capacidad N de recibirlo y procesarlo.
+-   Se busca que el emisor no **sobrecargue** de datos al receptor, además de evitar **desperdiciar** recursos de la red general.
+-   Para lograrlo se usan técnicas de ARQ + RNR o ARQ + Dynamic Window: la capacidad de envió será el **mínimo** entre Congestión, Flujo, Errores.
+
+#### Tamaño de ventana
+
+-   El receptor o el emisor le indica al opuesto el espacio de su buffer de recepción en el campo Window del segmento.
+-   Por cada segmento que envía indica el tamaño del buffer de recepción.
+-   Window indica la cantidad de datos en bytes que el emisor le puede enviar sin esperar ACKs (mejora notablemente la performance vs Stop & Wait).
+-   La ventana de recepción de cada extremo es **independiente**.
+-   Cada vez que llega un segmento es puesto por TCP en el buffer.
+    ...
+
+#### ...
+
+...
+
+## Control de congestión en TCP
+
+#### Conceptos básicos
+
+-   Se busca controlar la tasa de envío en base al estado actual de la red.
+-   Se empieza lento: cuando la conexión inicia la ventana de congestión es 1.
+-   Luego esa ventana empieza a aumentar exponencialmente hasta que se llega a un umbral predefinido o tener 3 ACKs duplicados.
+-
