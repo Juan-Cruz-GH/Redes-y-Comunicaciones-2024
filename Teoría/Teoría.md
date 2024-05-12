@@ -867,23 +867,18 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 #### Conceptos básicos
 
--   Algoritmo que permite al receptor controlar la **tasa** a la que le envía datos el transmisor.
+-   Se busca un algoritmo que permita al receptor controlar la **tasa** a la que le envía datos el transmisor.
 -   Se usa para controlar cuánto puede enviar una aplicación sabiendo que la app receptora tiene capacidad N de recibirlo y procesarlo.
 -   Se busca que el emisor no **sobrecargue** de datos al receptor, además de evitar **desperdiciar** recursos de la red general.
 -   Para lograrlo se usan técnicas de ARQ + RNR o ARQ + Dynamic Window: la capacidad de envió será el **mínimo** entre Congestión, Flujo, Errores.
 
-#### Tamaño de ventana
+#### Ventana deslizante
 
--   El receptor o el emisor le indica al opuesto el espacio de su buffer de recepción en el campo Window del segmento.
--   Por cada segmento que envía indica el tamaño del buffer de recepción.
--   Window indica la cantidad de datos en bytes que el emisor le puede enviar sin esperar ACKs (mejora notablemente la performance vs Stop & Wait).
--   La ventana de recepción de cada extremo es **independiente**.
--   Cada vez que llega un segmento es puesto por TCP en el buffer.
-    ...
-
-#### ...
-
-...
+-   El control de flujo utiliza un mecanismo de ventana deslizante que permite enviar multiples segmentos sin esperar por ACKs.
+-   Este mecanismo posee 2 ventanas: la del emisor y la del receptor.
+-   La ventana del emisor representa la máxima cantidad de segmentos que el emisor puede enviar sin esperar ACKs.
+-   La ventana del receptor indica la cantidad de espacio disponible actual en el buffer del receptor.
+-   El emisor ajusta la velocidad a la que envia los datos basado en el window size del receptor.
 
 ## Control de congestión en TCP
 
@@ -892,4 +887,26 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 -   Se busca controlar la tasa de envío en base al estado actual de la red.
 -   Se empieza lento: cuando la conexión inicia la ventana de congestión es 1.
 -   Luego esa ventana empieza a aumentar exponencialmente hasta que se llega a un umbral predefinido o tener 3 ACKs duplicados.
--
+-   ?
+
+#### Slow Start
+
+-   Algoritmo que ajusta la velocidad de envío basado en las condiciones de la red en su totalidad.
+-   Cuando la conexión está recién establecida, el emisor empieza con una velocidad de envío bastante lenta.
+-   Luego de esto, se empieza a incrementar la velocidad exponencialmente, duplicando la cantidad de segmentos que envía por cada ACK que recibe.
+-   Continúa creciendo exponencialmente hasta que llega a un límite de congestión preestablecido o detecta packet loss.
+-   Una vez que se detecta congestión, se pasa a la fase de Congestion Avoidance.
+
+#### Congestion Avoidance
+
+-   Utiliza crecimiento lineal y no exponencial, a diferencia de Slow Start.
+
+---
+
+<center>
+
+# Clase 9 - 14 de mayo, 2024
+
+</center>
+
+## ?
