@@ -909,4 +909,169 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 </center>
 
-## ?
+## Protocolo IP
+
+#### La Capa de Red
+
+-   La Capa de Red es la que le da la estructura al Internet.
+-   Utiliza el protocolo IP, tanto en versión 4 como versión 6.
+
+#### Conceptos básicos
+
+-   Este protocolo trabaja de extremo a extremo (end to end).
+-   El ruteo se produce salto a salto, es decir que las rutas no están predefinidas, en cada nodo se decide a dónde ir según las tablas de ruteo.
+-   Cada nodo del camino debe implementar IP.
+-   **Brinda servicios** a la capa de Transporte y **usa servicios** de la capa de Enlace.
+-   Posee 2 versiones, IPv4 e IPv6, las cuales **no son compatibles** entre sí.
+-   Es un protocolo similar a UDP en 2 sentidos:
+    -   No es orientado a conexión.
+    -   Es Best Effort, no confiable, no garantiza que los mensajes lleguen.
+-   Su PDU es el datagrama o más comunmente paquete IP.
+
+#### Funcionalidades
+
+-   Posee varias funcionalidades:
+    -   Direccionamiento: cómo identificar a cada uno de los hosts.
+    -   Ruteo/forwarding/switching: cómo llegar de un host a otro.
+    -   Multiplexing/demultiplexing.
+    -   Fragmentación.
+    -   Detección de bucles.
+    -   Detección de errores básico aunque no toma ninguna acción para solucionarlos.
+
+#### Estructura
+
+![Esquema de IP en TCP/IP](https://i.imgur.com/udD8TEh.png)
+
+-   IP es el núcleo de internet.
+-   Como es Best Effort, requiere protocolos "Helpers".
+
+#### Direccionamiento
+
+-   Una **dirección IP** identifica unívocamente un punto de acceso (interfaz) en la red.
+-   Un router o un host multi-homed tienen más de una IP. Cada interfaz tiene una IP única. Una interfaz puede tener varias IPs.
+-   Tienen un significado global en internet (IPs públicas) o privado (IPs locales).
+-   Las direcciones IPs globales son asignadas por una autoridad central: InterNIC, IANA, ICANN, LACNIC, etc.
+
+#### Direcciones IP
+
+-   Son números de 32 bits divididos en 4 partes de 1 byte cada uno separados por puntos.
+-   Son 4G de direcciones (2^32) puras que organizadas de forma jerárquica se reducen.
+-   Son necesarias para el ruteo.
+-   Son direcciones **lógicas**.
+-   Poseen 2 partes: la parte de **red** y la parte de **host**.
+
+#### Clases de direcciones IP
+
+-   Originalmente, las direcciones IP se dividían en **clases**:
+    -   Clase A: pocas redes pero cada una alberga muchos hosts.
+    -   Clase B: más redes pero más chicas cada una.
+    -   Clase C: muchas redes muy chicas.
+-   Luego este concepto evolucionó al concepto de **subredes y máscaras**.
+
+![Clases de direcciones IP](https://miro.medium.com/v2/resize:fit:720/format:webp/1*wbYRk65-lnwsWYSFJ656xw.png)
+
+#### Tipos de direcciones IP
+
+-   Unicast: destino a **un** host/interfaz particular.
+-   Broadcast: destino a **todos** los hosts en una red.
+-   Multicast: destino a **varios** hosts en una red o varias redes. Clase D.
+-   Anycast: destinada al **primero** que resuelva.
+
+#### Direcciones IP especiales
+
+-   Dirección de loopback, unicast, clase A: 127.0.0.1.
+-   Dirección de red, la primera de su grupo: por ejemplo 192.168.1.0
+-   Dirección de broadcast, la última de su grupo: por ejemplo 192.168.1.255
+-   Dirección de broadcast limitado: 255.255.255.255
+-   Dirección de "este host" cuando aún no tiene una dirección asignada: 0.0.0.0
+
+#### Direcciones IP privadas
+
+-   No tienen significado global.
+-   No son únicas.
+-   Se utilizan en intranets, es decir redes autónomas sin conexión a Internet.
+-   Son las siguientes:
+    -   Clase A: 10.0.0.0 - 10.255.255.255
+    -   Clase B: 172.16.0.0 - 172.31.255.255
+    -   Clase C: 192.168.0.0 - 192.168.255.255
+
+#### Problemas con el direccionamiento fijo (clases)
+
+-   Si por ejemplo necesitamos 4 redes de 25 hosts cada una, podemos usar 4 redes clase C, ya que las clase C soportan como máximo 255. Por ejemplo las siguientes:
+    -   Red A: 193.168.1.0
+    -   Red B: 193.168.2.0
+    -   Red C: 193.168.3.0
+    -   Red D: 193.168.4.0
+-   El problema con esto es que 25 es mucho menor que 255, es decir tenemos 255 - 2 (dirección de red y de broadcast no se pueden usar)= 253 - 25 = 228 direcciones sin usar, desperdiciadas.
+-   Esto se puede solucionar con el subnetting.
+
+#### Subnetting fijo
+
+-   Se toma una parte de la IP para generar subredes dentro de la red.
+-   Se agrega una máscara de bits.
+-   Para saber la subred se aplica un AND entre la dirección y la máscara de esa dirección.
+-   Las máscaras se escriben en notación decimal o como longitud de prefijo, por ejemplo:
+    -   255.255.255.0 o /24.
+    -   255.255.0.0 o /16.
+    -   255.255.255.252 o /30.
+-   Las máscaras default para las clases son:
+    -   Clase A: 255.0.0.0
+    -   Clase B: 255.255.0.0
+    -   Clase C: 255.255.255.0
+-   Si por ejemplo necesitamos 4 redes de 25 hosts cada una, podemos usar 1 red clase C dividida en 4:
+    -   Red A: 193.168.4.0 con máscara 255.255.255.192 o /26
+    -   Red B: 193.168.4.64 con máscara 255.255.255.192 o /26
+    -   Red C: 193.168.4.128 con máscara 255.255.255.192 o /26
+    -   Red D: 193.168.4.192 con máscara 255.255.255.192 o /26
+
+#### VLSM Subnetting
+
+-   Surge como una mejora al subnetting fijo.
+-   La longitud de la máscara ya no tiene necesidad de ser igual para todas las subredes.
+-   En el ejemplo anterior, tenemos 4 subredes de 62 hosts cada una. Pero qué pasa si queremos 70 hosts para la red A, 40 para la red B, y 25 para la red C y D? En este caso tendríamos, vía VLSM:
+    -   Red A: 193.168.4.0 con máscara /25
+    -   Red B: 193.168.4.128 con máscara /26
+    -   Red C: 193.168.4.192 con máscara /27
+    -   Red D: 193.168.4.224 con máscara /27
+
+#### CIDR - Supernetting
+
+-   Classless Inter Domain Routing.
+-   Las clases dejan de existir.
+-   Siempre se especifica la máscara de la dirección IP.
+
+#### Datagrama IPv4
+
+![Datagrama IPv4](https://i.imgur.com/Gl36MZF.png)
+
+-   La versión (4 bits) indica si es IPv4 o IPv6.
+-   El header length (4 bits) indica la longitud en múltiplos de 4 bytes.
+-   Identification (16 bits) se usa para la fragmentación.
+-   Los flags (3 bits) se usan también para la fragmentación.
+-   El TTL (1 byte) indica cuántos saltos puede dar el datagrama y evita loops. Por cada router que pasa se decrementa en 1.
+-   Protocol (1 byte) indica TCP, UDP, ICMP, etc y se usa para mux/demux.
+-   Header checksum (2 bytes) se usa para detectar errores.
+-   Options tiene security restrictions, record route, timestamp, etc.
+
+#### Ruteo
+
+-   El ruteo se logra a través de las **tablas de ruteo**, tablas que poseen cada host y router y que indican el salto siguiente.
+-   El host **no despacha** mensajes que recibe que no son para él.
+-   El router despacha cualquier mensaje mirando su tabla.
+-   Es decir, llega un mensaje y según sus datos y la información en la tabla de ruteo se selecciona la interfaz de salida y el próximo salto.
+
+#### Fragmentación
+
+-   Debido a que hay diferentes capas de enlaces con diferentes MTUs (Maximum Transmission Unit), muchas veces ocurre que un datagrama o paquete IP no entra por ende debe ser descompuesto en partes más pequeñas, llamadas **fragmentos**.
+-   Los fragmentos son múltiplos de 8 bytes y tienen offset en unidades de 8 bytes.
+-   Ejemplo:
+
+![Ejemplo de fragmentación IP](https://i.imgur.com/yrTfqQZ.png)
+
+---
+
+<center>
+
+# Clase 10 - 21 de mayo, 2024
+
+</center>
