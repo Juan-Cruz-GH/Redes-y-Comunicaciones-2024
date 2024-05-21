@@ -1072,6 +1072,8 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 <center>
 
-# Clase 10 - 21 de mayo, 2024
+# Clase 10 - 28 de mayo, 2024
 
 </center>
+
+##
