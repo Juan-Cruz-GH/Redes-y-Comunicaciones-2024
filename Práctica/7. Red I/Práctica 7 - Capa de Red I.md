@@ -211,7 +211,7 @@ Clase B y máscara /16.
 
 ###### i. Máscara necesaria.
 
-Para crear 513 subredes necesitamos que la máscara permita esto. Necesitamos 10 bits para la parte de red ya que 9 no alcanza: 2<sup>9</sup> = 512. Por ende la máscara será /10.
+Para crear 513 subredes necesitamos que la máscara permita esto. Necesitamos 10 bits para la parte de red ya que 9 no alcanza: 2<sup>9</sup> = 512. Por ende la máscara será /26, porque teníamos que la default es /16 y ahora le agregamos 10 bits más.
 
 ###### ii. Cantidad de redes asignables.
 
@@ -221,23 +221,50 @@ Se pueden asignar 1024 redes.
 
 ###### iii. Cantidad de hosts por subred.
 
-2<sup>22</sup> - 2 = 4.194.302 hosts por subred.
+2<sup>6</sup> - 2 = 62 hosts por subred.
 
 ###### iv. Dirección de la subred 710.
 
-???
+Como las redes siempre empiezan desde 0, la subred 710 es en realidad 709.
+
+1. Pasamos 709 a binario: 10110001 01
+2. Pasamos la red original a binario: 10000000.00110010.00000000.00000000
+3. Ubicamos el 709: 10000000.00110010.10110001.01000000
+4. Pasamos a decimal: **128.50.177.64/26**
 
 ###### v. Dirección de broadcast de la subred 710.
 
-???
+La dirección de broadcast de 128.50.177.64/26 es su última dirección, o lo que es igual, la dirección anterior a la subred 711 -> 128.50.177.127/64.
 
 ### 8. Si usted estuviese a cargo de la administración del bloque IP 195.200.45.0/24
 
 ##### a. ¿Qué máscara utilizaría si necesita definir al menos 9 subredes?
 
+Para definir al menos 9 subredes, necesitaría una máscara con 4 bits ya que 3 bits no alcanza: 2<sup>4</sup> = 16. Por ende /4.
+
+Como la máscara del bloque es /24, /24 + /4 = /28.
+
 ##### b. Indique la dirección de subred de las primeras 9 subredes.
 
+Como tenemos 4 bits para host, cada subred va en incrementos de 2<sup>4</sup> = 16.
+
+1. 195.200.45.0/28
+2. 195.200.45.16/28
+3. 195.200.45.32/28
+4. 195.200.45.48/28
+5. 195.200.45.64/28
+6. 195.200.45.80/28
+7. 195.200.45.96/28
+8. 195.200.45.112/28
+9. 195.200.45.128/28
+
 ##### c. Seleccione una e indique dirección de broadcast y rango de direcciones asignables en esa subred.
+
+Selecciono la primera.
+
+Su dirección de broadcast es la dirección anterior a la siguiente subred: **195.200.45.15/28**
+
+El rango de direcciones asignables en la primer subred es **195.200.45.1/28 - 195.200.45.14/28**
 
 ### 9. Dado el siguiente gráfico:
 
@@ -245,25 +272,55 @@ Se pueden asignar 1024 redes.
 
 ##### a. Verifique si es correcta la asignación de direcciones IP y, en caso de no serlo, modifique la misma para que lo sea.
 
+La dirección 172.26.22.3 para la interfaz eth1 del router A está mal, ya que esa es la dirección de broadcast de esa subred, y por ende no puede asignarse. La dirección correcta para esa interfaz de ese router sería 172.26.22.2
+
+La dirección 172.17.10.17 para la interfaz eth1 del router C también está mal, ya que esa dirección está fuera de la subred (172.17.10.0/28). Una dirección correcta sería por ejemplo 172.17.10.1
+
 ##### b. ¿Cuántos bits se tomaron para hacer subredes en la red 10.0.10.0/24? ¿Cuántas subredes se podrían generar?
 
+La red 10.0.10.0 es clase A. Las redes clase A tienen máscara por defecto /8: /24 - /8 = /16.
+
+Se usaron 16 bits para hacer subredes.
+
+Se podrían generar 2<sup>16</sup> subredes.
+
 ##### c. Para cada una de las redes utilizadas indique si son públicas o privadas.
+
+IPs privadas de Clase A: 10.0.0.0 – 10.255.255.255
+IPs privadas de Clase B: 172.16.0.0 – 172.31.255.255
+IPs privadas de Clase C: 192.168.0.0 – 192.168.255.255
+
+-   Red 191.26.145.0/24 -> Pública
+-   Red 172.26.22.0/30 -> Privada
+-   Red 172.17.10.0/28 -> Privada
+-   Red 192.168.5.0/24 -> Privada
+-   Red 10.0.10.0/24 -> Privada
 
 ## CIDR
 
 ### 10. ¿Qué es CIDR (Class Interdomain routing)? ¿Por qué resulta útil?
 
+CIDR es un método de alocación de direcciones IP y ruteo alternativo a las clases. Es más flexible y útil ya que permite el uso de máscaras de longitud variable lo cual reduce masivamente el desperdicio de direcciones.
+
 ### 11. ¿Cómo publicaría un router las siguientes redes si se aplica CIDR?
 
-##### a. 198.10.1.0/24
+198.10.1.0/24
+198.10.0.0/24
+198.10.3.0/24
+198.10.2.0/24
 
-##### b. 198.10.0.0/24
+Un router sumarizaría estas redes en una sola para maximizar la eficiencia. Esto se logra agrupándolas a partir del octeto donde difieren, y ajustando la máscara.
 
-##### c. 198.10.3.0/24
+En las direcciones dadas, los primeros dos octetos son exactamente iguales, por ende los ignoramos. Luego miramos los últimos 2 octetos pasando a binario:
 
-##### d. 198.10.2.0/24
+0000 0001
+0000 0000
+0000 0011
+0000 0010
 
-### 12. Listar las redes involucradas en los siguientes bloques CIDR:
+Podemos ver que difieren a partir del bit 22, o lo que es igual, **son iguales hasta el bit 22**. Por ende la sumarización final es: **198.10.0.0/22**
+
+### 12. Listar las redes involucradas en los siguientes bloques CIDR: ❓
 
 ● 200.56.168.0/21
 ● 195.24.0.0/13
@@ -271,11 +328,26 @@ Se pueden asignar 1024 redes.
 
 ### 13. El bloque CIDR 128.0.0.0/2 o 128/2, ¿Equivale a listar todas las direcciones de red de clase B? ¿Cuál sería el bloque CIDR que agrupa todas las redes de clase A?
 
+El bloque CIDR 128.0.0.0/2 es clase B que tiene /16 como máscara default. Es decir, tenemos /16 - /2 = /14 -> 14 bits para la parte de red. Lo cual es condice efectivamente con todas las direcciones de red de la clase B.
+
+El bloque CIDR que agrupa todas las redes de clase A es 0.0.0.0/1 ya que
+la clase A tiene máscara default /8 - 7 bits que son la cantidad de redes de clase A.
+
 ## VLSM
 
 ### 14. ¿Qué es y para qué se usa VLSM?
 
+VLSM (Variable Length Subnet Masking) es una técnica y mejora del subnetting tradicional que divide subredes en base a máscaras de longitud variable, es decir que podemos tener por ejemplo:
+
+Red A
+
+Subred A1/X
+Subred A2/Y
+Subred A3/Z
+
 ### 15. Describa, con sus palabras, el mecanismo para dividir subredes utilizando VLSM.
+
+Si tengo una red que quiero subdividir en 3 subredes y una de ellas necesita 60 hosts, otra 30, y la última 4, puedo usar máscara /26 para la primera, /27 para la segunda, y /30 para la última, minimizando el desperdicio.
 
 ### 16. Suponga que trabaja en una organización que tiene la red que se ve en el gráfico y debe armar el direccionamiento para la misma, minimizando el desperdicio de direcciones IP. Dicha organización posee la red 205.10.192.0/19, que es la que usted deberá utilizar.
 
@@ -283,11 +355,127 @@ Se pueden asignar 1024 redes.
 
 ##### a. ¿Es posible asignar las subredes correspondientes a la topología utilizando subnetting sin VLSM? Indique la cantidad de hosts que se desperdicia en cada subred.
 
+Tenemos 5 redes: Red A, Red B, Red C, Red D, y Red punto a punto entre los 2 routers. Esto significa que necesitamos 3 bits para la parte de red, por ende -> /19 + /3 = /22, y nos quedan 10 bits para host.
+
+Como 2<sup>10</sup> = 1024, y esto ni siquiera nos alcanza para asignar los hosts de la Red C por sí sola, podemos ver claramente que no es posible hacer esta asignación sin VLSM.
+
+Si la máscara de la red original fuera /18 sí nos alcanzaría, y en ese caso el desperdicio sería:
+
+2<sup>11</sup> = 2048
+
+-   Red A: 2048 - 128 = 1920
+-   Red B: 2048 - 20 = 2028
+-   Red C: 2048 - 1530 = 518
+-   Red D: 2048 - 7 = 2041
+-   Red punto a punto: 2048 - 2 = 2046
+
 ##### b. Asigne direcciones a todas las redes de la topología. Tome siempre en cada paso la primera dirección de red posible.
+
+Ahora vamos a utilizar la red original 205.10.192.0/19 para asignar direcciones a las 5 redes utilizando VLSM, yendo de la red más grande a las más chica.
+
+Red C: 1530 hosts, por ende necesita 11 bits para la parte de host -> /21
+Red A: 128 hosts, por ende necesita 8 bits para la parte de host -> /24
+Red B: 20 hosts, por ende necesita 5 bits para la parte de host -> /27
+Red D: 7 hosts, por ende necesita 4 bits para la parte de host -> /28
+Red punto a punto: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
+
+Subnetteo la red original 205.10.192.0/19:
+
+-   205.10. 110**0**0000 .0 -> 205.10.192.0/20 -> Subnetteo
+-   205.10. 110**1**0000 .0 -> 205.10.208.0/20 -> Libre
+
+Subnetteo la red 205.10.192.0/20:
+
+-   205.10. 1100**0**000 .0 -> **205.10.192.0/21** -> **La asigno a la red C**
+-   205.10. 1100**1**000 .0 -> 205.10.200.0/21 -> Subnetteo
+
+Subnetteo la red 205.10.200.0/21:
+
+-   205.10. 1100100**0** .0 -> **205.10.200.0/24** -> **La asigno a la red A**
+-   205.10. 1100100**1** .0 -> 205.10.201.0/24 -> Subnetteo
+
+    205.10.202.0/24 -> Libre
+    205.10.203.0/24 -> Libre
+    205.10.204.0/24 -> Libre
+    205.10.205.0/24 -> Libre
+    205.10.206.0/24 -> Libre
+    205.10.207.0/24 -> Libre
+
+Subnetteo la red 205.10.201.0/24:
+
+-   205.10.201. 00**0**00000 -> **205.10.201.0/27** -> **La asigno a la red B**
+-   205.10.201. 00**1**00000 -> 205.10.201.32/27 -> Subnetteo
+
+    205.10.201.64/27 -> Libre
+    205.10.201.96/27 -> Libre
+    205.10.201.128/27 -> Libre
+    205.10.201.160/27 -> Libre
+    205.10.201.192/27 -> Libre
+    205.10.201.224/27 -> Libre
+
+Subnetteo la red 205.10.201.32/27:
+
+-   205.10.201. 001**0**0000 -> **205.10.201.32/28** -> **La asigno a la red D**
+-   205.10.201. 001**1**0000 -> 205.10.201.48/28 -> Subnetteo
+
+Subnetteo la red 205.10.201.48/28:
+
+-   205.10.201. 00110**0**00 -> **205.10.201.48/30** -> **La asigno a la red punto a punto**
+-   205.10.201. 00110**1**00 -> 205.10.201.52/30 -> Libre
 
 ##### c. Para mantener el orden y el inventario de direcciones disponibles, haga un listado de todas las direcciones libres que le quedaron, agrupándolas utilizando CIDR.
 
+Redes libres que quedaron:
+
+-   205.10.208.0/20
+-   205.10.201.52/30
+
+No se pueden agrupar vía CIDR porque tienen distinta máscara.
+
+-   205.10.202.0/24
+-   205.10.203.0/24
+-   205.10.204.0/24
+-   205.10.205.0/24
+-   205.10.206.0/24
+-   205.10.207.0/24
+
+Las agrupo (tercer octeto):
+
+1100 1010
+1100 1011
+1100 1100
+1100 1101
+1100 1110
+1100 1111
+
+-> **205.10.128.0/21**
+
+-   205.10.201.64/27
+-   205.10.201.96/27
+-   205.10.201.128/27
+-   205.10.201.160/27
+-   205.10.201.192/27
+-   205.10.201.224/27
+
+Las agrupo (cuarto octeto):
+
+0100 0000
+0110 0000
+1000 0000
+1010 0000
+1100 0000
+1110 0000
+
+-> **205.10.201.0/24**
+
 ##### d. Asigne direcciones IP a todas las interfaces de la topología que sea posible.
+
+-   Red A: Router_A_eth0 = 205.10.200.1/24
+-   Red B: Router_A_eth1 = 205.10.201.1/27
+-   Red C: Router_A_eth2 = 205.10.192.1/21
+-   Red punto a punto: Router_A_eth3 = 205.10.201.49/30
+-   Red punto a punto: Router_B_eth0 = 205.10.201.50/30
+-   Red D: Router_B_eth1 = 205.10.201.33/28
 
 ### 17. Utilizando la siguiente topología y el bloque asignado, arme el plan de direccionamiento IPv4 teniendo en cuenta las siguientes restricciones:
 
@@ -304,6 +492,18 @@ Se pueden asignar 1024 redes.
 ##### e. La red Y tiene 46 hosts y se espera un crecimiento máximo de 18 hosts.
 
 ##### f. En cada red, se debe desperdiciar la menor cantidad de direcciones IP posibles. En este sentido, las redes utilizadas para conectar los routers deberán utilizar segmentos de red /30 de modo de desperdiciar la menor cantidad posible de direcciones IP.
+
+Vamos a utilizar el bloque dado (200.100.8.0/22) para asignar direcciones a las 9 redes utilizando VLSM, yendo de la red más grande a las más chica.
+
+-   Red A: 145 hosts, por ende necesita 8 bits para la parte de host -> /24
+-   Red Y: 64 hosts, por ende necesita 7 bits para la parte de host -> /25
+-   Red X: 63 hosts, por ende necesita 7 bits para la parte de host -> /25
+-   Red B: 60 hosts, por ende necesita 6 bits para la parte de host -> /26
+-   Red punto a punto n1 a n3: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
+-   Red punto a punto n3 a n4: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
+-   Red punto a punto n1 a n2: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
+-   Red punto a punto n1 a n4: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
+-   Red punto a punto n2 a n4: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
 
 ### 18. Asigne direcciones IP en los equipos de la topología según el plan anterior.
 
