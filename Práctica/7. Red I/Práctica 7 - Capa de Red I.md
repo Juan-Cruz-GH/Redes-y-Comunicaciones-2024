@@ -505,35 +505,155 @@ Vamos a utilizar el bloque dado (200.100.8.0/22) para asignar direcciones a las 
 -   Red punto a punto n1 a n4: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
 -   Red punto a punto n2 a n4: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
 
+Subnetteo la red original 200.100.8.0/22:
+
+-   200.100. 0000100**0** .0 -> **200.100.8.0/24** -> **La asigno a la red A**
+-   200.100. 0000100**1** .0 -> 200.100.9.0/24 -> Subnetteo
+
+    200.100.10.0/24 -> Libre
+    200.100.11.0/24 -> Libre
+
+Subnetteo la red 200.100.9.0/24:
+
+-   200.100. 00001001 .0 -> **200.100.9.0/25** -> **La asigno a la red Y**
+-   200.100. 00001001 .1 -> **200.100.9.128/25** -> **La asigno a la red X**
+
+Subnetteo la red 200.100.10.0/24:
+
+-   200.100. 00001010 .00 -> **200.100.10.0/26** -> **La asigno a la red B**
+-   200.100. 00001010 .01 -> 200.100.10.64/26 -> Subnetteo
+
+    200.100.10.128/26 -> Libre
+    200.100.10.192/26 -> Libre
+
+Subnetteo la red 200.100.10.64/26:
+
+-   De /26 a /30 tenemos 4 bits, por ende tendremos 2<sup>4</sup> = 16 subredes /30, y asignamos las primeras 5 a las redes punto a punto.
+-   **200.100.10.64/30** -> **La asigno a la red punto a punto n1 a n3**
+-   **200.100.10.68/30** -> **La asigno a la red punto a punto n3 a n4**
+-   **200.100.10.72/30** -> **La asigno a la red punto a punto n1 a n2**
+-   **200.100.10.76/30** -> **La asigno a la red punto a punto n1 a n4**
+-   **200.100.10.80/30** -> **La asigno a la red punto a punto n2 a n4**
+-   200.100.10.84/30 -> Libre
+-   200.100.10.88/30 -> Libre
+-   200.100.10.92/30 -> Libre
+-   200.100.10.96/30 -> Libre
+-   200.100.10.100/30 -> Libre
+-   200.100.10.104/30 -> Libre
+-   200.100.10.108/30 -> Libre
+-   200.100.10.112/30 -> Libre
+-   200.100.10.116/30 -> Libre
+-   200.100.10.120/30 -> Libre
+-   200.100.10.124/30 -> Libre
+
 ### 18. Asigne direcciones IP en los equipos de la topología según el plan anterior.
+
+Como es buena práctica, asignamos la primera dirección utilizable de cada red al **router**.
+
+Como el enunciado no las muestra, asumo el siguiente orden de las interfaces de los routers:
+
+-   n1: eth0 a la izquierda, eth1 a la derecha, eth2 abajo, eth3 en diagonal hacia abajo.
+-   n2: eth0 arriba, eth1 a la izquierda, eth2 abajo.
+-   n3: eth0 arriba, eth1 a la derecha.
+-   n4: eth0 a la izquierda, eth1 hacia abajo, eth2 a la derecha, eth3 hacia arriba, eth4 en diagonal hacia arriba.
+
+| Red     | Dispositivo | Interfaz | Dirección IP     |
+| ------- | ----------- | -------- | ---------------- |
+| A       | n1          | eth0     | 200.100.8.1/24   |
+| A       | n10         | -        | 200.100.8.2/24   |
+| Y       | n4          | eth2     | 200.100.9.1/25   |
+| Y       | n13         | -        | 200.100.9.2/25   |
+| X       | n2          | eth0     | 200.100.9.129/25 |
+| X       | n11         | -        | 200.100.9.130/25 |
+| X       | n12         | -        | 200.100.9.131/25 |
+| B       | n4          | eth1     | 200.100.10.1/26  |
+| B       | n14         | -        | 200.100.10.2/26  |
+| B       | n15         | -        | 200.100.10.3/26  |
+| B       | n16         | -        | 200.100.10.4/26  |
+| n1 a n3 | n1          | eth2     | 200.100.10.65/30 |
+| n1 a n3 | n3          | eth0     | 200.100.10.66/30 |
+| n3 a n4 | n3          | eth1     | 200.100.10.69/30 |
+| n3 a n4 | n4          | eth0     | 200.100.10.70/30 |
+| n1 a n2 | n1          | eth1     | 200.100.10.73/30 |
+| n1 a n2 | n2          | eth1     | 200.100.10.74/30 |
+| n1 a n4 | n1          | eth3     | 200.100.10.77/30 |
+| n1 a n4 | n4          | eth4     | 200.100.10.78/30 |
+| n2 a n4 | n2          | eth2     | 200.100.10.81/30 |
+| n2 a n4 | n4          | eth3     | 200.100.10.82/30 |
 
 ## ICMP y Configuraciones IP
 
 ### 19. Describa qué es y para qué sirve el protocolo ICMP.
 
+ICMP (Internet Control Message Protocol) es un protocolo de la capa de red que transmite mensajes de error a través de los dispositivos de la red. Es muy útil más que nada para informar sobre congestión o hosts inalcanzables.
+
 ##### a. Analice cómo funciona el comando ping.
+
+El comando `ping` hace que el emisor envíe un Echo Request al receptor y éste conteste con un Echo Reply. A partir de esto se calcula el tiempo mínimo, máximo y promedio de respuesta. En caso de no recibir respuesta, la red es inalcanzable.
 
 ###### i. Indique el tipo y código ICMP que usa el ping.
 
+-   Echo Request
+    -   Tipo 8.
+    -   Código 0.
+
 ###### ii. Indique el tipo y código ICMP que usa la respuesta de un ping.
+
+-   Echo Reply
+    -   Tipo 0.
+    -   Código 0.
 
 ##### b. Analice cómo funcionan comandos como traceroute/tracert de Linux/Windows y cómo manipulan el campo TTL de los paquetes IP.
 
+El comando `traceroute` muestra el camino o ruta de los paquetes desde nuestra PC a un destino particular. Este comando incrementa el TTL por cada iteración: empieza en 0 y en cada router se va incrementando, identificando así el camino.
+
 ##### c. Indique la cantidad de saltos realizados desde su computadora hasta el sitio www.nasa.gov. Analice:
+
+Se ven 14 saltos.
 
 ###### i. Cómo hacer para que no muestre el nombre del dominio asociado a la IP de cada salto.
 
+Para ocultar el nombre de dominio asociado a la IP de cada salto tenemos la opción `-d`.
+
 ###### ii. La razón de la aparición de \* en parte o toda la respuesta de un salto.
+
+El asterisco (\*) en parte o toda la respuesta de un salto significa que, o el paquete se perdió o el router está configurado para no responder con ICMP, ocultándose de los resultados. Podría ocurrir por Firewall por ejemplo.
 
 ##### d. Verifique el recorrido hacia los servidores de nombre del dominio unlp.edu.ar. En base al recorrido realizado, ¿podría confirmar cuál de ellos toma un camino distinto?
 
+???
+
 ### 20. ¿Para que se usa el bloque 127.0.0.0/8? ¿Qué PC responde a los siguientes comandos?
+
+El bloque 127.0.0.0/8 se usa para loopback, es decir se reserva para comunicaciones locales dentro de la misma PC (un proceso de la PC se quiere comunicar con otro proceso de la misma PC por ejemplo).
 
 ##### a. ping 127.0.0.1
 
+Responde 127.0.0.1
+
 ##### b. ping 127.0.54.43
+
+Responde 127.0.54.43
+
+Ambas son IPs localhost ya que ambas pertenecen al bloque de loopback.
 
 ### 21. Investigue para qué sirven los comandos ifconfig y route. ¿Qué comandos podría utilizar en su reemplazo? Inicie una topología con CORE, cree una máquina y utilice en ella los comandos anteriores para practicar sus diferentes opciones, mínimamente:
 
 ● Configurar y quitar una dirección IP en una interfaz.
 ● Ver la tabla de ruteo de la máquina.
+
+El comando `ifconfig` muestra la configuración de interfaces de red de nuestra PC, por ejemplo las direcciones IP que tenemos asignadas para cada interfaz.
+
+El comando `route` muestra la configuración de la tabla de ruteo de nuestra PC.
+
+Ambos comandos fueron reemplazados por el comando `ip`.
+
+-   Configurar una interfaz en una IP:
+    `ifconfig eth0 192.168.1.0 netmask 255.255.255.0`
+
+-   Quitar una IP de una interfaz:
+    `ifconfig eth0 0.0.0.0`
+
+-   Ver la tabla de ruteo de la máquina:
+    `route`
+    `route -d` (sin nombres de dominio)
