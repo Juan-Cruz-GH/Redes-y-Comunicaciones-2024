@@ -17,21 +17,77 @@ Si bien el ejercicio no agrega conceptos nuevos a los vistos previamente, recome
 
 ##### a. Indicar IPs origen y destino y campos correspondientes a la fragmentación cuando el paquete sale de pc1
 
+-   IP origen: 10.0.0.20/24
+-   IP destino: 10.0.2.20/24
+-   Tamaño del header: Siempre 20 bytes
+-   Total Length: 1500 bytes (significa que el payload es de 1480 bytes)
+-   Identificación: 20543
+-   Don't Fragment: 0
+-   More Fragments: 0
+-   Fragment Offset: 0
+
 ##### b. ¿Qué sucede cuando el paquete debe ser reenviado por el router R1?
+
+Cuando el paquete debe ser reenviado por el router R1 lo que sucede es que el paquete no cabe, ya que el MTU entre R1 y R2 es de 600 bytes y el paquete es de 1500 bytes.
 
 ##### c. Indicar cómo quedarían los paquetes fragmentados para ser enviados por el enlace entre R1 y R2.
 
+Para fragmentar el paquete tomamos el valor del MTU (600 en este caso), le restamos el valor del header (600 - 20 = 580) y luego encontramos el múltiplo de 8 más cercano a ese numero. Pasos:
+
+1. Cantidad de fragmentos que tendremos:
+    - 1500 / 600 = 3 (redondeando)
+2. Offsets:
+    - 600 - 20 / 8 = 72. (0 - 72 - 144 - 216 - etc)
+3. Tamaño máximo de un fragmento:
+    - Múltiplo de 8 más cercano a 580 -> 576
+    - Le sumamos el header (no se suma en el último fragmento) -> 576 + 20 = **596**
+4. Los fragmentos serán:
+    - Tamaño paquete + (Tamaño header \* Cantidad de fragmentos - 1)
+    - 1500 + (20 \* 3 - 1) = 1500 + 40 = **1540**
+    - 596 + 596 + x = 1540 -> x = **348**
+    - Fragmento 1: 596 bytes; Fragmento 2: 596 bytes; Fragmento 3: 348 bytes.
+
 ##### d. ¿Dónde se unen nuevamente los fragmentos? ¿Qué sucede si un fragmento no llega?
 
+Los fragmentos se unen nuevamente en el destino, en este ejemplo, pc2.
+
+Si algun fragmento se pierde y no llega (se terminó su TTL) se retransmiten todos los fragmentos.
+
 ##### e. Si un fragmento tiene que ser reenviado por un enlace con un MTU menor al tamaño del fragmento, ¿qué hará el router con ese fragmento?
+
+Si un fragmento no cabe en el MTU, se lo volverá a fragmentar.
 
 ## Ruteo
 
 ### 2. ¿Qué es el ruteo? ¿Por qué es necesario?
 
+Rutear consiste en hallar el mejor camino, según distintas métricas, entre A y B donde A y B pueden ser hosts, routers, etc.
+
+Es necesario para que los paquetes puedan ser transmitidos efectivamente.
+
 ### 3. En las redes IP el ruteo puede configurarse en forma estática o en forma dinámica. Indique ventajas y desventajas de cada método.
 
+-   Ruteo estático:
+
+| Ventajas                                                 | Desventajas                                                                |
+| -------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Como las rutas las establece el admin, hay mayor control | No escalable                                                               |
+| No tiene problemas de seguridad ni de compatibilidad     | No tolerante a fallos                                                      |
+| Útil cuando se tiene una red sencilla                    | Propenso a errores                                                         |
+| Eficiente en términos de procesamiento                   | Si se cambia la topología requiere cambiar todo manualmente en los routers |
+
+-   Ruteo dinámico:
+
+| Ventajas                                                   | Desventajas                                            |
+| ---------------------------------------------------------- | ------------------------------------------------------ |
+| Si la topología cambia, el ruteo se adapta automáticamente | Costoso en procesamiento                               |
+| Fácil mantenimiento incluso en redes complejas             | Requiere una configuración inicial por parte del admin |
+| Escalable                                                  | El debugging es más complejo                           |
+| Tolerante a fallos                                         |                                                        |
+
 ### 4. Una máquina conectada a una red pero no a Internet, ¿tiene tabla de ruteo?
+
+Una máquina conectada a una red pero no a Internet sí tiene tabla de ruteo, ya que podría necesitarla para rutear en su red local.
 
 ### 5. Observando el siguiente gráfico y la tabla de ruteo del router D, responder:
 
