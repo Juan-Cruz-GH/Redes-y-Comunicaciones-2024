@@ -95,7 +95,44 @@ Una máquina conectada a una red pero no a Internet sí tiene tabla de ruteo, ya
 
 ##### a. ¿Está correcta esa tabla de ruteo? En caso de no estarlo, indicar el o los errores encontrados. Escribir la tabla correctamente (no es necesario agregar las redes que conectan contra los ISPs)
 
+1.  Lo primero que voy a chequear es que no falte ninguna red destino en la tabla del router D:
+
+    -   La tabla tiene 9 entradas y hay 10 redes (5 comunes + 5 punto a punto, no contamos las que conectan contra los ISPs). Por ende hay una red que falta. Puedo ver claramente que la que falta es la red punto a punto 10.0.0.8/30, por ende la agrego con Next-Hop = "-" e Iface = eth3.
+
+2.  Luego voy a cambiar eth5 por eth2 en el router D, ya que los nombres de las interfaces suelen ser incrementales, no tiene sentido pasar de eth1 a eth3 y luego eth5.
+3.  La cuarta entrada de la tabla está mal porque no se puede incluir una máscara en el Next-Hop, así que la borramos.
+4.  En la sexta entrada de la tabla la Red Destino está mal escrita y el Next-Hop es incorrecto.
+    -   205.10.128.0 -> 205.10.0.128.
+    -   10.0.0.2 -> 10.0.0.1
+5.  En la octava entrada de la tabla la Red Destino está mal escrita y el Next-Hop e Iface no son una ruta óptima.
+    -   205.20.0.193 -> 205.20.0.192
+    -   10.0.0.1 -> 10.0.0.5
+    -   eth5 -> eth0
+
+La tabla final corregida quedaría:
+
+| Red Destino     | Red Destino (IP) | Mask | Next-Hop  | Iface |
+| --------------- | ---------------- | ---- | --------- | ----- |
+| D               | 153.10.20.128    | /27  | -         | eth1  |
+| Rtr-D <-> Rtr-B | 10.0.0.4         | /30  | -         | eth0  |
+| Rtr-D <-> Rtr-A | 10.0.0.0         | /30  | -         | eth2  |
+| Rtr-D <-> Rtr-C | 10.0.0.8         | /30  | -         | eth3  |
+| Rtr-B <-> Rtr-A | 10.0.0.12        | /30  | 10.0.0.5  | eth0  |
+| Rtr-C <-> Rtr-A | 10.0.0.16        | /30  | 10.0.0.10 | eth3  |
+| C               | 163.10.5.64      | /27  | 10.0.0.10 | eth3  |
+| E               | 205.20.0.128     | /26  | 10.0.0.5  | eth0  |
+| B               | 205.20.0.192     | /26  | 10.0.0.5  | eth0  |
+| A               | 205.10.0.128     | /25  | 10.0.0.1  | eth2  |
+
 ##### b. Con la tabla de ruteo del punto anterior, Red D, ¿tiene salida a Internet? ¿Por qué? ¿Cómo lo solucionaría? Suponga que los demás routers están correctamente configurados, con salida a Internet y que Rtr-D debe salir a Internet por Rtr-C.
+
+Con la tabla anterior la Red D no tiene salida a Internet porque no hay ninguna entrada que tenga como Red Destino ninguna de las dos redes que conectan con los 2 ISPs.
+
+Lo solucionaría añadiendo una entrada con la ruta default o "default gateway".
+
+| Red Destino | Mask | Next-Hop  | Iface |
+| ----------- | ---- | --------- | ----- |
+| 0.0.0.0     | /0   | 10.0.0.10 | eth3  |
 
 ##### c. Teniendo en cuenta lo aplicado en el punto anterior, si en Rtr-C estuviese la siguiente entrada en su tabla de ruteo qué sucedería si desde una PC en Red D se quiere acceder un servidor con IP 163.10.5.15.
 
@@ -103,9 +140,30 @@ Una máquina conectada a una red pero no a Internet sí tiene tabla de ruteo, ya
 | ----------- | ---- | -------- | ----- |
 | 163.10.5.0  | /24  | 10.0.0.9 | eth1  |
 
+Si Rtr-C tuviese esa entrada en su tabla de ruteo, cuando una PC en Red D quiere acceder a un servidor con IP 163.10.5.15, ocurriría lo siguiente:
+
+1. La PC en Red D sale por su router default, Rtr-D.
+2. Rtr-D chequea la IP destino que le pidió la PC: 163.10.5.15 y no la encuentra en su tabla, por ende sale por la default gateway.
+3. El paquete pasa a Rtr-C.
+4. Rtr-C chequea la IP destino que le pasó Rtr-D: 163.10.5.15 y la encuentra en su tabla, por ende se la manda al Rtr-D.
+5. El paquete queda en loop hasta que se le termine el TTL.
+
 ##### d. ¿Es posible aplicar sumarización en la tabla del router Rtr-D? ¿Por qué? ¿Qué debería suceder para poder aplicarla?
 
+Para poder aplicar sumarización entre 2 o más entradas de la tabla, se deben repetir Mask, Next-Hop e Iface entre ellas.
+
+Por ende sí, es posible aplicar sumarización: entre la entrada de la Red Destino E y la entrada de la Red Destino B.
+
+205.20.0. 10000000
+205.20.0. 11000000
+
+Son iguales hasta el bit 25, por ende la máscara es /25, y la fila quedaría:
+
+205.20.0.128 /25 10.0.0.5 eth0
+
 ##### e. La sumarización aplicada en el punto anterior, ¿se podría aplicar en Rtr-B? ¿Por qué?
+
+No, no se podría, ya que en el caso de Rtr-B, si bien la máscara y Next-Hop serían iguales, las interfaces no lo son: hacia Red B es eth0 y hacia Red E es eth2.
 
 ##### f. Escriba la tabla de ruteo de Rtr-B teniendo en cuenta lo siguiente:
 
@@ -114,14 +172,49 @@ Una máquina conectada a una red pero no a Internet sí tiene tabla de ruteo, ya
 ● Debe pasar por Rtr-D para llegar a Red D
 ● Sumarizar si es posible
 
+| Red Destino     | Red Destino (IP) | Mask | Next-Hop  | Iface |
+| --------------- | ---------------- | ---- | --------- | ----- |
+| B               | 205.20.0.192     | /26  | -         | eth0  |
+| E               | 205.20.0.128     | /26  | -         | eth2  |
+| Rtr-B <-> Rtr-D | 10.0.0.4         | /30  | -         | eth1  |
+| Rtr-B <-> Rtr-A | 10.0.0.12        | /30  | -         | eth3  |
+| Rtr-A <-> Rtr-C | 10.0.0.16        | /30  | 10.0.0.13 | eth3  |
+| Rtr-A <-> Rtr-D | 10.0.0.0         | /30  | 10.0.0.13 | eth3  |
+| Rtr-D <-> Rtr-C | 10.0.0.8         | /30  | 10.0.0.6  | eth1  |
+| A               | 205.10.0.128     | /25  | 10.0.0.13 | eth3  |
+| D               | 153.10.20.128    | /27  | 10.0.0.6  | eth1  |
+| C               | 163.10.5.64      | /27  | 10.0.0.13 | eth3  |
+| Rtr-A <-> ISP-1 | 120.0.0.0        | /30  | 10.0.0.13 | eth3  |
+| Rtr-C <-> ISP-2 | 130.0.10.0       | /30  | 10.0.0.13 | eth3  |
+| Default Gateway | 0.0.0.0          | /0   | 10.0.0.13 | eth3  |
+
+-   Sumarizamos 10.0.0.16 con 10.0.0.0:
+    10.0.0. 00010000
+    10.0.0. 00000000
+    -> 10.0.0.0 /27 10.0.0.13 eth3
+
 ##### g. Si Rtr-C pierde conectividad contra ISP-2, ¿es posible restablecer el acceso a Internet sin esperar a que vuelva la conectividad entre esos dispositivos?
+
+Si Rtr-C pierde conexión a Internet vía ISP-2, podemos modificar la tabla de ruteo de ese router para que salga a Internet por ISP-1 en lugar de ISP-2.
 
 ### 6. Evalúe para cada caso si el mensaje llegará a destino, saltos que tomará y tipo de respuesta recibida el emisor.
 
 ![Topología con 4 tablas de ruteo](https://i.imgur.com/bx2oZIO.png)
 
 ● Un mensaje ICMP enviado por PC-B a PC-C.
+
+1. PC-C: 10.0.7.20/24
+2. PC-B le pasa el pedido a router2
+3. La IP 10.0.7.20/24 no matchea en su tabla, por ende sale por su default gateway hacia router1
+4. router1 matchea la IP con la cuarta entrada de su tabla, por ende sale por eth1 hacia router3
+5. router3 matchea la IP con la tercer entrada de su tabla, por ende sale por eth2 hacia PC-C.
+
+El emisor recibirá ICMP Echo Reply.
+
+Saltos: PC-B -> router2 -> router1 -> router3 -> PC-C
+
 ● Un mensaje ICMP enviado por PC-C a PC-B.
+
 ● Un mensaje ICMP enviado por PC-C a 8.8.8.8.
 ● Un mensaje ICMP enviado por PC-B a 8.8.8.8.
 
