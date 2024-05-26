@@ -207,7 +207,7 @@ Si Rtr-C pierde conexión a Internet vía ISP-2, podemos modificar la tabla de r
 2. PC-B le pasa el pedido a router2
 3. La IP 10.0.7.20/24 no matchea en su tabla, por ende sale por su default gateway hacia router1
 4. router1 matchea la IP con la cuarta entrada de su tabla, por ende sale por eth1 hacia router3
-5. router3 matchea la IP con la tercer entrada de su tabla, por ende sale por eth2 hacia PC-C.
+5. router3 matchea la IP con la tercer entrada de su tabla, por ende sale por eth2 hacia PC-C
 
 El emisor recibirá ICMP Echo Reply.
 
@@ -215,8 +215,38 @@ Saltos: PC-B -> router2 -> router1 -> router3 -> PC-C
 
 ● Un mensaje ICMP enviado por PC-C a PC-B.
 
+1. PC-B: 10.0.5.20/24
+2. PC-C le pasa el pedido a router3
+3. La IP 10.0.5.20/24 no matchea en su tabla, por ende sale por su default gateway hacia router4
+4. router4 matchea la IP con la cuarta entrada de su tabla, por ende sale por eth0 hacia router2
+5. router2 matchea la IP con la tercer entrada de su tabla, por ende sale por eth2 hacia PC-B
+
+El emisor recibirá ICMP Echo Reply.
+
+Saltos: PC-C -> router3 -> router4 -> router2 -> PC-B
+
 ● Un mensaje ICMP enviado por PC-C a 8.8.8.8.
+
+1. PC-C le pasa el pedido a router3
+2. La IP 8.8.8.8 no matchea en su tabla, por ende sale por su default gateway hacia router4
+3. La IP 8.8.8.8 no matchea en su tabla, y como no tiene default gateway se termina ahí
+
+El emisor recibirá ICMP Network Unreachable
+
+Saltos: PC-C -> router3 -> router4
+
 ● Un mensaje ICMP enviado por PC-B a 8.8.8.8.
+
+1. PC-B le pasa el pedido a router2
+2. La IP 8.8.8.8 no matchea en su tabla, por ende sale por su default gateway hacia router1
+3. La IP 8.8.8.8 no matchea en su tabla, por ende sale por su default gateway hacia router2
+4. El paquete se queda en loop (router1 -> router2 -> router1 ...) hasta que se le acabe el TTL
+
+El emisor recibirá ICMP TTL Expired
+
+Saltos: PC-B -> router2 -> router1 -> router2 ...
+
+Saltos: PC-C -> router3 -> router4
 
 ## DHCP y NAT
 
@@ -226,7 +256,19 @@ Saltos: PC-B -> router2 -> router1 -> router3 -> PC-C
 
 ##### b. En una terminal de root, ejecute el comando $ sudo /sbin/dhclient eth0 y analice el intercambio de paquetes capturado.
 
+-   Usamos `sudo su` al principio.
+-   El comando está mal, hay que usar `/sbin/dhclient enp0s3`.
+-   Pero antes de usar ese comando, hay que hacer `ifconfig enp0s3 0.0.0.0`.
+
+![Intercambio de paquetes](https://imgur.com/GehXzd8.png)
+
+Podemos ver un broadcast request que hace 0.0.0.0 para obtener una IP.
+
 ##### c. Analice la información registrada en el archivo /var/lib/dhcp/dhclient.leases, ¿cuál parece su función?
+
+![Contenido del archivo indicado](https://imgur.com/yuVGYCo.png)
+
+Se guardan los datos del servidor DHCP, es decir, es una base de datos persistente de todas las conexiones válidas. Si una conexión está dos veces se toma el último.
 
 ##### d. Ejecute el siguiente comando para eliminar información temporal asignada por el servidor DHCP.
 
@@ -234,13 +276,44 @@ Saltos: PC-B -> router2 -> router1 -> router3 -> PC-C
 
 ##### e. En una terminal de root, vuelva a ejecutar el comando $ sudo /sbin/dhclient eth0 y analice el intercambio de paquetes capturado nuevamente ¿a que se debió la diferencia con lo observado en el punto “b”?
 
+![Intercambio de paquetes](https://imgur.com/8hwiImD.png)
+
+La diferencia se debe a ???
+
 ##### f. Tanto en “b” como en “e”, ¿qué información es brindada al host que realiza la petición DHCP, además de la dirección IP que tiene que utilizar?
+
+Al host que realiza el DHCP request se le brinda:
+
+-   Su dirección IP asignada
+-   Cantidad de segundos, durante los cuales puede usar la IP
+-   Cantidad de segundos, después de los cuales debería renovar la IP
+-   Cantidad de segundos, después de los cuales deberá reiniciar el proceso de obtener otra IP, si no pudo renovar la IP actual anteriormente
+-   Máscara de subred
+-   Dirección IP de broadcast
+-   Dirección IP del router
+-   Dirección IP del DNS local
 
 ### 8. ¿Qué es NAT y para qué sirve? De un ejemplo de su uso y analice cómo funcionaría en ese entorno. Ayuda: analizar el servicio de Internet hogareño en el cual varios dispositivos usan Internet simultáneamente.
 
+NAT (Network Address Translation) es un método que permite que muchos dispositivos en una red **local** utilicen una misma IP pública cuando salen a Internet a pesar de todos poseer direcciones IP privadas distintas. Sirve para lidiar con el problema de que hay trillones de dispositivos y cada uno requiere una IP y con IPv4 la cantidad total de direcciones es extremadamente limitada.
+
+Ejemplo de su uso: Tenemos varios dispositivos en un hogar, todos conectados a Internet por un mismo router. Cada uno posee su propia IP privada distinta. Cuando un dispositivo quiere acceder a Internet, le avisa al router y el router reemplaza su IP por la del router (pública) y realiza el pedido. Luego Internet le responde al router y el router le responde al dispositivo. Todo esto gracias a que el router tiene una tabla NAT que realiza estas traducciones.
+
 ### 9. ¿Qué especifica la RFC 1918 y cómo se relaciona con NAT?
 
+La RFC 1918 define los rangos de direcciones IP privadas, es decir las que no se utilizan en Internet si no que dentro de redes privadas: organizaciones, hogares, etc.
+
+-   Clase A: 10.0.0.0 - 10.255.255.2255 con máscara /8
+-   Clase B: 172.16.0.0 - 172.31.255.255 con máscara /12
+-   Clase C: 192.168.0.0 - 192.168.255.255 con máscara /16
+
 ### 10. En la red de su casa o trabajo verifique la dirección IP de su computadora y luego acceda a www.cualesmiip.com. ¿Qué observa? ¿Puede explicar qué sucede?
+
+Utilizando `ipconfig` veo la dirección IP de mi PC: 192.168.0.18
+
+Yendo al sitio www.cualesmiip.com, veo que la IP que aparece es 181.231.195.185.
+
+Las IPs son distintas porque la primera es mi dirección IP **privada** mientras que la segunda es mi dirección IP pública, es decir la de mi router, que reemplaza a la privada mediante NAT cuando me conecto a Internet.
 
 ### 11. Resuelva las consignas que se dan a continuación.
 
@@ -249,40 +322,62 @@ Saltos: PC-B -> router2 -> router1 -> router3 -> PC-C
 ![Topología](https://i.imgur.com/sZG21wz.png)
 
 PC-A (ss)
-Local Address:Port Peer Address:Port
-192.168.1.2:49273 **\*\*\*\***\_**\*\*\*\***
-**\*\*\*\***\_**\*\*\*\*** 190.50.10.63:25
-192.168.1.2:**\_** 190.50.10.81:8080
+
+| Local Address:Port    | Peer Address:Port   |
+| --------------------- | ------------------- |
+| 192.168.1.2:49273     | **190.50.10.63:80** |
+| **192.168.1.2:37484** | 190.50.10.63:25     |
+| 192.168.1.2:**51238** | 190.50.10.81:8080   |
 
 PC-B (ss)
-Local Address:Port Peer Address:Port
-192.168.1.3:52734 **\*\*\*\***\_**\*\*\*\***
-192.168.1.3:39275 **\*\*\*\***\_**\*\*\*\***
+
+| Local Address:Port | Peer Address:Port     |
+| ------------------ | --------------------- |
+| 192.168.1.3:52734  | **190.50.10.81:8081** |
+| 192.168.1.3:39275  | **190.50.10.81:8080** |
 
 RTR-1 (Tabla de NAT)
-Lado LAN Lado WAN
-192.168.1.2:49273 205.20.0.29:25192
-192.168.1.2:51238 **\*\*\*\***\_**\*\*\*\***
-192.168.1.3:52734 205.20.0.29:51091
-192.168.1.2:37484 205.20.0.29:41823
-192.168.1.3:39275 205.20.0.29:9123
+
+| Lado LAN          | Lado WAN              |
+| ----------------- | --------------------- |
+| 192.168.1.2:49273 | 205.20.0.29:25192     |
+| 192.168.1.2:51238 | **205.20.0.29:16345** |
+| 192.168.1.3:52734 | 205.20.0.29:51091     |
+| 192.168.1.2:37484 | 205.20.0.29:41823     |
+| 192.168.1.3:39275 | 205.20.0.29:9123      |
 
 SRV-A (ss)
-Local Address:Port Peer Address:Port
-190.50.10.63:80 205.20.0.29:25192
-190.50.10.63:25 205.20.0.29:41823
+
+| Local Address:Port | Peer Address:Port |
+| ------------------ | ----------------- |
+| 190.50.10.63:80    | 205.20.0.29:25192 |
+| 190.50.10.63:25    | 205.20.0.29:41823 |
 
 SRV-B (ss)
-Local Address:Port Peer Address:Port
-190.50.10.81:8080 205.20.0.29:16345
-190.50.10.81:8081 205.20.0.29:51091
-190.50.10.81:8080 205.20.0.29:9123
+
+| Local Address:Port | Peer Address:Port |
+| ------------------ | ----------------- |
+| 190.50.10.81:8080  | 205.20.0.29:16345 |
+| 190.50.10.81:8081  | 205.20.0.29:51091 |
+| 190.50.10.81:8080  | 205.20.0.29:9123  |
 
 ##### b. En base a lo anterior, responda:
 
 ###### i. ¿Cuántas conexiones establecidas hay y entre qué dispositivos?
 
+Hay 5 conexiones establecidas:
+
+1. 192.168.1.2:49273 -> 190.50.10.63:80
+2. 192.168.1.2:51238 -> 190.50.10.81:8080
+3. 192.168.1.3:52734 -> 190.50.10.81:8081
+4. 192.168.1.2:37484 -> 190.50.10.63:25
+5. 192.168.1.3:39275 -> 190.50.10.81:8080
+
 ###### ii. ¿Quién inició cada una de las conexiones? ¿Podrían haberse iniciado en sentido inverso? ¿Por qué? Investigue qué es port forwarding y si serviría como solución en este caso.
+
+Las conexiones las inician los clientes (PC-A y PC-B) hacia los servidores. No podría haber sido al revés porque las PCs tienen IPs privadas.
+
+Port forwarding consiste en decirle a nuestro router que envíe datos que reciba en un port específico hacia un dispositivo de nuestra red local.
 
 ## Ejercicio de repaso
 
