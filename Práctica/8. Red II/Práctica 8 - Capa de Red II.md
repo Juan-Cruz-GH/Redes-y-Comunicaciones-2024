@@ -389,9 +389,52 @@ Port forwarding consiste en decirle a nuestro router que envíe datos que reciba
 ● Red C y la Red D deben ser públicas.
 ● Los enlaces entre routers deben utilizar redes privadas.
 ● Se debe desperdiciar la menor cantidad de IP posibles.
-● Si va a utilizar un bloque para dividir en subredes, asignar primero la red con más
-cantidad de hosts y luego las que tienen menos.
+● Si va a utilizar un bloque para dividir en subredes, asignar primero la red con más cantidad de hosts y luego las que tienen menos.
 ● Las redes elegidas deben ser válidas.
+
+Primero clasificamos a los bloques dados en públicos y privados (127.0.0.0/24 no es ni público ni privado):
+
+| Público          | Privado         |
+| ---------------- | --------------- |
+| 224.10.0.128/27  | 192.168.10.0/24 |
+| 224.10.0.64/26   | 192.168.10.0/29 |
+| 226.10.20.128/27 | 10.10.10.0/27   |
+| 200.30.55.64/26  |                 |
+
+Tenemos que asignar un total de 6 redes, en orden de número de hosts:
+
+1. Red A: 100 hosts -> /25
+2. Red B: 70 hosts -> /25
+3. Red D: 16 hosts -> /27 (/28 no alcanza porque 2<sup>4</sup> - 2 = 14)
+4. Red C: 14 hosts -> /28
+5. RouterA <-> RouterE <-> RouterB: 3 hosts -> /29
+6. RouterD <-> RouterC: 2 hosts -> /30
+
+-   Usamos el bloque 192.168.10.0/24 ya que es el más cercano a la máscara /25 que necesitamos para Red A y B.
+-   Subnetteamos el bloque:
+
+    -   192.168.10. **0**0000000 -> 192.168.10.0/25 -> **La asigno a Red A**
+    -   192.168.10. **1**0000000 -> 192.168.10.128/25 -> **La asigno a la Red B**
+
+-   **Asignamos 224.10.0.128/27 a la Red D** ya que requiere que sea pública y la máscara cabe perfecto.
+-   Usamos el bloque 226.10.20.128/27 ya que es el más cercano a la máscara /28 que necesitamos para Red C.
+-   Subnetteamos el bloque:
+
+    -   226.10.20.100**0** 0000 -> 226.10.20.128/28 -> **La asigno a la Red C**
+    -   226.10.20.100**1** 0000 -> 226.10.20.160/28 -> Libre
+
+-   Por último, queda RouterA <-> RouterE <-> RouterB que requiere /29 y RouterD <-> RouterC que requiere /30:
+    -   Como podemos ver en el diagrama, parte del bloque 10.10.10.0/27 ya estaba siendo usado, por ende tenemos que ver qué parte del bloque quedó libre.
+    -   Como /30 - /27 = /3, podemos ver que se subnetteó el bloque 10.10.10.0/27 en 2<sup>3</sup> = 8 subredes:
+        1. 10.10.10.0/30 -> Ya está usada.
+        2. 10.10.10.4/30 -> Ya está usada.
+        3. 10.10.10.8/30 -> Ya está usada.
+        4. 10.10.10.12/30 -> Ya está usada.
+        5. 10.10.10.16/30 -> Libre -> **Asigno RouterD <-> RouterC**
+        6. 10.10.10.20/30 -> Libre
+        7. 10.10.10.24/30 -> Libre
+        8. 10.10.10.28/30 -> Libre
+    -   Convertimos esas últimas 3 subredes en 1 subred /29 -> 10.10.10.20/29 -> **Asigno RouterA <-> RouterE <-> RouterB**
 
 ### 13. Asigne IP a todas las interfaces de las redes listadas a continuación. Nota: Los routers deben tener asignadas las primeras IP de la red. Para enlaces entre routers, asignar en el siguiente orden: RouterA, RouterB, RouterC, RouterD y RouterE.
 
@@ -399,12 +442,96 @@ cantidad de hosts y luego las que tienen menos.
 ● Red entre RouterA-RouterB-RouterE.
 ● Red entre RouterC-RouterD.
 
+-   **Red A: 192.168.10.0/25**
+    -   RouterA_eth2: .1/25
+    -   PC-A: .2/25
+    -   PC-B: .3/25
+    -   PC-C: .4/25
+    -   PC-D: .5/25
+-   **Red B: 192.168.10.128/25**
+    -   RouterB_eth0: .129/25
+    -   PC-E: .130/25
+-   **Red C: 226.10.20.128/28**
+    -   RouterC_eth2: .129/28
+    -   MailServer: .130/28
+    -   WebServer1: .131/28
+-   **Red D: 224.10.0.128/27**
+    -   RouterD_eth1: .129/27
+    -   WebServer2: .130/27
+    -   DNSResolver: .131/27
+-   **RouterA <-> RouterE <-> RouterB: 10.10.10.20/29**
+    -   RouterA_eth0: .21/29
+    -   RouterB_eth1: .22/29
+    -   RouterE_eth0: .23/29
+-   **RouterD <-> RouterC: 10.10.10.16/30**
+    -   RouterC_eth1: .17/30
+    -   RouterD_eth0: .18/30
+
 ### 14. Realice las tablas de rutas de RouterE y BORDER considerando:
 
 ● Siempre se deberá tomar la ruta más corta.
 ● Sumarizar siempre que sea posible.
 ● El tráfico de Internet a la Red D y viceversa debe atravesar el RouterC.
 ● Todos los hosts deben poder conectarse entre sí y a Internet.
+
+-   **Tabla de ruteo RouterE:**
+
+| Red destino                     | Red destino (IP) | Mask | Next-Hop    | Iface |
+| ------------------------------- | ---------------- | ---- | ----------- | ----- |
+| RouterA <-> RouterE <-> RouterB | 10.10.10.20      | /29  | -           | eth0  |
+| RouterE <-> Border              | 10.10.10.4       | /30  | -           | eth3  |
+| RouterE <-> RouterC             | 10.10.10.12      | /30  | -           | eth1  |
+| RouterE <-> RouterD             | 10.10.10.0       | /30  | -           | eth2  |
+| Red A                           | 192.168.10.0     | /25  | 10.10.10.21 | eth0  |
+| Red B                           | 192.168.10.128   | /25  | 10.10.10.22 | eth0  |
+| Red C                           | 226.10.20.128    | /28  | 10.10.10.14 | eth1  |
+| Red D                           | 224.10.0.128     | /27  | 10.10.10.2  | eth2  |
+| RouterD <-> RouterC             | 10.10.10.16      | /30  | 10.10.10.2  | eth2  |
+| Border <-> RouterC              | 10.10.10.8       | /30  | 10.10.10.6  | eth2  |
+| Border <-> ISP                  | 172.16.0.0       | /24  | 10.10.10.6  | eth2  |
+
+-   **Tabla de ruteo Border:**
+
+| Red destino                     | Red destino (IP) | Mask | Next-Hop   | Iface |
+| ------------------------------- | ---------------- | ---- | ---------- | ----- |
+| Border <-> ISP                  | 172.16.0.0       | /24  | -          | eth1  |
+| Border <-> RouterE              | 10.10.10.4       | /30  | -          | eth2  |
+| Border <-> RouterC              | 10.10.10.8       | /30  | -          | eth0  |
+| RouterA <-> RouterE <-> RouterB | 10.10.10.20      | /29  | 10.10.10.5 | eth2  |
+| Red A                           | 192.168.10.0     | /25  | 10.10.10.5 | eth2  |
+| Red B                           | 192.168.10.128   | /25  | 10.10.10.5 | eth2  |
+| RouterE <-> RouterC             | 10.10.10.12      | /30  | 10.10.10.5 | eth2  |
+| RouterE <-> RouterD             | 10.10.10.0       | /30  | 10.10.10.5 | eth2  |
+| RouterD <-> RouterC             | 10.10.10.16      | /30  | 10.10.10.9 | eth0  |
+| Red C                           | 226.10.20.128    | /28  | 10.10.10.9 | eth0  |
+| Red D                           | 224.10.0.128     | /27  | 10.10.10.5 | eth2  |
+
+-   Podemos sumarizar:
+
+1. Las entradas con redes 192.168.10.0/25 y 192.168.10.128/25:
+    - 192.168. 0000101**0** . 00000000
+    - 192.168. 0000101**0** . 10000000
+    - Son iguales hasta el bit 24, por ende la red sumarizada es: 192.168.10.0/24
+    - La entrada quedaría: 192.168.10.0 /24 10.10.10.5 eth2
+2. Las entradas con redes 10.10.10.12/30 y 10.10.10.0/30:
+    - 10.10.10. 000**0**1100
+    - 10.10.10. 000**0**0000
+    - Son iguales hasta el bit 28, por ende la red sumarizada es: 10.10.10.0/28
+    - La entrada quedaría 10.10.10.0 /28 10.10.10.5 eth2
+
+-   **Tabla de ruteo Border sumarizada:**
+
+| Red destino                              | Red destino (IP) | Mask | Next-Hop   | Iface |
+| ---------------------------------------- | ---------------- | ---- | ---------- | ----- |
+| Border <-> ISP                           | 172.16.0.0       | /24  | -          | eth1  |
+| Border <-> RouterE                       | 10.10.10.4       | /30  | -          | eth2  |
+| Border <-> RouterC                       | 10.10.10.8       | /30  | -          | eth0  |
+| RouterA <-> RouterE <-> RouterB          | 10.10.10.20      | /29  | 10.10.10.5 | eth2  |
+| Red A, B                                 | 192.168.10.0     | /24  | 10.10.10.5 | eth2  |
+| RouterE <-> RouterC, RouterE <-> RouterD | 10.10.10.0       | /28  | 10.10.10.5 | eth2  |
+| RouterD <-> RouterC                      | 10.10.10.16      | /30  | 10.10.10.9 | eth0  |
+| Red C                                    | 226.10.20.128    | /28  | 10.10.10.9 | eth0  |
+| Red D                                    | 224.10.0.128     | /27  | 10.10.10.5 | eth2  |
 
 ## Aclaración importante
 
