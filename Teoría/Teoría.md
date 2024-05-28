@@ -1,8 +1,4 @@
-<center>
-
-# Clase 1 - 12 de marzo, 2024
-
-</center>
+<h1 align="center">Clase 1 - 12 de marzo, 2024</h1>
 
 ## Red
 
@@ -100,11 +96,7 @@ También utiliza routers y switches, y puede usar fibra óptica, wireless, cobre
 
 ---
 
-<center>
-
-# Clase 2 - 19 de marzo, 2024
-
-</center>
+<h1 align="center">Clase 2 - 19 de marzo, 2024</h1>
 
 ## Capa de Aplicación
 
@@ -386,11 +378,7 @@ Cada aplicación puede tener distintos requerimientos en términos de seguridad,
 
 ---
 
-<center>
-
-# Clase 3 - 26 de marzo, 2024
-
-</center>
+<h1 align="center">Clase 3 - 26 de marzo, 2024</h1>
 
 ## DNS
 
@@ -492,11 +480,7 @@ clave | TTL | IN | tipoRegistro | valor
 
 ---
 
-<center>
-
-# Clase 4 - 9 de abril, 2024
-
-</center>
+<h1 align="center">Clase 4 - 9 de abril, 2024</h1>
 
 ## Email
 
@@ -616,11 +600,7 @@ Como los emails trabajan con ASCII, todo lo que sea binario (imagenes, archivos,
 
 ---
 
-<center>
-
-# Clase 5 - 16 de abril, 2024
-
-</center>
+<h1 align="center">Clase 5 - 16 de abril, 2024</h1>
 
 ## FTP
 
@@ -693,11 +673,7 @@ En el modo Pasivo, el servidor abre uno de sus puertos para la conexión de dato
 
 ---
 
-<center>
-
-# Clase 6 - 16 de abril, 2024
-
-</center>
+<h1 align="center">Clase 6 - 16 de abril, 2024</h1>
 
 ## Capa de Transporte
 
@@ -797,11 +773,7 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 ---
 
-<center>
-
-# Clase 7 - 30 de abril, 2024
-
-</center>
+<h1 align="center">Clase 7 - 30 de abril, 2024</h1>
 
 ## Control de errores en TCP
 
@@ -857,11 +829,7 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 ---
 
-<center>
-
-# Clase 8 - 7 de mayo, 2024
-
-</center>
+<h1 align="center">Clase 8 - 7 de mayo, 2024</h1>
 
 ## Control de flujo en TCP
 
@@ -903,11 +871,7 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 ---
 
-<center>
-
-# Clase 9 - 14 de mayo, 2024
-
-</center>
+<h1 align="center">Clase 9 - 14 de mayo, 2024</h1>
 
 ## Protocolo IP
 
@@ -1070,10 +1034,6 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 ---
 
-<center>
-
-# Clase 10 - 28 de mayo, 2024
-
-</center>
+<h1 align="center">Clase 10 - 28 de mayo, 2024</h1>
 
 ##

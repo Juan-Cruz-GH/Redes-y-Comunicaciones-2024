@@ -1,8 +1,4 @@
-<center>
-
-# Práctica 6 - Capa de Transporte II
-
-</center>
+<h1 align="center">Práctica 6 - Capa de Transporte II</h1>
 
 ### 1. ¿Cuál es el puerto por defecto que se utiliza en los siguientes servicios? Web / SSH / DNS / Web Seguro / POP3 / IMAP / SMTP. Investigue en qué lugar en Linux y en Windows está descrita la asociación utilizada por defecto para cada servicio.
 

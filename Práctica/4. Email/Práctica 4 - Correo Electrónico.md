@@ -1,8 +1,4 @@
-<center>
-
-# Práctica 4 - Correo Electrónico
-
-</center>
+<h1 align="center">Práctica 4 - Correo Electrónico</h1>
 
 ### 1. ¿Qué protocolos se utilizan para el envío de mails entre el cliente y su servidor de correo? ¿Y entre servidores de correo?
 

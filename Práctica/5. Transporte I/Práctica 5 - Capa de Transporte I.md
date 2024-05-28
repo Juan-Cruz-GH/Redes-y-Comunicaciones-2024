@@ -1,8 +1,4 @@
-<center>
-
-# Práctica 5 - Capa de Transporte I
-
-</center>
+<h1 align="center">Práctica 5 - Capa de Transporte I</h1>
 
 ### 1. ¿Cuál es la función de la capa de transporte?
 

@@ -1,8 +1,4 @@
-<center>
-
-# Práctica 8 - Capa de Red II
-
-</center>
+<h1 align="center">Práctica 8 - Capa de Red II</h1>
 
 ## Recomendación
 

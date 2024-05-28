@@ -1,8 +1,4 @@
-<center>
-
-# Práctica 7 - Capa de Red I
-
-</center>
+<h1 align="center">Práctica 7 - Capa de Red I</h1>
 
 ## Introducción
 

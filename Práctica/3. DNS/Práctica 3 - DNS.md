@@ -1,8 +1,4 @@
-<center>
-
-# Práctica 3 - DNS
-
-</center>
+<h1 align="center">Práctica 3 - DNS</h1>
 
 ### 1. Investigue y describa cómo funciona el DNS. ¿Cuál es su objetivo?
 

@@ -1,8 +1,4 @@
-<center>
-
-# Práctica 2 - HTTP
-
-</center>
+<h1 align="center">Práctica 2 - HTTP</h1>
 
 ### 1. ¿Cuál es la función de la capa de aplicación?
 
