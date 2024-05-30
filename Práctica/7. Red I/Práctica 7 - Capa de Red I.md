@@ -230,7 +230,7 @@ Como las redes siempre empiezan desde 0, la subred 710 es en realidad 709.
 
 ###### v. Dirección de broadcast de la subred 710.
 
-La dirección de broadcast de 128.50.177.64/26 es su última dirección, o lo que es igual, la dirección anterior a la subred 711 -> 128.50.177.127/64.
+La dirección de broadcast de 128.50.177.64/26 es su última dirección, o lo que es igual, la dirección anterior a la subred 711 -> **128.50.177.127/26**
 
 ### 8. Si usted estuviese a cargo de la administración del bloque IP 195.200.45.0/24
 

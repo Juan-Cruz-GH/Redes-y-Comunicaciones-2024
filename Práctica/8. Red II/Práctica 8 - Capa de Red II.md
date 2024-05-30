@@ -205,9 +205,8 @@ Si Rtr-C pierde conexión a Internet vía ISP-2, podemos modificar la tabla de r
 4. router1 matchea la IP con la cuarta entrada de su tabla, por ende sale por eth1 hacia router3
 5. router3 matchea la IP con la tercer entrada de su tabla, por ende sale por eth2 hacia PC-C
 
-El emisor recibirá ICMP Echo Reply.
-
-Saltos: PC-B -> router2 -> router1 -> router3 -> PC-C
+-   El emisor recibirá ICMP Echo Reply.
+-   Saltos: PC-B -> router2 -> router1 -> router3 -> PC-C
 
 ● Un mensaje ICMP enviado por PC-C a PC-B.
 
@@ -217,9 +216,8 @@ Saltos: PC-B -> router2 -> router1 -> router3 -> PC-C
 4. router4 matchea la IP con la cuarta entrada de su tabla, por ende sale por eth0 hacia router2
 5. router2 matchea la IP con la tercer entrada de su tabla, por ende sale por eth2 hacia PC-B
 
-El emisor recibirá ICMP Echo Reply.
-
-Saltos: PC-C -> router3 -> router4 -> router2 -> PC-B
+-   El emisor recibirá ICMP Echo Reply.
+-   Saltos: PC-C -> router3 -> router4 -> router2 -> PC-B
 
 ● Un mensaje ICMP enviado por PC-C a 8.8.8.8.
 
@@ -227,9 +225,8 @@ Saltos: PC-C -> router3 -> router4 -> router2 -> PC-B
 2. La IP 8.8.8.8 no matchea en su tabla, por ende sale por su default gateway hacia router4
 3. La IP 8.8.8.8 no matchea en su tabla, y como no tiene default gateway se termina ahí
 
-El emisor recibirá ICMP Network Unreachable
-
-Saltos: PC-C -> router3 -> router4
+-   El emisor recibirá ICMP Network Unreachable
+-   Saltos: PC-C -> router3 -> router4
 
 ● Un mensaje ICMP enviado por PC-B a 8.8.8.8.
 
@@ -238,11 +235,8 @@ Saltos: PC-C -> router3 -> router4
 3. La IP 8.8.8.8 no matchea en su tabla, por ende sale por su default gateway hacia router2
 4. El paquete se queda en loop (router1 -> router2 -> router1 ...) hasta que se le acabe el TTL
 
-El emisor recibirá ICMP TTL Expired
-
-Saltos: PC-B -> router2 -> router1 -> router2 ...
-
-Saltos: PC-C -> router3 -> router4
+-   El emisor recibirá ICMP TTL Expired
+-   Saltos: PC-B -> router2 -> router1 -> router2 ...
 
 ## DHCP y NAT
 
