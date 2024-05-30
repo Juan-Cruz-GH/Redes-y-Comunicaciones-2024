@@ -309,18 +309,34 @@ Un router sumarizaría estas redes en una sola para maximizar la eficiencia. Est
 
 En las direcciones dadas, los primeros dos octetos son exactamente iguales, por ende los ignoramos. Luego miramos los últimos 2 octetos pasando a binario:
 
-0000 0001
-0000 0000
-0000 0011
-0000 0010
+0000 0001 . 0000 0000
+0000 0000 . 0000 0000
+0000 0011 . 0000 0000
+0000 0010 . 0000 0000
 
-Podemos ver que difieren a partir del bit 22, o lo que es igual, **son iguales hasta el bit 22**. Por ende la sumarización final es: **198.10.0.0/22**
+Podemos ver que las direcciones **son iguales hasta el bit 22**. Por ende la sumarización final es: **198.10.0.0/22**
 
-### 12. Listar las redes involucradas en los siguientes bloques CIDR: ❓
+### 12. Listar las redes involucradas en los siguientes bloques CIDR:
+
+Es lo mismo que subnettear un bloque.
 
 ● 200.56.168.0/21
+
+Podrían ser por ejemplo /22 - /21 = /1 = 2 redes:
+
+200.56.1010 1**0**00.0 -> 200.56.168.0/22
+200.56.1010 1**1**00.0 -> 200.56.172.0/22
+
 ● 195.24.0.0/13
+
+Podrían ser por ejemplo /14 - /13 = /1 = 2 redes:
+
+195.0001 1**0**00.0.0 -> 195.24.0.0/14
+195.0001 1**1**00.0.0 -> 195.28.0.0/14
+
 ● 195.24/13
+
+Es igual al anterior ya que 195.24 es sinónimo de 195.24.0.0
 
 ### 13. El bloque CIDR 128.0.0.0/2 o 128/2, ¿Equivale a listar todas las direcciones de red de clase B? ¿Cuál sería el bloque CIDR que agrupa todas las redes de clase A?
 
