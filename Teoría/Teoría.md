@@ -1036,4 +1036,193 @@ La Capa de Transporte posee 2 modelos básicos: TCP, el cual es confiable; y UDP
 
 <h1 align="center">Clase 10 - 28 de mayo, 2024</h1>
 
-##
+## Protocolos de ruteo
+
+#### Introducción
+
+-   El **enrutado** se refiere al proceso de enviar paquetes de una red a otra a través de routers.
+    -   IP es un protocolo de enrutado.
+-   El **enrutamiento** o routing es el proceso de determinar la mejor ruta por la cual los datos deben viajar a través de una red.
+
+    -   Se logra a través de las tablas de ruteo.
+    -   Para que los routers puedan construir y mantener sus tablas de ruteo, utilizan **protocolos de enrutamiento** que permiten que los routers se comuniquen entre sí.
+        -   Algunos ejemplos son: OSPF (Open Shortest Path First), BGP (Border Gateway Protocol) y RIP (Routing Information Protocol)
+
+-   El forwarding consiste en seleccionar un port de salida en función de la dirección de destino y lo que indique la tabla de ruteo. Lo utiliza el protocolo de **enrutado**.
+
+#### Routing
+
+-   Las decisiones de forwarding en IP se llevan a cabo localmente.
+-   Produce conectividad entre los distintos puntos de la red.
+-   Se requieren recolectar y procesar un estado global.
+-   Se mantiene un estado global localmente en cada router.
+-   Los estados locales deben ser consistentes, si no la red no habrá convergido a un estado estable y se generan loops.
+-   Se requiere:
+    -   Consistencia
+    -   Completitud
+    -   Escalabilidad
+-   Se desea:
+    -   Caminos óptimos
+    -   Balanceo
+    -   Adaptabilidad
+-   Existen 2 formas de routing que utilizan los routers:
+
+##### Ruteo estático
+
+-   Las rutas son establecidas de antemano por el administrador de forma manual.
+-   Propenso a errores.
+-   Si se cambia la topología requiere cambios manuales en los routers.
+-   Sirve cuando se tiene una red sencilla.
+-   No tiene problemas de seguridad ni de incompatibilidad.
+-   No implica costo de procesamiento extra.
+-   Hay un mayor control.
+-   No es escalable ni tolerante a fallos.
+
+##### Ruteo dinámico
+
+-   Requiere una configuración inicial por el administrador.
+-   Si la topología cambia, se adapta automáticamente.
+-   Facilita mantenimiento cuando se tiene una red compleja.
+-   Implica procesamiento extra.
+-   Es escalable y tolerante a fallos.
+-   El debugging es más complejo.
+
+## Protocolo ICMP
+
+#### Introducción
+
+-   Se trata de un protocolo de capa de red.
+-   Es "helper" de IP, ya que le agrega un control que IP por sí mismo no tiene, y le brinda feedback para poder resolver problemas en la red.
+-   Se encapsula **dentro** de IP.
+-   No es un protocolo de transporte.
+
+#### Mensajes
+
+1. **Ping (Echo Request/Reply):**
+    - Está pensado para probar conectividad IP entre dos hosts.
+    - Sirve para medir el RTT y de esta forma diagnosticar problemas.
+    - Si un nodo recibe un ICMP Echo Request, debe responder con Echo Reply.
+2. **Destinos inalcanzables:**
+    - Si el host está apagado o no responde, se recibe ICMP Host Unreachable.
+    - Si la red destino no se puede encontrar (el router no la tiene en su tabla), se recibe ICMP Network Unreachable.
+    - Si no hay un proceso UDP en el puerto destino, se recibe ICMP Port Unreachable.
+3. **TTL expirado:**
+    - El tiempo de vida expiró, es decir que el paquete tardó demasiado y no llegó a destino a tiempo, posiblemente porque se quedó en loop.
+    - TTL está tanto en ICMP como en IP.
+    - Valor máximo de TTL = 255, pero puede empezar con cualquier valor desde 0.
+4. **Source Quench (Control de congestión)**
+5. **Redirección de ruta**
+6. **Address Mask y Timestamp**
+
+## Protocolo DHCP
+
+#### Introducción
+
+Para que un host se pueda conectar a una red IP necesita 3 parámetros + 1:
+
+1. Para conectarse a la red local:
+    - Dirección IP
+    - Máscara
+2. Para conectarse a otras redes:
+    - Router default (Default Gateway)
+3. Para usar servicios:
+    - Servidor de DNS
+
+Estos parámetros se pueden obtener de distintas formas según si la configuración es manual o dinámica:
+
+1. En la configuración manual:
+
+    - Difícil de mantener.
+    - No escalable.
+    - No sirve para mobilidad.
+
+2. En la configuración dinámica:
+    - RARP.
+    - ICMP.
+    - BOOTP.
+    - DHCP.
+
+#### Definición
+
+-   DHCP (Dynamic Host Configuration Protocol) es otro protocolo de red "helper" de IP.
+-   Como está montado sobre UDP, se lo suele considerar protocolo de nivel de aplicación.
+-   Se utiliza tanto en IPv4 como en IPv6.
+-   Permite la **configuración dinámica de los parámetros de red** de los hosts.
+
+#### Funcionamiento
+
+-   Los hosts inicialmente solo tienen acceso a su red local de forma broadcast.
+-   En la red local existe uno o más servidores de auto-configuración llamados **DHCP servers**.
+-   Los hosts sin parámetros de red envían requerimientos.
+-   Estos servidores atienden los pedidos asignando los valores que brindan conectividad.
+-   El parámetro se reserva por un tiempo.
+-   El cliente está montado sobre UDP en el puerto 68 -> "Bootpc"
+-   El server está montado sobre UDP en el puerto 67 -> "Bootps"
+
+#### Mensajes
+
+1. Discover -> Es de tipo broadcast
+2. Offer -> Es de tipo unicast pero a veces también broadcast
+3. Request -> Es de tipo broadcast
+4. ACK
+5. Release
+6. NAK
+
+## NAT
+
+#### Problemas con IPv4
+
+-   Como IPv4 solo usa 32 bits, su espacio de direcciones se empezó a agotar muy rápido.
+-   Debido a esto, las soluciones temporales que surgieron fueron:
+    -   CIDR: Reduce las tablas de ruteo
+    -   DHCP: Intenta reducir la cantidad de direcciones
+    -   NAT: Intenta reducir la cantidad de direcciones
+-   La solución definitiva surgió en la forma de IPv6 debido a que este protocolo utiliza 128 bits.
+
+#### Problemas con direcciones privadas
+
+-   Como no son únicas:
+    1. Las rutas pueden ser confundidas.
+    2. Habitualmente son filtradas por routers de borde.
+    3. Algunos protocolos no funcionan adecuadamente: FTP, VoLP, etc.
+-   Por esto se requiere un mecanismo de traducir direcciones privadas a públicas:
+    1. Vía NAT (Network Address Translation)
+        - Estático.
+        - Dinámico.
+    2. NAPT (Network Address Port Translation)
+        - Dinámico sobre pool.
+        - Dinámico sobre dir. overload/masquerade.
+
+#### NAT estático vs dinámico
+
+-   De forma básica, se realiza **one-to-one**.
+-   Se mappea una dirección IPv4 privada a una pública.
+-   Si se hace de forma estática requiere la misma cantidad de direcciones públicas que de privadas.
+-   Si se hace de forma dinámica no es necesario, pero sí se requiere un timer por cada entrada. Limita acceso simultáneo de acuerdo al pool pub.
+
+#### NAPT
+
+-   El NAT básico no es implementable cuando se tiene un pool chico de direcciones o no se poseen direcciones públicas asignadas.
+-   En este caso se debe trabajar con campos de la capa de transporte o del payload.
+-   NAPT también se lo conoce como PAT (Port Address Translation).
+-   Es **one-to-many**, a diferencia de NAT.
+-   Se utilizan los puertos de los protocolos u otros valores como ICMP Identifier para resolver el mapeo.
+-   Se pueden usar timers y sesión del protocolo.
+-   En la tabla de traducciones se mantienen el protocolo y los puertos origen y destino.
+-   Se intenta conservar el puerto origen, pero si está "ocupado" se debe reemplazar por otro.
+-   El dispositivo debe violar los límites impuestos por la división en capas.
+-   Existen dos alternativas de funcionamiento:
+    1. Utilizando un pool y haciendo PAT sobre éste.
+    2. Utilizando la dirección IP externa y haciendo overloading/masquerading sobre ésta.
+
+#### Port Forwarding
+
+-   Overloading/masquerading no permiten acceso "desde fuera hacia adentro", solo se permite entrar tráfico de conexiones generadas internamente.
+-   Port Forwarding (re-envío de puerto) permite poder tener servicios en una red privada accesibles desde "afuera".
+-   No requiere NAT estático, se implementa con NATP y mapeo inverso estático de puertos.
+
+---
+
+<h1 align="center">Clase 11 - 4 de junio, 2024</h1>
+
+## IPv6
