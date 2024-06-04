@@ -322,18 +322,22 @@ Es lo mismo que subnettear un bloque.
 
 ● 200.56.168.0/21
 
-Podrían ser por ejemplo /22 - /21 = /1 = 2 redes:
+Este bloque es de clase C, por ende /24 -> /24 - /21 = 3. Significa que este bloque sumariza 2<sup>3</sup> = 8 subredes:
 
-200.56.1010 1**0**00.0 -> 200.56.168.0/22
-200.56.1010 1**1**00.0 -> 200.56.172.0/22
+1. 200.56.168.0/24
+2. 200.56.169.0/24
+3. 200.56.170.0/24
+4. 200.56.171.0/24
+5. 200.56.172.0/24
+6. 200.56.173.0/24
+7. 200.56.174.0/24
+8. 200.56.175.0/24
 
 ● 195.24.0.0/13
 
-Podrían ser por ejemplo /14 - /13 = /1 = 2 redes:
+Este bloque es de clase C, por ende /24 -> /24 - /13 = 11. Significa que este bloque sumariza 2<sup>11</sup> = 2048
 
-195.0001 1**0**00.0.0 -> 195.24.0.0/14
-195.0001 1**1**00.0.0 -> 195.28.0.0/14
-
+...
 ● 195.24/13
 
 Es igual al anterior ya que 195.24 es sinónimo de 195.24.0.0
