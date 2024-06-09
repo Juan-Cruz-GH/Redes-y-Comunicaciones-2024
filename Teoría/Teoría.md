@@ -1226,3 +1226,176 @@ Estos parámetros se pueden obtener de distintas formas según si la configuraci
 <h1 align="center">Clase 11 - 4 de junio, 2024</h1>
 
 ## IPv6
+
+#### Evolución de IPv4
+
+1. Inicialmente IPv4 era Classful.
+2. Luego se creó CIDR (Classless Inter Domain Routing).
+3. Luego se introdujeron las direcciones IPv4 privadas.
+4. Después NAT/NAPT.
+5. NAT introdujo problemas al complejizar demasiado la red y dificultar el acceso directo a la red privada, entre otras cosas.
+6. Para solucionar esto se fueron agregando varios parches: Port Forwarding, UPnP, CGN, STUN, NAT traversal, etc.
+7. Pero nada de esto era escalable, por ende se decidió crear otro protocolo: IPv6.
+
+En resumen:
+
+-   Las direcciones IPv4 se agotaban, y por esto se introdujo NAT.
+-   Las tablas de ruteo se volvieron muy grandes.
+-   Se empezó a producir congestión en los routers por haber demasiado procesamiento.
+-   En el diseño original de IPv4 no se contemplaron varias cuestiones como:
+    -   Seguridad.
+    -   Extensiones al modelo de Calidad de Servicio.
+    -   Fácil auto-configuración y renumeración de direcciones.
+    -   Movilidad a nivel de red.
+
+#### Cambios y beneficios en IPv6
+
+IPv6 introdujo:
+
+-   Direcciones más largas (128 bits en vez de 32).
+-   Datagramas de 40 bytes.
+-   Simplifica la cabecera:
+    -   Se saca la fragmentación, se deja solo de extremo a extremo como opción.
+    -   Se saca el checksum de la cabecera.
+    -   Header de tamaño fijo. No existen más las opciones.
+    -   Identificador de flujo (20 bits).
+    -   Se renombran los campos: Traffic Class, Hop Limit, Next Header.
+    -   Cabeceras de extensión.
+
+Y esto trae los siguientes beneficios:
+
+-   Mayor espacio de direcciones.
+-   Formato de cabecera simplificado.
+-   Menor overhead de procesamiento.
+-   Ordenar las tablas de ruteo.
+-   Conectar todo, usar auto-config de direcciones.
+-   Arquitectura de red jerárquica para un ruteo eficiente.
+-   Seguridad a nivel IP.
+-   Jumbogramas, size(datagrama) > 64KB.
+-   Movilidad y más direcciones de multicast.
+
+#### Cabecera IPv6
+
+![Cabecera IPv6](https://i.imgur.com/uWTrkvX.png)
+
+#### Servicios básicos IPv6
+
+-   Direccionamiento.
+-   Ruteo/Forwarding.
+-   Mux/Demux de protocolos superiores.
+-   Cómo evitar loops.
+-   Descubrimiento de Vecinos (Neighbour Discovery Protocol):
+    -   ND propiamente dicho.
+    -   Router discovery y auto-configuración.
+-   Manejo de grupos de Multicast.
+-   Cabeceras de extensión:
+    -   Permite extender las funcionalidades del protocolo.
+    -   Se encuentran a continuación del header.
+    -   En general, son procesadas por los extremos.
+    -   El orden de estas cabeceras puede ser:
+        -   Hop-by-hop: procesado por cada router.
+        -   Dest Opt: procesado por routers incluidos.
+        -   Routing: procesado por routers, RH0 desaconsejado.
+        -   Frag, Auth, Sec, Dest. procesado por extremos.
+
+#### Tipos de direcciones IPv6
+
+-   Unicast.
+-   Anycast (tomadas del rango Unicast).
+-   Multicast (no hay direcciones broadcast): FF00::/8
+
+#### Scope de las direcciones Unicast
+
+-   Locales (Link-local): FE80::/64
+-   De sitio (site-local, unique-local)
+-   Compatibilidad (ipv4-compat, ipv4-mapped)
+-   Globales: 2000::/3
+
+#### Notación
+
+-   Hexadecimal en grupos de 16 bits separadas por ":".
+-   Los ceros al inicio de cada grupo se pueden obviar:
+    -   2001:0db8:1011:0001:36ed:04ff:fe32:0076 == 2001:db8:1011:1:36ed:4ff:fe32:76
+-   Los ceros contiguos se pueden eliminar con "::". Esto solo se puede usar una vez por dirección.
+    -   2001:db8:1011:1:0:0:0:1 == 2001:db8:1011:1::1
+    -   2001:db8:0:0:1011:0:0:1 == 2001:db8:0:0:1011::1
+    -   2001:db8:0:1011:0:0:0:1 == 2001:db8:0:1011::1
+-   Se usa "[]" para indicar el puerto en una URL:
+    -   http://[2001:db8:1011:1:0:0:0:1]:8080
+-   No se usa máscara, solo prefix length.
+
+#### Direcciones IPv6 locales
+
+![Direcciones IPv6 locales](https://i.imgur.com/sBxivu6.png)
+
+-   Prefijo asignado: FE809::/10
+-   Prefijo utilizado: FE80::/64
+-   Alcance: solo la red directamente conectada.
+-   IID: Interface Identifier, 64 LSb.
+    -   Se genera usando IEEE MAC-64.
+    -   Extended Unique Identifier 64, EUI-64 derivado de IEEE MAC-48, EUI-48.
+    -   Se genera de forma manual.
+
+#### Direcciones IPv6 de Site-Local
+
+![Direcciones IPv6 de Site-Local](https://i.imgur.com/70Efer4.png)
+
+-   Prefijo: FEC0::/10
+-   Alcance: sitio u organización. Similar a las redes privadas de IPv4.
+-   Dificultad de establecer límites.
+
+#### Direcciones IPv6 de Sitio Únicas
+
+![Direcciones IPv6 de Sitio Únicas](https://i.imgur.com/huON8vh.png)
+
+-   Prefijo: FC00::/7, dividido en FC00::/8 y FD00::/8
+-   Prefijo utilizado: FD00::/8
+-   Alcance: sitio u organización.
+-   Reemplazan las direcciones de Site-Local.
+-   El Unique ID debe ser generado de forma pseudo aleatoria.
+
+#### Direcciones IPv4-compat IPv6
+
+![Direcciones IPv4-compat IPv6](https://i.imgur.com/mYTZvcu.png)
+
+-   Desaconsejadas.
+-   Se usaban para la transición
+-   Se le asigna a una dirección IPv4 global única una dirección IPv6.
+
+#### Direcciones IPv4-mapped IPv6
+
+![Direcciones IPv4-mapped IPv6](https://i.imgur.com/irhBA6q.png)
+
+#### Direcciones IPv6 globales
+
+![Direcciones IPv6 globales](https://i.imgur.com/QhUzdAB.png)
+
+-   Prefijo: cedidos por un provider.
+-   Alcance: Internet. Similar a las direcciones públicas de IPv4.
+-   Generación de IID:
+    -   Usando IEEE MAC-64.
+    -   Extended Unique Identifier 64, EUI-64 derivado de IEEE MAC-48, EUI-48 (desaconsejado para dir. estables).
+    -   De forma manual.
+-   Finalmente se generan con el prefijo link-local y realiza DAD (Duplicate Address Detection)
+
+#### Direcciones IPv6 Multicast
+
+![Direcciones IPv6 Multicast](https://i.imgur.com/RLsgMMt.png)
+
+-   Prefijo: FF00::/8
+-   Flags: permanente, temporaria. Otros reservados.
+-   Alcance: 1 -> nodo local. 2 -> link local. 5 -> site local. 8 -> org. local. E -> global.
+-   GID: grupo de multicast.
+
+#### Direcciones IPv6 especiales
+
+-   Any (sin especificar): ::0/0
+-   Loopback/Localhost: ::1/128
+-   Documentación: 2001:db8::/32
+-   6Bone: 3FFE::/16
+
+---
+
+<h1 align="center">Clase 12 - 11 de junio, 2024</h1>
+
+## Protocolos dentro de IPv6.
