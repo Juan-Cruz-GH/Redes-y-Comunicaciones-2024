@@ -1394,8 +1394,30 @@ Y esto trae los siguientes beneficios:
 -   Documentación: 2001:db8::/32
 -   6Bone: 3FFE::/16
 
+## Protocolos dentro de IPv6
+
+#### ICMPv6
+
+-   Parte fundamental de IPv6.
+-   Resuelve:
+    -   Multicast Listener Discovery.
+    -   Neighbour Discovery Protocol.
+    -   Mensajes de control ICMP (ping, errores).
+
+#### IPv6 Stateless Autoconfiguration
+
+-   Parte del Neighbour Discovery Protocol.
+-   Reemplaza la configuración manual que había en IPv4.
+-   Alternativa básica a DHCPv6, pero sin estados, SLAAC.
+-   El router anuncia uno o más prefijos de red mediante mensajes Router Advertisement.
+-   Se pueden solicitar bajo demanda Router Solicitation.
+-   Los hosts auto-configuran su dirección de Link-local y solicitan el prefijo a algún router de la red.
+-   Una vez obtenido se auto-configuran generando sus propias direcciones, previo realizar Duplicate Address Detection.
+-   Determinan y configuran el default gateway a partir de los Router Advertisement recibidos.
+-
+
 ---
 
 <h1 align="center">Clase 12 - 11 de junio, 2024</h1>
 
-## Protocolos dentro de IPv6.
+## Capa de Enlace
