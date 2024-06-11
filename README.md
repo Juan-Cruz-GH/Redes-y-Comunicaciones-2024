@@ -11,3 +11,14 @@
 -   [Google drive redes](https://drive.google.com/drive/folders/1PpIuw0DNzg91yChKWdSRtn9jRsmsN1nJ)
 -   [Videos Kurose](https://www.youtube.com/playlist?list=PLm556dMNleHc1MWN5BX9B2XkwkNE2Djiu)
 -   [Sumarización de rutas - Calculadora](https://www.calcip.com/route-summarization/)
+
+## Temas que NO entran en la primer fecha del parcial práctico
+
+-   HTTP2
+-   HTTP3
+-   FTP
+-   Fragmentación
+-   Ruteo dinámico
+-   NAT
+-   Capa de Enlace
+-   WiFi
