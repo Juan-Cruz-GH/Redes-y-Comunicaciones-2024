@@ -1416,8 +1416,146 @@ Y esto trae los siguientes beneficios:
 -   Determinan y configuran el default gateway a partir de los Router Advertisement recibidos.
 -
 
----
+## Protocolos dentro de IPv6
+
+## Protocolos dentro de IPv6
+
+#### ICMPv6
+
+-   Parte fundamental de IPv6.
+-   Resuelve:
+    -   Multicast Listener Discovery.
+    -   Neighbour Discovery Protocol.
+    -   Mensajes de control ICMP (ping, errores).
+
+#### IPv6 Stateless Autoconfiguration
+
+-   Parte del Neighbour Discovery Protocol.
+-   Reemplaza la configuración manual que había en IPv4.
+-   Alternativa básica a DHCPv6, pero sin estados, SLAAC.
+-   El router anuncia uno o más prefijos de red mediante mensajes Router Advertisement.
+-   Se pueden solicitar bajo demanda Router Solicitation.
+-   Los hosts auto-configuran su dirección de Link-local y solicitan el prefijo a algún router de la red.
+-   Una vez obtenido se auto-configuran generando sus propias direcciones, previo realizar Duplicate Address Detection.
+-   Determinan y configuran el default gateway a partir de los Router Advertisement recibidos.
+-
+
+## Protocolos dentro de IPv6
+
+#### ICMPv6
+
+-   Parte fundamental de IPv6.
+-   Resuelve:
+    -   Multicast Listener Discovery.
+    -   Neighbour Discovery Protocol.
+    -   Mensajes de control ICMP (ping, errores).
+
+#### IPv6 Stateless Autoconfiguration
+
+-   Parte del Neighbour Discovery Protocol.
+-   Reemplaza la configuración manual que había en IPv4.
+-   Alternativa básica a DHCPv6, pero sin estados, SLAAC.
+-   El router anuncia uno o más prefijos de red mediante mensajes Router Advertisement.
+-   Se pueden solicitar bajo demanda Router Solicitation.
+-   Los hosts auto-configuran su dirección de Link-local y solicitan el prefijo a algún router de la red.
+-   Una vez obtenido se auto-configuran generando sus propias direcciones, previo realizar Duplicate Address Detection.
+-   Determinan y configuran el default gateway a partir de los Router Advertisement recibidos.
+-   ***
 
 <h1 align="center">Clase 12 - 11 de junio, 2024</h1>
+
+## Capa de Enlace
+
+#### Introducción
+
+#### Servicios de Capa de Enlace
+
+1. Entramado
+2. Acceso al medio
+3. Entrega confiable
+4. Control de flujo
+5. Detección de errores
+6. Corrección de errores
+7. Half-duplex y Full-duplex
+
+#### Detección de errores
+
+-   Uno de los métodos es el chequeo de paridad.
+-   Otro método es el Internet checksum.
+-   El método más fuerte y usado es el Cyclic Redundancy Check.
+
+#### Tipos de enlaces
+
+1. Punto a punto
+    - PPP para acceso discado
+    - Entre switch Ethernet y Host
+2. Broadcast
+    - Ethernet "legacy"
+    - Hybrid Fiber Cable
+    - 802.11: red wireless
+
+#### Protocolos de acceso múltiple
+
+-   Si dos o más nodos quieren transmitir por el mismo medio al mismo tiempo se produce interferencia.
+-   Los protocolos de A.M determinan cómo los nodos comparten el medio y cuál de ellos gana acceso al mismo y cuándo.
+-   Estos protocolos se dividen en 3 clases:
+    -   Particionado del canal.
+    -   Acceso randómico.
+    -   "Toma de turnos".
+
+#### Protocolos de particionado del canal
+
+##### Time Division Multiple Access (TDMA)
+
+-   División de tiempo de longitud fija.
+
+##### Frequency Division Multiple Access (FDMA)
+
+-   División de frecuencia de longitud fija.
+
+#### Protocolos de acceso randómico
+
+-   Los nodos transmiten cuando quieren sin preocuparse por si hay colisión o no.
+-   Requiere métodos de detección y de solución de colisiones.
+-   Cuando inevitablemente se produce una colisión y se detecta, se ejecuta la solución.
+
+##### Carrier Sense Multiple Access
+
+-   "Escuchar antes de transmitir".
+-   Si el canal está libre, se transmite.
+-   Si está ocupado:
+    -   Volver a escuchar luego de un tiempo.
+    -   ...
+-   No detecta ni soluciona colisiones.
+
+##### Carrier Sense Multiple Access Colision Detection
+
+-   Es igual al anterior solo que agrega detección de colisiones.
+-   ...
+
+#### Protocolos de "Toma de turnos"
+
+-   Buscan lo mejor de los otros 2 protocolos.
+-   Se logra vía **polling**:
+    -   El nodo master "invita" a los nodos slaves a transmitir en turnos.
+    -
+
+#### LAN
+
+-   La LAN es la red de área local, que podemos asimilarla a una oficina, un piso, un edificio, un campus, etc.
+
+#### Direcciones MAC
+
+-   Tienen como objetivo llevar la trama de una interfaz a otra interfaz físicamente conectada (misma LAN).
+-   Son direcciones de 48 bits.
+-   Las asigna la IEEE.
+-   Cada adaptador en la LAN tiene una dirección MAC única.
+-   La dirección MAC FF:FF:FF:FF:FF:FF es de broadcast.
+
+## Dispositivos de Capa de Enlace
+
+...
+
+## ARP
 
 ## Capa de Enlace
