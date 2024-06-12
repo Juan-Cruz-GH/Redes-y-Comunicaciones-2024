@@ -72,11 +72,7 @@ IPv6 tampoco puede funcionar sin direcciones de tipo link-local porque estas dir
 
 ### 10. Indique si las siguientes direcciones son de link-local, global-address, multicast, etc.
 
--   Las direcciones Link-local poseen el prefijo **fe80**.
--   La dirección loopback es siempre **::1**.
--   Las direcciones multicast poseen el prefijo **ff**.
--   Las direcciones globales siempre empiezan con **2** o **3**.
--   La dirección indeterminada es siempre **::**.
+![Tipos de direcciones IPv6](https://cdn.networkacademy.io/sites/default/files/2020-10/ipv6_address_types.png)
 
 | Dirección IPv6             | Tipo?         |
 | -------------------------- | ------------- |
