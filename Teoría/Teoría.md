@@ -1414,7 +1414,50 @@ Y esto trae los siguientes beneficios:
 -   Los hosts auto-configuran su dirección de Link-local y solicitan el prefijo a algún router de la red.
 -   Una vez obtenido se auto-configuran generando sus propias direcciones, previo realizar Duplicate Address Detection.
 -   Determinan y configuran el default gateway a partir de los Router Advertisement recibidos.
--
+
+#### Neighbour Discovery
+
+-   Reemplaza al protocolo ARP de IPv4.
+-   Mappea direcciones IPv6 a direcciones MAC.
+-   Trabaja en conjunto con Ethernet u otros protocolos con broadcast como 802.11.
+-   Trabaja de forma dinámica, auto-aprendizaje y sin configurar.
+-   Puede configurarse de forma estática.
+-   Posee 2 tipos de mensajes:
+    -   Neighbour Solicitation (NS): lo utiliza un dispositivo que quiere saber una de estas 2 cosas:
+        1. La MAC asociada a una dirección IPv6.
+        2. Si una dirección IPv6 determinada ya está siendo usada en la red local, para evitar duplicados.
+    -   Neighbour Advertisement (NA): lo utiliza el dispositivo que le contesta al dispositivo que realizó la solicitud NS.
+
+#### PMTU Discovery
+
+-   Path Maximum Transmission Unit Discovery.
+-   Se utiliza para determinar el MTU en el camino entre 2 dispositivos, para asegurar que los paquetes se envían sin fragmentar si no es necesario.
+-   En IPv6, el MTU mínimo es de 1280 bytes; en IPv4 era de 68 bytes.
+-   Se recomienda usar un MTU de 1500 bytes por ser el estándar.
+-   Se utiliza error ICMPv6: "Message Too Big".
+
+#### Coexistencia de IPv6 e IPv4
+
+-   Debido a que IPv4 fue el estándar por tantas décadas, éste sigue existiendo normalmente hoy en día y no dejará de existir por mucho tiempo más (si es que algún día se vuelve obsoleto).
+-   Se usan muchas técnicas para utilizar ambos protocolos a la vez, como la traducción de IPv6 a IPv4 y viceversa.
+-   Las aplicaciones y bibliotecas de código eligen cual de las 2 versiones usar (registros DNS AAAA vs A).
+
+#### Túneles IP
+
+-   Los túneles IP son métodos para encapsular un tipo de paquete IP dentro de otro, ya sea un paquete IPv6 dentro de uno IPv4 o viceversa.
+-   Existen varios tipos de túneles:
+    -   **6to4:**
+        -   Se utiliza para conectar hosts IPv6 vía una red IPv4.
+        -   Se encapsulan paquetes IPv6 dentro de paquetes IPv4 y cuando llegan a destino se desencapsulan.
+    -   **Teredo:**
+        -   Se utiliza para proveer conectividad IPv6 a nodos que se encuentran detrás de dispositivos que usan NAT.
+        -   Se encapsulan paquetes IPv6 dentro de paquetes UDP.
+    -   **ISATAP:**
+        -   Se utiliza para proveer conectividad IPv6 dentro de una intranet IPv4.
+        -   Se encapsulan paquetes IPv6 dentro de paquetes IPv4.
+    -   **GRE:**
+        -   Se utiliza para encapsular una gran variedad de protocolos de capa de enlace.
+        -   Se encapsula cualquier protocolo de capa 3.
 
 <h1 align="center">Clase 12 - 11 de junio, 2024</h1>
 
