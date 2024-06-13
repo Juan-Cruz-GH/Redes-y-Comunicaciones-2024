@@ -436,8 +436,10 @@ Subnetteo la red 205.10.201.32/27:
 
 Subnetteo la red 205.10.201.48/28:
 
--   205.10.201. 00110**0**00 -> **205.10.201.48/30** -> **La asigno a la red punto a punto**
--   205.10.201. 00110**1**00 -> 205.10.201.52/30 -> Libre
+-   205.10.201. 0011**00**00 -> **205.10.201.48/30** -> **La asigno a la red punto a punto**
+-   205.10.201. 0011**01**00 -> 205.10.201.52/30 -> Libre
+-   205.10.201. 0011**10**00 -> 205.10.201.56/30 -> Libre
+-   205.10.201. 0011**11**00 -> 205.10.201.60/30 -> Libre
 
 ##### c. Para mantener el orden y el inventario de direcciones disponibles, haga un listado de todas las direcciones libres que le quedaron, agrupándolas utilizando CIDR.
 
@@ -446,7 +448,15 @@ Redes libres que quedaron:
 -   205.10.208.0/20
 -   205.10.201.52/30
 
-No se pueden agrupar vía CIDR porque tienen distinta máscara.
+    -   No se pueden agrupar vía CIDR porque tienen distinta máscara.
+
+-   205.10.201.56/30
+-   205.10.201.60/30
+
+    -   Las agrupo (tercer octeto):
+    -   0011 1000
+    -   0011 1100
+    -   **205.10.201.56/29**
 
 -   205.10.202.0/24
 -   205.10.203.0/24
@@ -455,16 +465,14 @@ No se pueden agrupar vía CIDR porque tienen distinta máscara.
 -   205.10.206.0/24
 -   205.10.207.0/24
 
-Las agrupo (tercer octeto):
-
-1100 1010
-1100 1011
-1100 1100
-1100 1101
-1100 1110
-1100 1111
-
--> **205.10.128.0/21**
+    -   Las agrupo (tercer octeto):
+    -   1100 1010
+    -   1100 1011
+    -   1100 1100
+    -   1100 1101
+    -   1100 1110
+    -   1100 1111
+    -   **205.10.200.0/21**
 
 -   205.10.201.64/27
 -   205.10.201.96/27
@@ -472,17 +480,14 @@ Las agrupo (tercer octeto):
 -   205.10.201.160/27
 -   205.10.201.192/27
 -   205.10.201.224/27
-
-Las agrupo (cuarto octeto):
-
-0100 0000
-0110 0000
-1000 0000
-1010 0000
-1100 0000
-1110 0000
-
--> **205.10.201.0/24**
+    -   Las agrupo (cuarto octeto):
+    -   0100 0000
+    -   0110 0000
+    -   1000 0000
+    -   1010 0000
+    -   1100 0000
+    -   1110 0000
+    -   **205.10.201.0/24**
 
 ##### d. Asigne direcciones IP a todas las interfaces de la topología que sea posible.
 
@@ -526,7 +531,7 @@ Subnetteo la red original 200.100.8.0/22:
 -   200.100. 0000100**0** .0 -> **200.100.8.0/24** -> **La asigno a la red A**
 -   200.100. 0000100**1** .0 -> 200.100.9.0/24 -> Subnetteo
 
-    200.100.10.0/24 -> Libre
+    200.100.10.0/24 -> Subnetteo
     200.100.11.0/24 -> Libre
 
 Subnetteo la red 200.100.9.0/24:
