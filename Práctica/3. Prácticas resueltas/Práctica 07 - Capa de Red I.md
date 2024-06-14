@@ -225,7 +225,7 @@ Como las redes siempre empiezan desde 0, la subred 710 es en realidad 709.
 
 1. Pasamos 709 a binario: 10110001 01
 2. Pasamos la red original a binario: 10000000.00110010.00000000.00000000
-3. Ubicamos el 709: 10000000.00110010.10110001.01000000
+3. Ubicamos el 709 en la **parte de host** de la red original: 10000000.00110010.10110001.01000000
 4. Pasamos a decimal: **128.50.177.64/26**
 
 ###### v. Dirección de broadcast de la subred 710.
