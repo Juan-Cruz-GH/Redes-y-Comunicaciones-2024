@@ -386,14 +386,20 @@ Port forwarding consiste en decirle a nuestro router que envíe datos que reciba
 ● Si va a utilizar un bloque para dividir en subredes, asignar primero la red con más cantidad de hosts y luego las que tienen menos.
 ● Las redes elegidas deben ser válidas.
 
-Primero clasificamos a los bloques dados en públicos y privados (127.0.0.0/24 no es ni público ni privado):
+Primero descartamos los bloques especiales porque no nos sirven:
 
-| Público          | Privado         |
-| ---------------- | --------------- |
-| 224.10.0.128/27  | 192.168.10.0/24 |
-| 224.10.0.64/26   | 192.168.10.0/29 |
-| 226.10.20.128/27 | 10.10.10.0/27   |
-| 200.30.55.64/26  |                 |
+-   127.0.0.0/24 es de localhost, no sirve.
+-   224.10.0.128/27 es de multicast, no sirve.
+-   224.10.0.64/26 es de multicast, no sirve.
+-   226.10.20.128/27 es de multicast, no sirve.
+
+Luego clasificamos a los bloques válidos que nos quedaron dados en públicos y privados:
+
+| Público         | Privado         |
+| --------------- | --------------- |
+| 200.30.55.64/26 | 192.168.10.0/24 |
+|                 | 192.168.10.0/29 |
+|                 | 10.10.10.0/27   |
 
 Tenemos que asignar un total de 6 redes, en orden de número de hosts:
 
@@ -410,25 +416,30 @@ Tenemos que asignar un total de 6 redes, en orden de número de hosts:
     -   192.168.10. **0**0000000 -> 192.168.10.0/25 -> **La asigno a Red A**
     -   192.168.10. **1**0000000 -> 192.168.10.128/25 -> **La asigno a la Red B**
 
--   **Asignamos 224.10.0.128/27 a la Red D** ya que requiere que sea pública y la máscara cabe perfecto.
--   Usamos el bloque 226.10.20.128/27 ya que es el más cercano a la máscara /28 que necesitamos para Red C.
+-   Luego para la Red C y D usamos el bloque 200.30.55.64/26 ya que es el único bloque público y estas redes tienen la restricción de que deben ser públicas.
 -   Subnetteamos el bloque:
 
-    -   226.10.20.100**0** 0000 -> 226.10.20.128/28 -> **La asigno a la Red C**
-    -   226.10.20.100**1** 0000 -> 226.10.20.160/28 -> Libre
+    -   200.30.55. 01**0**00000 -> 200.30.55.64/27 -> **La asigno a la Red D**
+    -   200.30.55. 01**1**00000 -> 200.30.55.96/27 -> Subnetteo
+
+-   Subnetteamos el bloque que quedó:
+
+    -   200.30.55. 011**0**0000 -> 200.30.55.96/28 -> **La asigno a la Red C**
+    -   200.30.55. 011**1**0000 -> 200.30.55.112/28 -> Libre
 
 -   Por último, queda RouterA <-> RouterE <-> RouterB que requiere /29 y RouterD <-> RouterC que requiere /30:
+    -   Como el enunciado indica que estas redes deben ser privadas, elegimos uno de los bloques privados: el único que podemos usar es 10.10.10.0/27 ya que 192.168.10.0/24 ya está agotado y 192.168.10.0/29 estaba dentro de ese /24 mencionado.
     -   Como podemos ver en el diagrama, parte del bloque 10.10.10.0/27 ya estaba siendo usado, por ende tenemos que ver qué parte del bloque quedó libre.
-    -   Como /30 - /27 = /3, podemos ver que se subnetteó el bloque 10.10.10.0/27 en 2<sup>3</sup> = 8 subredes:
-        1. 10.10.10.0/30 -> Ya está usada.
-        2. 10.10.10.4/30 -> Ya está usada.
-        3. 10.10.10.8/30 -> Ya está usada.
-        4. 10.10.10.12/30 -> Ya está usada.
-        5. 10.10.10.16/30 -> Libre -> **Asigno RouterD <-> RouterC**
+    -   Como /30 - /27 = /3 y 2<sup>3</sup> = 8, podemos ver que originalmente, en el gráfico se subnetteó el bloque 10.10.10.0/27 en 8 subredes:
+        1. 10.10.10.0/30 -> Ya está usada (RouterE <-> RouterD).
+        2. 10.10.10.4/30 -> Ya está usada (RouterE <-> Border).
+        3. 10.10.10.8/30 -> Ya está usada (Border <-> RouterC).
+        4. 10.10.10.12/30 -> Ya está usada (RouterE <-> RouterC).
+        5. 10.10.10.16/30 -> **Asigno RouterD <-> RouterC**
         6. 10.10.10.20/30 -> Libre
-        7. 10.10.10.24/30 -> Libre
-        8. 10.10.10.28/30 -> Libre
-    -   Convertimos esas últimas 3 subredes en 1 subred /29 -> 10.10.10.20/29 -> **Asigno RouterA <-> RouterE <-> RouterB**
+        7. 10.10.10.24/30 -> Supernetteo
+        8. 10.10.10.28/30 -> Supernetteo
+    -   Supernetteamos esas últimas 2 subredes en 1 subred /29 -> 10.10.10.24/29 -> **Asigno RouterA <-> RouterE <-> RouterB**
 
 ### 13. Asigne IP a todas las interfaces de las redes listadas a continuación. Nota: Los routers deben tener asignadas las primeras IP de la red. Para enlaces entre routers, asignar en el siguiente orden: RouterA, RouterB, RouterC, RouterD y RouterE.
 
@@ -445,18 +456,18 @@ Tenemos que asignar un total de 6 redes, en orden de número de hosts:
 -   **Red B: 192.168.10.128/25**
     -   RouterB_eth0: .129/25
     -   PC-E: .130/25
--   **Red C: 226.10.20.128/28**
-    -   RouterC_eth2: .129/28
-    -   MailServer: .130/28
-    -   WebServer1: .131/28
--   **Red D: 224.10.0.128/27**
-    -   RouterD_eth1: .129/27
-    -   WebServer2: .130/27
-    -   DNSResolver: .131/27
--   **RouterA <-> RouterE <-> RouterB: 10.10.10.20/29**
-    -   RouterA_eth0: .21/29
-    -   RouterB_eth1: .22/29
-    -   RouterE_eth0: .23/29
+-   **Red C: 200.30.55.96/28**
+    -   RouterC_eth2: .97/28
+    -   MailServer: .98/28
+    -   WebServer1: .99/28
+-   **Red D: 200.30.55.64/27**
+    -   RouterD_eth1: .65/27
+    -   WebServer2: .66/27
+    -   DNSResolver: .67/27
+-   **RouterA <-> RouterE <-> RouterB: 10.10.10.24/29**
+    -   RouterA_eth0: .25/29
+    -   RouterB_eth1: .26/29
+    -   RouterE_eth0: .27/29
 -   **RouterD <-> RouterC: 10.10.10.16/30**
     -   RouterC_eth1: .17/30
     -   RouterD_eth0: .18/30
@@ -472,14 +483,14 @@ Tenemos que asignar un total de 6 redes, en orden de número de hosts:
 
 | Red destino                     | Red destino (IP) | Mask | Next-Hop    | Iface |
 | ------------------------------- | ---------------- | ---- | ----------- | ----- |
-| RouterA <-> RouterE <-> RouterB | 10.10.10.20      | /29  | -           | eth0  |
+| RouterA <-> RouterE <-> RouterB | 10.10.10.24      | /29  | -           | eth0  |
 | RouterE <-> Border              | 10.10.10.4       | /30  | -           | eth3  |
 | RouterE <-> RouterC             | 10.10.10.12      | /30  | -           | eth1  |
 | RouterE <-> RouterD             | 10.10.10.0       | /30  | -           | eth2  |
-| Red A                           | 192.168.10.0     | /25  | 10.10.10.21 | eth0  |
-| Red B                           | 192.168.10.128   | /25  | 10.10.10.22 | eth0  |
-| Red C                           | 226.10.20.128    | /28  | 10.10.10.14 | eth1  |
-| Red D                           | 224.10.0.128     | /27  | 10.10.10.2  | eth2  |
+| Red A                           | 192.168.10.0     | /25  | 10.10.10.25 | eth0  |
+| Red B                           | 192.168.10.128   | /25  | 10.10.10.26 | eth0  |
+| Red C                           | 200.30.55.96     | /28  | 10.10.10.14 | eth1  |
+| Red D                           | 200.30.55.64     | /27  | 10.10.10.2  | eth2  |
 | RouterD <-> RouterC             | 10.10.10.16      | /30  | 10.10.10.2  | eth2  |
 | Border <-> RouterC              | 10.10.10.8       | /30  | 10.10.10.6  | eth2  |
 | Border <-> ISP                  | 172.16.0.0       | /24  | 10.10.10.6  | eth2  |
@@ -491,14 +502,14 @@ Tenemos que asignar un total de 6 redes, en orden de número de hosts:
 | Border <-> ISP                  | 172.16.0.0       | /24  | -          | eth1  |
 | Border <-> RouterE              | 10.10.10.4       | /30  | -          | eth2  |
 | Border <-> RouterC              | 10.10.10.8       | /30  | -          | eth0  |
-| RouterA <-> RouterE <-> RouterB | 10.10.10.20      | /29  | 10.10.10.5 | eth2  |
+| RouterA <-> RouterE <-> RouterB | 10.10.10.24      | /29  | 10.10.10.5 | eth2  |
 | Red A                           | 192.168.10.0     | /25  | 10.10.10.5 | eth2  |
 | Red B                           | 192.168.10.128   | /25  | 10.10.10.5 | eth2  |
 | RouterE <-> RouterC             | 10.10.10.12      | /30  | 10.10.10.5 | eth2  |
 | RouterE <-> RouterD             | 10.10.10.0       | /30  | 10.10.10.5 | eth2  |
 | RouterD <-> RouterC             | 10.10.10.16      | /30  | 10.10.10.9 | eth0  |
-| Red C                           | 226.10.20.128    | /28  | 10.10.10.9 | eth0  |
-| Red D                           | 224.10.0.128     | /27  | 10.10.10.5 | eth2  |
+| Red C                           | 200.30.55.96     | /28  | 10.10.10.9 | eth0  |
+| Red D                           | 200.30.55.64     | /27  | 10.10.10.9 | eth0  |
 
 -   Podemos sumarizar:
 
@@ -525,7 +536,7 @@ Tenemos que asignar un total de 6 redes, en orden de número de hosts:
 | RouterE <-> RouterC, RouterE <-> RouterD | 10.10.10.0       | /28  | 10.10.10.5 | eth2  |
 | RouterD <-> RouterC                      | 10.10.10.16      | /30  | 10.10.10.9 | eth0  |
 | Red C                                    | 226.10.20.128    | /28  | 10.10.10.9 | eth0  |
-| Red D                                    | 224.10.0.128     | /27  | 10.10.10.5 | eth2  |
+| Red D                                    | 224.10.0.128     | /27  | 10.10.10.9 | eth0  |
 
 ## Aclaración importante
 
