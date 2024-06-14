@@ -358,4 +358,6 @@ If-Modified-Since: Sat, 20 Jan 2018 13:02:41 GMT
 
 ##### ¿Cuál habría sido la respuesta del servidor web? ¿Qué habría hecho el navegador en este caso?
 
-En ese caso, como la condición es verdadera, se hubiera obtenido la misma respuesta que antes. El navegador hubiera mostrado el recurso solicitado con éxito.
+En ese caso, como la fecha es exactamente igual al If, la condición es falsa, es decir que no se modificó el recurso en una fecha y hora posterior a la indicada en el If.
+
+La respuesta hubiera sido un código HTTP 304 Not Modified.
