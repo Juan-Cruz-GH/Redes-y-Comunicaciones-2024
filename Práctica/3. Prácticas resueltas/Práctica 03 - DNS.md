@@ -49,7 +49,7 @@ Cuando el cliente ingresa un nombre de dominio en el browser o cualquier otra ap
 
 El orden completo de resolución DNS sería:
 
-La PC chequea el archivo hosts, si no encuentra la IP ahí -> Resolver. Si éste no tiene la IP en caché le consulta al -> Servidor DNS local. Si éste no tiene la IP en caché le consulta al -> Servidor root -> etc etc.
+La PC chequea el archivo hosts, si no encuentra la IP ahí → Resolver. Si éste no tiene la IP en caché le consulta al → Servidor DNS local. Si éste no tiene la IP en caché le consulta al → Servidor root → etc etc.
 
 ### 6. Describa para qué se utilizan los siguientes tipos de registros de DNS:
 

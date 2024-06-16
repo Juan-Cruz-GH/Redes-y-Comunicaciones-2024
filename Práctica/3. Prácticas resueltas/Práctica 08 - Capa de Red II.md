@@ -35,12 +35,12 @@ Para fragmentar el paquete tomamos el valor del MTU (600 en este caso), le resta
 2. Offsets:
     - 600 - 20 / 8 = 72. (0 - 72 - 144 - 216 - etc)
 3. Tamaño máximo de un fragmento:
-    - Múltiplo de 8 más cercano a 580 -> 576
-    - Le sumamos el header (no se suma en el último fragmento) -> 576 + 20 = **596**
+    - Múltiplo de 8 más cercano a 580 → 576
+    - Le sumamos el header (no se suma en el último fragmento) → 576 + 20 = **596**
 4. Los fragmentos serán:
     - Tamaño paquete + (Tamaño header \* Cantidad de fragmentos - 1)
     - 1500 + (20 \* 3 - 1) = 1500 + 40 = **1540**
-    - 596 + 596 + x = 1540 -> x = **348**
+    - 596 + 596 + x = 1540 → x = **348**
     - Fragmento 1: 596 bytes; Fragmento 2: 596 bytes; Fragmento 3: 348 bytes.
 
 ##### d. ¿Dónde se unen nuevamente los fragmentos? ¿Qué sucede si un fragmento no llega?
@@ -98,23 +98,23 @@ Una máquina conectada a una red pero no a Internet sí tiene tabla de ruteo, ya
 2.  Luego voy a cambiar eth5 por eth2 en el router D, ya que los nombres de las interfaces suelen ser incrementales, no tiene sentido pasar de eth1 a eth3 y luego eth5.
 3.  La cuarta entrada de la tabla está mal porque no se puede incluir una máscara en el Next-Hop, así que la borramos.
 4.  En la sexta entrada de la tabla la Red Destino está mal escrita y el Next-Hop es incorrecto.
-    -   205.10.128.0 -> 205.10.0.128.
-    -   10.0.0.2 -> 10.0.0.1
+    -   205.10.128.0 → 205.10.0.128.
+    -   10.0.0.2 → 10.0.0.1
 5.  En la octava entrada de la tabla la Red Destino está mal escrita y el Next-Hop e Iface no son una ruta óptima.
-    -   205.20.0.193 -> 205.20.0.192
-    -   10.0.0.1 -> 10.0.0.5
-    -   eth5 -> eth0
+    -   205.20.0.193 → 205.20.0.192
+    -   10.0.0.1 → 10.0.0.5
+    -   eth5 → eth0
 
 La tabla final corregida quedaría:
 
 | Red Destino     | Red Destino (IP) | Mask | Next-Hop  | Iface |
 | --------------- | ---------------- | ---- | --------- | ----- |
 | D               | 153.10.20.128    | /27  | -         | eth1  |
-| Rtr-D <-> Rtr-B | 10.0.0.4         | /30  | -         | eth0  |
-| Rtr-D <-> Rtr-A | 10.0.0.0         | /30  | -         | eth2  |
-| Rtr-D <-> Rtr-C | 10.0.0.8         | /30  | -         | eth3  |
-| Rtr-B <-> Rtr-A | 10.0.0.12        | /30  | 10.0.0.5  | eth0  |
-| Rtr-C <-> Rtr-A | 10.0.0.16        | /30  | 10.0.0.10 | eth3  |
+| Rtr-D ↔ Rtr-B | 10.0.0.4         | /30  | -         | eth0  |
+| Rtr-D ↔ Rtr-A | 10.0.0.0         | /30  | -         | eth2  |
+| Rtr-D ↔ Rtr-C | 10.0.0.8         | /30  | -         | eth3  |
+| Rtr-B ↔ Rtr-A | 10.0.0.12        | /30  | 10.0.0.5  | eth0  |
+| Rtr-C ↔ Rtr-A | 10.0.0.16        | /30  | 10.0.0.10 | eth3  |
 | C               | 163.10.5.64      | /27  | 10.0.0.10 | eth3  |
 | E               | 205.20.0.128     | /26  | 10.0.0.5  | eth0  |
 | B               | 205.20.0.192     | /26  | 10.0.0.5  | eth0  |
@@ -172,22 +172,22 @@ No, no se podría, ya que en el caso de Rtr-B, si bien la máscara y Next-Hop se
 | --------------- | ---------------- | ---- | --------- | ----- |
 | B               | 205.20.0.192     | /26  | -         | eth0  |
 | E               | 205.20.0.128     | /26  | -         | eth2  |
-| Rtr-B <-> Rtr-D | 10.0.0.4         | /30  | -         | eth1  |
-| Rtr-B <-> Rtr-A | 10.0.0.12        | /30  | -         | eth3  |
-| Rtr-A <-> Rtr-C | 10.0.0.16        | /30  | 10.0.0.13 | eth3  |
-| Rtr-A <-> Rtr-D | 10.0.0.0         | /30  | 10.0.0.13 | eth3  |
-| Rtr-D <-> Rtr-C | 10.0.0.8         | /30  | 10.0.0.6  | eth1  |
+| Rtr-B ↔ Rtr-D | 10.0.0.4         | /30  | -         | eth1  |
+| Rtr-B ↔ Rtr-A | 10.0.0.12        | /30  | -         | eth3  |
+| Rtr-A ↔ Rtr-C | 10.0.0.16        | /30  | 10.0.0.13 | eth3  |
+| Rtr-A ↔ Rtr-D | 10.0.0.0         | /30  | 10.0.0.13 | eth3  |
+| Rtr-D ↔ Rtr-C | 10.0.0.8         | /30  | 10.0.0.6  | eth1  |
 | A               | 205.10.0.128     | /25  | 10.0.0.13 | eth3  |
 | D               | 153.10.20.128    | /27  | 10.0.0.6  | eth1  |
 | C               | 163.10.5.64      | /27  | 10.0.0.13 | eth3  |
-| Rtr-A <-> ISP-1 | 120.0.0.0        | /30  | 10.0.0.13 | eth3  |
-| Rtr-C <-> ISP-2 | 130.0.10.0       | /30  | 10.0.0.13 | eth3  |
+| Rtr-A ↔ ISP-1 | 120.0.0.0        | /30  | 10.0.0.13 | eth3  |
+| Rtr-C ↔ ISP-2 | 130.0.10.0       | /30  | 10.0.0.13 | eth3  |
 | Default Gateway | 0.0.0.0          | /0   | 10.0.0.13 | eth3  |
 
 -   Sumarizamos 10.0.0.16 con 10.0.0.0:
     10.0.0. 00010000
     10.0.0. 00000000
-    -> 10.0.0.0 /27 10.0.0.13 eth3
+    → 10.0.0.0 /27 10.0.0.13 eth3
 
 ##### g. Si Rtr-C pierde conectividad contra ISP-2, ¿es posible restablecer el acceso a Internet sin esperar a que vuelva la conectividad entre esos dispositivos?
 
@@ -206,7 +206,7 @@ Si Rtr-C pierde conexión a Internet vía ISP-2, podemos modificar la tabla de r
 5. router3 matchea la IP con la tercer entrada de su tabla, por ende sale por eth2 hacia PC-C
 
 -   El emisor recibirá ICMP Echo Reply.
--   Saltos: PC-B -> router2 -> router1 -> router3 -> PC-C
+-   Saltos: PC-B → router2 → router1 → router3 → PC-C
 
 ● Un mensaje ICMP enviado por PC-C a PC-B.
 
@@ -217,7 +217,7 @@ Si Rtr-C pierde conexión a Internet vía ISP-2, podemos modificar la tabla de r
 5. router2 matchea la IP con la tercer entrada de su tabla, por ende sale por eth2 hacia PC-B
 
 -   El emisor recibirá ICMP Echo Reply.
--   Saltos: PC-C -> router3 -> router4 -> router2 -> PC-B
+-   Saltos: PC-C → router3 → router4 → router2 → PC-B
 
 ● Un mensaje ICMP enviado por PC-C a 8.8.8.8.
 
@@ -226,17 +226,17 @@ Si Rtr-C pierde conexión a Internet vía ISP-2, podemos modificar la tabla de r
 3. La IP 8.8.8.8 no matchea en su tabla, y como no tiene default gateway se termina ahí
 
 -   El emisor recibirá ICMP Network Unreachable
--   Saltos: PC-C -> router3 -> router4
+-   Saltos: PC-C → router3 → router4
 
 ● Un mensaje ICMP enviado por PC-B a 8.8.8.8.
 
 1. PC-B le pasa el pedido a router2
 2. La IP 8.8.8.8 no matchea en su tabla, por ende sale por su default gateway hacia router1
 3. La IP 8.8.8.8 no matchea en su tabla, por ende sale por su default gateway hacia router2
-4. El paquete se queda en loop (router1 -> router2 -> router1 ...) hasta que se le acabe el TTL
+4. El paquete se queda en loop (router1 → router2 → router1 ...) hasta que se le acabe el TTL
 
 -   El emisor recibirá ICMP TTL Expired
--   Saltos: PC-B -> router2 -> router1 -> router2 ...
+-   Saltos: PC-B → router2 → router1 → router2 ...
 
 ## DHCP y NAT
 
@@ -357,11 +357,11 @@ SRV-B (ss)
 
 Hay 5 conexiones establecidas:
 
-1. 192.168.1.2:49273 -> 190.50.10.63:80
-2. 192.168.1.2:51238 -> 190.50.10.81:8080
-3. 192.168.1.3:52734 -> 190.50.10.81:8081
-4. 192.168.1.2:37484 -> 190.50.10.63:25
-5. 192.168.1.3:39275 -> 190.50.10.81:8080
+1. 192.168.1.2:49273 → 190.50.10.63:80
+2. 192.168.1.2:51238 → 190.50.10.81:8080
+3. 192.168.1.3:52734 → 190.50.10.81:8081
+4. 192.168.1.2:37484 → 190.50.10.63:25
+5. 192.168.1.3:39275 → 190.50.10.81:8080
 
 ###### ii. ¿Quién inició cada una de las conexiones? ¿Podrían haberse iniciado en sentido inverso? ¿Por qué? Investigue qué es port forwarding y si serviría como solución en este caso.
 
@@ -403,43 +403,43 @@ Luego clasificamos a los bloques válidos que nos quedaron dados en públicos y 
 
 Tenemos que asignar un total de 6 redes, en orden de número de hosts:
 
-1. Red A: 100 hosts -> /25
-2. Red B: 70 hosts -> /25
-3. Red D: 16 hosts -> /27 (/28 no alcanza porque 2<sup>4</sup> - 2 = 14)
-4. Red C: 14 hosts -> /28
-5. RouterA <-> RouterE <-> RouterB: 3 hosts -> /29
-6. RouterD <-> RouterC: 2 hosts -> /30
+1. Red A: 100 hosts → /25
+2. Red B: 70 hosts → /25
+3. Red D: 16 hosts → /27 (/28 no alcanza porque 2<sup>4</sup> - 2 = 14)
+4. Red C: 14 hosts → /28
+5. RouterA ↔ RouterE ↔ RouterB: 3 hosts → /29
+6. RouterD ↔ RouterC: 2 hosts → /30
 
 -   Usamos el bloque 192.168.10.0/24 ya que es el más cercano a la máscara /25 que necesitamos para Red A y B.
 -   Subnetteamos el bloque:
 
-    -   192.168.10. **0**0000000 -> 192.168.10.0/25 -> **La asigno a Red A**
-    -   192.168.10. **1**0000000 -> 192.168.10.128/25 -> **La asigno a la Red B**
+    -   192.168.10. **0**0000000 → 192.168.10.0/25 → **La asigno a Red A**
+    -   192.168.10. **1**0000000 → 192.168.10.128/25 → **La asigno a la Red B**
 
 -   Luego para la Red C y D usamos el bloque 200.30.55.64/26 ya que es el único bloque público y estas redes tienen la restricción de que deben ser públicas.
 -   Subnetteamos el bloque:
 
-    -   200.30.55. 01**0**00000 -> 200.30.55.64/27 -> **La asigno a la Red D**
-    -   200.30.55. 01**1**00000 -> 200.30.55.96/27 -> Subnetteo
+    -   200.30.55. 01**0**00000 → 200.30.55.64/27 → **La asigno a la Red D**
+    -   200.30.55. 01**1**00000 → 200.30.55.96/27 → Subnetteo
 
 -   Subnetteamos el bloque que quedó:
 
-    -   200.30.55. 011**0**0000 -> 200.30.55.96/28 -> **La asigno a la Red C**
-    -   200.30.55. 011**1**0000 -> 200.30.55.112/28 -> Libre
+    -   200.30.55. 011**0**0000 → 200.30.55.96/28 → **La asigno a la Red C**
+    -   200.30.55. 011**1**0000 → 200.30.55.112/28 → Libre
 
--   Por último, queda RouterA <-> RouterE <-> RouterB que requiere /29 y RouterD <-> RouterC que requiere /30:
+-   Por último, queda RouterA ↔ RouterE ↔ RouterB que requiere /29 y RouterD ↔ RouterC que requiere /30:
     -   Como el enunciado indica que estas redes deben ser privadas, elegimos uno de los bloques privados: el único que podemos usar es 10.10.10.0/27 ya que 192.168.10.0/24 ya está agotado y 192.168.10.0/29 estaba dentro de ese /24 mencionado.
     -   Como podemos ver en el diagrama, parte del bloque 10.10.10.0/27 ya estaba siendo usado, por ende tenemos que ver qué parte del bloque quedó libre.
     -   Como /30 - /27 = /3 y 2<sup>3</sup> = 8, podemos ver que originalmente, en el gráfico se subnetteó el bloque 10.10.10.0/27 en 8 subredes:
-        1. 10.10.10.0/30 -> Ya está usada (RouterE <-> RouterD).
-        2. 10.10.10.4/30 -> Ya está usada (RouterE <-> Border).
-        3. 10.10.10.8/30 -> Ya está usada (Border <-> RouterC).
-        4. 10.10.10.12/30 -> Ya está usada (RouterE <-> RouterC).
-        5. 10.10.10.16/30 -> **Asigno RouterD <-> RouterC**
-        6. 10.10.10.20/30 -> Libre
-        7. 10.10.10.24/30 -> Supernetteo
-        8. 10.10.10.28/30 -> Supernetteo
-    -   Supernetteamos esas últimas 2 subredes en 1 subred /29 -> 10.10.10.24/29 -> **Asigno RouterA <-> RouterE <-> RouterB**
+        1. 10.10.10.0/30 → Ya está usada (RouterE ↔ RouterD).
+        2. 10.10.10.4/30 → Ya está usada (RouterE ↔ Border).
+        3. 10.10.10.8/30 → Ya está usada (Border ↔ RouterC).
+        4. 10.10.10.12/30 → Ya está usada (RouterE ↔ RouterC).
+        5. 10.10.10.16/30 → **Asigno RouterD ↔ RouterC**
+        6. 10.10.10.20/30 → Libre
+        7. 10.10.10.24/30 → Supernetteo
+        8. 10.10.10.28/30 → Supernetteo
+    -   Supernetteamos esas últimas 2 subredes en 1 subred /29 → 10.10.10.24/29 → **Asigno RouterA ↔ RouterE ↔ RouterB**
 
 ### 13. Asigne IP a todas las interfaces de las redes listadas a continuación. Nota: Los routers deben tener asignadas las primeras IP de la red. Para enlaces entre routers, asignar en el siguiente orden: RouterA, RouterB, RouterC, RouterD y RouterE.
 
@@ -464,11 +464,11 @@ Tenemos que asignar un total de 6 redes, en orden de número de hosts:
     -   RouterD_eth1: .65/27
     -   WebServer2: .66/27
     -   DNSResolver: .67/27
--   **RouterA <-> RouterE <-> RouterB: 10.10.10.24/29**
+-   **RouterA ↔ RouterE ↔ RouterB: 10.10.10.24/29**
     -   RouterA_eth0: .25/29
     -   RouterB_eth1: .26/29
     -   RouterE_eth0: .27/29
--   **RouterD <-> RouterC: 10.10.10.16/30**
+-   **RouterD ↔ RouterC: 10.10.10.16/30**
     -   RouterC_eth1: .17/30
     -   RouterD_eth0: .18/30
 
@@ -483,31 +483,31 @@ Tenemos que asignar un total de 6 redes, en orden de número de hosts:
 
 | Red destino                     | Red destino (IP) | Mask | Next-Hop    | Iface |
 | ------------------------------- | ---------------- | ---- | ----------- | ----- |
-| RouterA <-> RouterE <-> RouterB | 10.10.10.24      | /29  | -           | eth0  |
-| RouterE <-> Border              | 10.10.10.4       | /30  | -           | eth3  |
-| RouterE <-> RouterC             | 10.10.10.12      | /30  | -           | eth1  |
-| RouterE <-> RouterD             | 10.10.10.0       | /30  | -           | eth2  |
+| RouterA ↔ RouterE ↔ RouterB | 10.10.10.24      | /29  | -           | eth0  |
+| RouterE ↔ Border              | 10.10.10.4       | /30  | -           | eth3  |
+| RouterE ↔ RouterC             | 10.10.10.12      | /30  | -           | eth1  |
+| RouterE ↔ RouterD             | 10.10.10.0       | /30  | -           | eth2  |
 | Red A                           | 192.168.10.0     | /25  | 10.10.10.25 | eth0  |
 | Red B                           | 192.168.10.128   | /25  | 10.10.10.26 | eth0  |
 | Red C                           | 200.30.55.96     | /28  | 10.10.10.14 | eth1  |
 | Red D                           | 200.30.55.64     | /27  | 10.10.10.2  | eth2  |
-| RouterD <-> RouterC             | 10.10.10.16      | /30  | 10.10.10.2  | eth2  |
-| Border <-> RouterC              | 10.10.10.8       | /30  | 10.10.10.6  | eth2  |
-| Border <-> ISP                  | 172.16.0.0       | /24  | 10.10.10.6  | eth2  |
+| RouterD ↔ RouterC             | 10.10.10.16      | /30  | 10.10.10.2  | eth2  |
+| Border ↔ RouterC              | 10.10.10.8       | /30  | 10.10.10.6  | eth2  |
+| Border ↔ ISP                  | 172.16.0.0       | /24  | 10.10.10.6  | eth2  |
 
 -   **Tabla de ruteo Border:**
 
 | Red destino                     | Red destino (IP) | Mask | Next-Hop   | Iface |
 | ------------------------------- | ---------------- | ---- | ---------- | ----- |
-| Border <-> ISP                  | 172.16.0.0       | /24  | -          | eth1  |
-| Border <-> RouterE              | 10.10.10.4       | /30  | -          | eth2  |
-| Border <-> RouterC              | 10.10.10.8       | /30  | -          | eth0  |
-| RouterA <-> RouterE <-> RouterB | 10.10.10.24      | /29  | 10.10.10.5 | eth2  |
+| Border ↔ ISP                  | 172.16.0.0       | /24  | -          | eth1  |
+| Border ↔ RouterE              | 10.10.10.4       | /30  | -          | eth2  |
+| Border ↔ RouterC              | 10.10.10.8       | /30  | -          | eth0  |
+| RouterA ↔ RouterE ↔ RouterB | 10.10.10.24      | /29  | 10.10.10.5 | eth2  |
 | Red A                           | 192.168.10.0     | /25  | 10.10.10.5 | eth2  |
 | Red B                           | 192.168.10.128   | /25  | 10.10.10.5 | eth2  |
-| RouterE <-> RouterC             | 10.10.10.12      | /30  | 10.10.10.5 | eth2  |
-| RouterE <-> RouterD             | 10.10.10.0       | /30  | 10.10.10.5 | eth2  |
-| RouterD <-> RouterC             | 10.10.10.16      | /30  | 10.10.10.9 | eth0  |
+| RouterE ↔ RouterC             | 10.10.10.12      | /30  | 10.10.10.5 | eth2  |
+| RouterE ↔ RouterD             | 10.10.10.0       | /30  | 10.10.10.5 | eth2  |
+| RouterD ↔ RouterC             | 10.10.10.16      | /30  | 10.10.10.9 | eth0  |
 | Red C                           | 200.30.55.96     | /28  | 10.10.10.9 | eth0  |
 | Red D                           | 200.30.55.64     | /27  | 10.10.10.9 | eth0  |
 
@@ -528,13 +528,13 @@ Tenemos que asignar un total de 6 redes, en orden de número de hosts:
 
 | Red destino                              | Red destino (IP) | Mask | Next-Hop   | Iface |
 | ---------------------------------------- | ---------------- | ---- | ---------- | ----- |
-| Border <-> ISP                           | 172.16.0.0       | /24  | -          | eth1  |
-| Border <-> RouterE                       | 10.10.10.4       | /30  | -          | eth2  |
-| Border <-> RouterC                       | 10.10.10.8       | /30  | -          | eth0  |
-| RouterA <-> RouterE <-> RouterB          | 10.10.10.20      | /29  | 10.10.10.5 | eth2  |
+| Border ↔ ISP                           | 172.16.0.0       | /24  | -          | eth1  |
+| Border ↔ RouterE                       | 10.10.10.4       | /30  | -          | eth2  |
+| Border ↔ RouterC                       | 10.10.10.8       | /30  | -          | eth0  |
+| RouterA ↔ RouterE ↔ RouterB          | 10.10.10.20      | /29  | 10.10.10.5 | eth2  |
 | Red A, B                                 | 192.168.10.0     | /24  | 10.10.10.5 | eth2  |
-| RouterE <-> RouterC, RouterE <-> RouterD | 10.10.10.0       | /28  | 10.10.10.5 | eth2  |
-| RouterD <-> RouterC                      | 10.10.10.16      | /30  | 10.10.10.9 | eth0  |
+| RouterE ↔ RouterC, RouterE ↔ RouterD | 10.10.10.0       | /28  | 10.10.10.5 | eth2  |
+| RouterD ↔ RouterC                      | 10.10.10.16      | /30  | 10.10.10.9 | eth0  |
 | Red C                                    | 226.10.20.128    | /28  | 10.10.10.9 | eth0  |
 | Red D                                    | 224.10.0.128     | /27  | 10.10.10.9 | eth0  |
 

@@ -58,11 +58,11 @@ Se asemeja a los puertos de los segmentos TCP o datagramas UDP.
 
 ##### a. ¿De qué clase de red es la dirección dada (Clase A, B o C)?
 
-1. 172.16.58.223/26 -> 172 = **10**10 1100 -> Es clase B.
-2. 163.10.5.49/27 -> 163 = **10**10 0011 -> Es clase B.
-3. 128.10.1.0/23 -> 128 = **10**00 0000 -> Es clase B.
-4. 10.1.0.0/24 -> 10 = **00**00 1010 -> Es clase A.
-5. 8.40.11.179/12 -> 8 = **00**00 0100 -> Es clase A.
+1. 172.16.58.223/26 → 172 = **10**10 1100 → Es clase B.
+2. 163.10.5.49/27 → 163 = **10**10 0011 → Es clase B.
+3. 128.10.1.0/23 → 128 = **10**00 0000 → Es clase B.
+4. 10.1.0.0/24 → 10 = **00**00 1010 → Es clase A.
+5. 8.40.11.179/12 → 8 = **00**00 0100 → Es clase A.
 
 ##### b. ¿Cuál es la dirección de subred?
 
@@ -124,11 +124,11 @@ AND
 
 La cantidad máxima de hosts de una subred se halla primero hallando la cantidad de bits asignados a host (32 - máscara) y luego restándole 2, ya que la dirección de subred y la dirección de broadcast no se pueden usar para direccionar hosts.
 
-1. 172.16.58.223/26 -> 2<sup>32-26</sup> - 2 = 64 - 2 = **62**
-2. 163.10.5.49/27 -> 2<sup>32-27</sup> - 2 = 32 - 2 = **30**
-3. 128.10.1.0/23 -> 2<sup>32-23</sup> - 2 = 512 - 2 = **510**
-4. 10.1.0.0/24 -> 2<sup>32-24</sup> - 2 = 256 - 2 = **254**
-5. 8.40.11.179/12 -> 2<sup>32-12</sup> - 2 = 1.048.576 - 2 = **1.048.574**
+1. 172.16.58.223/26 → 2<sup>32-26</sup> - 2 = 64 - 2 = **62**
+2. 163.10.5.49/27 → 2<sup>32-27</sup> - 2 = 32 - 2 = **30**
+3. 128.10.1.0/23 → 2<sup>32-23</sup> - 2 = 512 - 2 = **510**
+4. 10.1.0.0/24 → 2<sup>32-24</sup> - 2 = 256 - 2 = **254**
+5. 8.40.11.179/12 → 2<sup>32-12</sup> - 2 = 1.048.576 - 2 = **1.048.574**
 
 ##### d. ¿Cuál es la dirección de broadcast de esa subred?
 
@@ -183,11 +183,11 @@ La dirección broadcast de una subred se halla poniendo todos los bits de host e
 
 El rango de direcciones IP válidas dentro de una subred va desde la dirección de subred + 1 hasta la dirección de broadcast - 1.
 
-1. 172.16.58.223/26 -> Desde 172.16.58.193 hasta 172.16.58.254
-2. 163.10.5.49/27 -> Desde 163.10.5.33 hasta 163.10.5.62
-3. 128.10.1.0/23 -> Desde 128.10.0.1 hasta 128.10.1.254
-4. 10.1.0.0/24 -> Desde 10.1.0.1 hasta 10.1.0.254
-5. 8.40.11.179/12 -> Desde 8.32.0.1 hasta 8.47.255.254
+1. 172.16.58.223/26 → Desde 172.16.58.193 hasta 172.16.58.254
+2. 163.10.5.49/27 → Desde 163.10.5.33 hasta 163.10.5.62
+3. 128.10.1.0/23 → Desde 128.10.0.1 hasta 128.10.1.254
+4. 10.1.0.0/24 → Desde 10.1.0.1 hasta 10.1.0.254
+5. 8.40.11.179/12 → Desde 8.32.0.1 hasta 8.47.255.254
 
 ### 7. Su organización cuenta con la dirección de red 128.50.10.0. Indique:
 
@@ -230,7 +230,7 @@ Como las redes siempre empiezan desde 0, la subred 710 es en realidad 709.
 
 ###### v. Dirección de broadcast de la subred 710.
 
-La dirección de broadcast de 128.50.177.64/26 es su última dirección, o lo que es igual, la dirección anterior a la subred 711 -> **128.50.177.127/26**
+La dirección de broadcast de 128.50.177.64/26 es su última dirección, o lo que es igual, la dirección anterior a la subred 711 → **128.50.177.127/26**
 
 ### 8. Si usted estuviese a cargo de la administración del bloque IP 195.200.45.0/24
 
@@ -286,11 +286,11 @@ IPs privadas de Clase A: 10.0.0.0 – 10.255.255.255
 IPs privadas de Clase B: 172.16.0.0 – 172.31.255.255
 IPs privadas de Clase C: 192.168.0.0 – 192.168.255.255
 
--   Red 191.26.145.0/24 -> Pública
--   Red 172.26.22.0/30 -> Privada
--   Red 172.17.10.0/28 -> Privada
--   Red 192.168.5.0/24 -> Privada
--   Red 10.0.10.0/24 -> Privada
+-   Red 191.26.145.0/24 → Pública
+-   Red 172.26.22.0/30 → Privada
+-   Red 172.17.10.0/28 → Privada
+-   Red 192.168.5.0/24 → Privada
+-   Red 10.0.10.0/24 → Privada
 
 ## CIDR
 
@@ -322,7 +322,7 @@ Es lo mismo que subnettear un bloque.
 
 ● 200.56.168.0/21
 
-Este bloque es de clase C, por ende /24 -> /24 - /21 = 3. Significa que este bloque sumariza 2<sup>3</sup> = 8 subredes:
+Este bloque es de clase C, por ende /24 → /24 - /21 = 3. Significa que este bloque sumariza 2<sup>3</sup> = 8 subredes:
 
 1. 200.56.168.0/24
 2. 200.56.169.0/24
@@ -335,7 +335,7 @@ Este bloque es de clase C, por ende /24 -> /24 - /21 = 3. Significa que este blo
 
 ● 195.24.0.0/13
 
-Este bloque es de clase C, por ende /24 -> /24 - /13 = 11. Significa que este bloque sumariza 2<sup>11</sup> = 2048
+Este bloque es de clase C, por ende /24 → /24 - /13 = 11. Significa que este bloque sumariza 2<sup>11</sup> = 2048
 
 ...
 ● 195.24/13
@@ -344,7 +344,7 @@ Es igual al anterior ya que 195.24 es sinónimo de 195.24.0.0
 
 ### 13. El bloque CIDR 128.0.0.0/2 o 128/2, ¿Equivale a listar todas las direcciones de red de clase B? ¿Cuál sería el bloque CIDR que agrupa todas las redes de clase A?
 
-El bloque CIDR 128.0.0.0/2 es clase B que tiene /16 como máscara default. Es decir, tenemos /16 - /2 = /14 -> 14 bits para la parte de red. Lo cual es condice efectivamente con todas las direcciones de red de la clase B.
+El bloque CIDR 128.0.0.0/2 es clase B que tiene /16 como máscara default. Es decir, tenemos /16 - /2 = /14 → 14 bits para la parte de red. Lo cual es condice efectivamente con todas las direcciones de red de la clase B.
 
 El bloque CIDR que agrupa todas las redes de clase A es 0.0.0.0/1 ya que
 la clase A tiene máscara default /8 - 7 bits que son la cantidad de redes de clase A.
@@ -371,7 +371,7 @@ Si tengo una red que quiero subdividir en 3 subredes y una de ellas necesita 60 
 
 ##### a. ¿Es posible asignar las subredes correspondientes a la topología utilizando subnetting sin VLSM? Indique la cantidad de hosts que se desperdicia en cada subred.
 
-Tenemos 5 redes: Red A, Red B, Red C, Red D, y Red punto a punto entre los 2 routers. Esto significa que necesitamos 3 bits para la parte de red, por ende -> /19 + /3 = /22, y nos quedan 10 bits para host.
+Tenemos 5 redes: Red A, Red B, Red C, Red D, y Red punto a punto entre los 2 routers. Esto significa que necesitamos 3 bits para la parte de red, por ende → /19 + /3 = /22, y nos quedan 10 bits para host.
 
 Como 2<sup>10</sup> = 1024, y esto ni siquiera nos alcanza para asignar los hosts de la Red C por sí sola, podemos ver claramente que no es posible hacer esta asignación sin VLSM.
 
@@ -389,57 +389,57 @@ Si la máscara de la red original fuera /18 sí nos alcanzaría, y en ese caso e
 
 Ahora vamos a utilizar la red original 205.10.192.0/19 para asignar direcciones a las 5 redes utilizando VLSM, yendo de la red más grande a las más chica.
 
-Red C: 1530 hosts, por ende necesita 11 bits para la parte de host -> /21
-Red A: 128 hosts, por ende necesita 8 bits para la parte de host -> /24
-Red B: 20 hosts, por ende necesita 5 bits para la parte de host -> /27
-Red D: 7 hosts, por ende necesita 4 bits para la parte de host -> /28
-Red punto a punto: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
+Red C: 1530 hosts, por ende necesita 11 bits para la parte de host → /21
+Red A: 128 hosts, por ende necesita 8 bits para la parte de host → /24
+Red B: 20 hosts, por ende necesita 5 bits para la parte de host → /27
+Red D: 7 hosts, por ende necesita 4 bits para la parte de host → /28
+Red punto a punto: 2 hosts, por ende necesita 2 bits para la parte de host → /30
 
 Subnetteo la red original 205.10.192.0/19:
 
--   205.10. 110**0**0000 .0 -> 205.10.192.0/20 -> Subnetteo
--   205.10. 110**1**0000 .0 -> 205.10.208.0/20 -> Libre
+-   205.10. 110**0**0000 .0 → 205.10.192.0/20 → Subnetteo
+-   205.10. 110**1**0000 .0 → 205.10.208.0/20 → Libre
 
 Subnetteo la red 205.10.192.0/20:
 
--   205.10. 1100**0**000 .0 -> **205.10.192.0/21** -> **La asigno a la red C**
--   205.10. 1100**1**000 .0 -> 205.10.200.0/21 -> Subnetteo
+-   205.10. 1100**0**000 .0 → **205.10.192.0/21** → **La asigno a la red C**
+-   205.10. 1100**1**000 .0 → 205.10.200.0/21 → Subnetteo
 
 Subnetteo la red 205.10.200.0/21:
 
--   205.10. 1100100**0** .0 -> **205.10.200.0/24** -> **La asigno a la red A**
--   205.10. 1100100**1** .0 -> 205.10.201.0/24 -> Subnetteo
+-   205.10. 1100100**0** .0 → **205.10.200.0/24** → **La asigno a la red A**
+-   205.10. 1100100**1** .0 → 205.10.201.0/24 → Subnetteo
 
-    205.10.202.0/24 -> Libre
-    205.10.203.0/24 -> Libre
-    205.10.204.0/24 -> Libre
-    205.10.205.0/24 -> Libre
-    205.10.206.0/24 -> Libre
-    205.10.207.0/24 -> Libre
+    205.10.202.0/24 → Libre
+    205.10.203.0/24 → Libre
+    205.10.204.0/24 → Libre
+    205.10.205.0/24 → Libre
+    205.10.206.0/24 → Libre
+    205.10.207.0/24 → Libre
 
 Subnetteo la red 205.10.201.0/24:
 
--   205.10.201. 00**0**00000 -> **205.10.201.0/27** -> **La asigno a la red B**
--   205.10.201. 00**1**00000 -> 205.10.201.32/27 -> Subnetteo
+-   205.10.201. 00**0**00000 → **205.10.201.0/27** → **La asigno a la red B**
+-   205.10.201. 00**1**00000 → 205.10.201.32/27 → Subnetteo
 
-    205.10.201.64/27 -> Libre
-    205.10.201.96/27 -> Libre
-    205.10.201.128/27 -> Libre
-    205.10.201.160/27 -> Libre
-    205.10.201.192/27 -> Libre
-    205.10.201.224/27 -> Libre
+    205.10.201.64/27 → Libre
+    205.10.201.96/27 → Libre
+    205.10.201.128/27 → Libre
+    205.10.201.160/27 → Libre
+    205.10.201.192/27 → Libre
+    205.10.201.224/27 → Libre
 
 Subnetteo la red 205.10.201.32/27:
 
--   205.10.201. 001**0**0000 -> **205.10.201.32/28** -> **La asigno a la red D**
--   205.10.201. 001**1**0000 -> 205.10.201.48/28 -> Subnetteo
+-   205.10.201. 001**0**0000 → **205.10.201.32/28** → **La asigno a la red D**
+-   205.10.201. 001**1**0000 → 205.10.201.48/28 → Subnetteo
 
 Subnetteo la red 205.10.201.48/28:
 
--   205.10.201. 0011**00**00 -> **205.10.201.48/30** -> **La asigno a la red punto a punto**
--   205.10.201. 0011**01**00 -> 205.10.201.52/30 -> Libre
--   205.10.201. 0011**10**00 -> 205.10.201.56/30 -> Libre
--   205.10.201. 0011**11**00 -> 205.10.201.60/30 -> Libre
+-   205.10.201. 0011**00**00 → **205.10.201.48/30** → **La asigno a la red punto a punto**
+-   205.10.201. 0011**01**00 → 205.10.201.52/30 → Libre
+-   205.10.201. 0011**10**00 → 205.10.201.56/30 → Libre
+-   205.10.201. 0011**11**00 → 205.10.201.60/30 → Libre
 
 ##### c. Para mantener el orden y el inventario de direcciones disponibles, haga un listado de todas las direcciones libres que le quedaron, agrupándolas utilizando CIDR.
 
@@ -516,56 +516,56 @@ Redes libres que quedaron:
 
 Vamos a utilizar el bloque dado (200.100.8.0/22) para asignar direcciones a las 9 redes utilizando VLSM, yendo de la red más grande a las más chica.
 
--   Red A: 145 hosts, por ende necesita 8 bits para la parte de host -> /24
--   Red Y: 64 hosts, por ende necesita 7 bits para la parte de host -> /25
--   Red X: 63 hosts, por ende necesita 7 bits para la parte de host -> /25
--   Red B: 60 hosts, por ende necesita 6 bits para la parte de host -> /26
--   Red punto a punto n1 a n3: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
--   Red punto a punto n3 a n4: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
--   Red punto a punto n1 a n2: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
--   Red punto a punto n1 a n4: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
--   Red punto a punto n2 a n4: 2 hosts, por ende necesita 2 bits para la parte de host -> /30
+-   Red A: 145 hosts, por ende necesita 8 bits para la parte de host → /24
+-   Red Y: 64 hosts, por ende necesita 7 bits para la parte de host → /25
+-   Red X: 63 hosts, por ende necesita 7 bits para la parte de host → /25
+-   Red B: 60 hosts, por ende necesita 6 bits para la parte de host → /26
+-   Red punto a punto n1 a n3: 2 hosts, por ende necesita 2 bits para la parte de host → /30
+-   Red punto a punto n3 a n4: 2 hosts, por ende necesita 2 bits para la parte de host → /30
+-   Red punto a punto n1 a n2: 2 hosts, por ende necesita 2 bits para la parte de host → /30
+-   Red punto a punto n1 a n4: 2 hosts, por ende necesita 2 bits para la parte de host → /30
+-   Red punto a punto n2 a n4: 2 hosts, por ende necesita 2 bits para la parte de host → /30
 
 Subnetteo la red original 200.100.8.0/22:
 
--   200.100. 0000100**0** .0 -> **200.100.8.0/24** -> **La asigno a la red A**
--   200.100. 0000100**1** .0 -> 200.100.9.0/24 -> Subnetteo
+-   200.100. 0000100**0** .0 → **200.100.8.0/24** → **La asigno a la red A**
+-   200.100. 0000100**1** .0 → 200.100.9.0/24 → Subnetteo
 
-    200.100.10.0/24 -> Subnetteo
-    200.100.11.0/24 -> Libre
+    200.100.10.0/24 → Subnetteo
+    200.100.11.0/24 → Libre
 
 Subnetteo la red 200.100.9.0/24:
 
--   200.100. 00001001 .0 -> **200.100.9.0/25** -> **La asigno a la red Y**
--   200.100. 00001001 .1 -> **200.100.9.128/25** -> **La asigno a la red X**
+-   200.100. 00001001 .0 → **200.100.9.0/25** → **La asigno a la red Y**
+-   200.100. 00001001 .1 → **200.100.9.128/25** → **La asigno a la red X**
 
 Subnetteo la red 200.100.10.0/24:
 
--   200.100. 00001010 .00 -> **200.100.10.0/26** -> **La asigno a la red B**
--   200.100. 00001010 .01 -> 200.100.10.64/26 -> Subnetteo
+-   200.100. 00001010 .00 → **200.100.10.0/26** → **La asigno a la red B**
+-   200.100. 00001010 .01 → 200.100.10.64/26 → Subnetteo
 
-    200.100.10.128/26 -> Libre
-    200.100.10.192/26 -> Libre
+    200.100.10.128/26 → Libre
+    200.100.10.192/26 → Libre
 
 Subnetteo la red 200.100.10.64/26:
 
 -   De /26 a /30 tenemos 4 bits, por ende tendremos 2<sup>4</sup> = 16 subredes /30, y asignamos las primeras 5 a las redes punto a punto.
--   **200.100.10.64/30** -> **La asigno a la red punto a punto n1 a n3**
--   **200.100.10.68/30** -> **La asigno a la red punto a punto n3 a n4**
--   **200.100.10.72/30** -> **La asigno a la red punto a punto n1 a n2**
--   **200.100.10.76/30** -> **La asigno a la red punto a punto n1 a n4**
--   **200.100.10.80/30** -> **La asigno a la red punto a punto n2 a n4**
--   200.100.10.84/30 -> Libre
--   200.100.10.88/30 -> Libre
--   200.100.10.92/30 -> Libre
--   200.100.10.96/30 -> Libre
--   200.100.10.100/30 -> Libre
--   200.100.10.104/30 -> Libre
--   200.100.10.108/30 -> Libre
--   200.100.10.112/30 -> Libre
--   200.100.10.116/30 -> Libre
--   200.100.10.120/30 -> Libre
--   200.100.10.124/30 -> Libre
+-   **200.100.10.64/30** → **La asigno a la red punto a punto n1 a n3**
+-   **200.100.10.68/30** → **La asigno a la red punto a punto n3 a n4**
+-   **200.100.10.72/30** → **La asigno a la red punto a punto n1 a n2**
+-   **200.100.10.76/30** → **La asigno a la red punto a punto n1 a n4**
+-   **200.100.10.80/30** → **La asigno a la red punto a punto n2 a n4**
+-   200.100.10.84/30 → Libre
+-   200.100.10.88/30 → Libre
+-   200.100.10.92/30 → Libre
+-   200.100.10.96/30 → Libre
+-   200.100.10.100/30 → Libre
+-   200.100.10.104/30 → Libre
+-   200.100.10.108/30 → Libre
+-   200.100.10.112/30 → Libre
+-   200.100.10.116/30 → Libre
+-   200.100.10.120/30 → Libre
+-   200.100.10.124/30 → Libre
 
 ### 18. Asigne direcciones IP en los equipos de la topología según el plan anterior.
 

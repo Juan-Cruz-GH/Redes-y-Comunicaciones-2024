@@ -62,7 +62,7 @@ Sin embargo, el PDU de UDP suele llamarse Datagrama, aunque esto puede resultar 
 
 ### 6. Describa el saludo de tres vías de TCP. ¿UDP tiene esta característica?
 
-El saludo de 3 vías es la forma en que se establece una conexión TCP. Se llama de 3 vías porque posee 3 pasos: Cliente -> Servidor, Servidor -> Cliente, Cliente -> Servidor.
+El saludo de 3 vías es la forma en que se establece una conexión TCP. Se llama de 3 vías porque posee 3 pasos: Cliente → Servidor, Servidor → Cliente, Cliente → Servidor.
 
 1. El cliente envía un segmento **sin datos** al servidor, con **flag SYN activado** y un **número aleatorio en el campo Sequence Number**.
 2. El servidor (el cual está en estado LISTEN en el puerto por el cuál el cliente le habló) responde con otro segmento **sin datos**, con **flag SYN y flag ACK activados**, con otro **número aleatorio en el campo Sequence Number** y finalmente en el campo **Acknowledgment Number pone el Sequence Number que el cliente le había enviado + 1**.

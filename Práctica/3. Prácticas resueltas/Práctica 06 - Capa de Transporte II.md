@@ -126,7 +126,7 @@ La fuente es 10.0.2.10:46907 y el destino 10.0.4.10:5001.
 
 Como mencioné en el primer inciso, hay 4 conexiones exitosas y 2 fallidas.
 
-Las conexiones exitosas se diferencian ya que poseen los 3 flags del saludo de 3 vías, SYN -> SYN + ACK -> ACK.
+Las conexiones exitosas se diferencian ya que poseen los 3 flags del saludo de 3 vías, SYN → SYN + ACK → ACK.
 
 ##### d. Dada la primera conexión exitosa responder:
 
@@ -228,12 +228,12 @@ Resuelve el problema de que la red se sature.
 
 ##### a. ¿Cuántas comunicaciones (srcIP,srcPort,dstIP,dstPort) UDP hay en la captura?
 
-1. 10.0.2.10:0 -> 10.0.30.10:8003.
-2. 10.0.2.10:9004 -> 10.0.3.10:9045.
-3. 10.0.2.10:9004 -> 1.1.1.1:9045.
-4. 10.0.2.10:53300 -> 10.0.4.10:9045.
-5. 10.0.2.10:59053 -> 10.0.4.10:8003.
-6. 10.0.2.10:8003 -> 10.0.4.10:8003.
+1. 10.0.2.10:0 → 10.0.30.10:8003.
+2. 10.0.2.10:9004 → 10.0.3.10:9045.
+3. 10.0.2.10:9004 → 1.1.1.1:9045.
+4. 10.0.2.10:53300 → 10.0.4.10:9045.
+5. 10.0.2.10:59053 → 10.0.4.10:8003.
+6. 10.0.2.10:8003 → 10.0.4.10:8003.
 
 ##### b. ¿Cómo se podrían identificar las exitosas de las que no lo son?
 

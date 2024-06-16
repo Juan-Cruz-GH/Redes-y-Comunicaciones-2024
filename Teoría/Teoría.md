@@ -3,7 +3,7 @@
 ## Red
 
 -   Una red es un grupo de computadoras o dispositivos interconectados con el objetivo de compartir recursos o información.
--   Emisor -> Medio/Dispositivos intermedios -> Receptor
+-   Emisor → Medio/Dispositivos intermedios → Receptor
 -   Algunos de los componentes de una red son:
 
 1. Computadoras o hosts
@@ -1156,14 +1156,14 @@ Estos parámetros se pueden obtener de distintas formas según si la configuraci
 -   Los hosts sin parámetros de red envían requerimientos.
 -   Estos servidores atienden los pedidos asignando los valores que brindan conectividad.
 -   El parámetro se reserva por un tiempo.
--   El cliente está montado sobre UDP en el puerto 68 -> "Bootpc"
--   El server está montado sobre UDP en el puerto 67 -> "Bootps"
+-   El cliente está montado sobre UDP en el puerto 68 → "Bootpc"
+-   El server está montado sobre UDP en el puerto 67 → "Bootps"
 
 #### Mensajes
 
-1. Discover -> Es de tipo broadcast
-2. Offer -> Es de tipo unicast pero a veces también broadcast
-3. Request -> Es de tipo broadcast
+1. Discover → Es de tipo broadcast
+2. Offer → Es de tipo unicast pero a veces también broadcast
+3. Request → Es de tipo broadcast
 4. ACK
 5. Release
 6. NAK
@@ -1384,7 +1384,7 @@ Y esto trae los siguientes beneficios:
 
 -   Prefijo: FF00::/8
 -   Flags: permanente, temporaria. Otros reservados.
--   Alcance: 1 -> nodo local. 2 -> link local. 5 -> site local. 8 -> org. local. E -> global.
+-   Alcance: 1 → nodo local. 2 → link local. 5 → site local. 8 → org. local. E → global.
 -   GID: grupo de multicast.
 
 #### Direcciones IPv6 especiales
