@@ -1417,6 +1417,7 @@ Y esto trae los siguientes beneficios:
 
 #### Neighbour Discovery
 
+-   Está montado sobre ICMPv6.
 -   Reemplaza al protocolo ARP de IPv4.
 -   Mappea direcciones IPv6 a direcciones MAC.
 -   Trabaja en conjunto con Ethernet u otros protocolos con broadcast como 802.11.
@@ -1557,4 +1558,32 @@ Y esto trae los siguientes beneficios:
 
 <h1 align="center">Clase 13 - 18 de junio, 2024</h1>
 
+## Características extras de Capa de Enlace
+
+#### Administración y mantenimiento de switches
+
+-   Podemos conectarnos a un switch para administrarlo mediante una interfaz web, ssh o telnet.
+-   Además se pueden monitorear mediante SNMP.
+-   El mantenimiento del switch involucra:
+    -   Documentar y mantener archivos de configuración operacional.
+    -   Realizar una copia de seguridad del archivo de configuración actual en un servidor o disco.
+    -   Realizar una copia de seguridad del firmware/OS en un servidor local.
+
+#### VLANs
+
+-   Consiste en dividir un switch en múltiples "switches virtuales" cada uno sobre una LAN virtual.
+-   Cada VLAN es un dominio de broadcast independiente.
+-   Las VLANs se conectan entre sí mediante uplinks o routers.
+-   Tagging: dentro de la trama se agregan campos que tienen que ver con los tags de las VLANs.
+
+#### Protocolo ?
+
+-   Evita que se generen bucles con las tramas, similar a los bucles de los datagramas IP.
+
 ## Wireless
+
+-   No hay más switches, se usan Access Points.
+-   3 topologías básicas:
+    -   IBSS
+    -   BSS
+    -   ESS
