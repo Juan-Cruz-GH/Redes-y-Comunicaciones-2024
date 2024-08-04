@@ -1466,42 +1466,75 @@ Y esto trae los siguientes beneficios:
 
 #### Introducción
 
+-   La Capa de Enlace tiene como objetivo transferir datagramas de un **nodo** a otro **nodo** adyacente, a través de un **link**.
+-   Los nodos son hosts y routers.
+-   Los links son canales de comunicación que conectan nodos adyacentes a través de caminos de comunicación. (enlaces cableados, enlaces inalámbricos, LANs)
+-   La PDU es el frame, que encapsula a un datagrama.
+-   Los datagramas son transferidos por diferentes protocolos de enlace (ethernet vs 802.11).
+-   Esta capa está implementada en:
+    -   Todos los hosts.
+    -   NICs (Network Interface Card).
+    -   Buses de los hosts.
+
 #### Servicios de Capa de Enlace
 
-1. Entramado
-2. Acceso al medio
-3. Entrega confiable
-4. Control de flujo
-5. Detección de errores
-6. Corrección de errores
-7. Half-duplex y Full-duplex
+1. **Entramado**: encapsulación del datagrama en la trama.
+2. **Acceso al medio**: direcciones MAC.
+3. **Entrega confiable**: similar a la de la Capa de Transporte.
+4. **Control de flujo**: buffers y capacidad.
+5. **Detección de errores**: retransmisión o descarte de la trama.
+6. **Corrección de errores**: el receptor identifica y corrige los errores.
+7. **Half-duplex y Full-duplex**
 
 #### Detección de errores
 
--   Uno de los métodos es el chequeo de paridad.
--   Otro método es el Internet checksum.
--   El método más fuerte y usado es el Cyclic Redundancy Check.
+##### Chequeo de paridad
+
+-   Se concatena 1 bit a los datos al final del byte.
+-   Si la cantidad de bits en 1 del byte es par, se agrega un 0. (por ejemplo 00000101**0**)
+-   Si la cantidad de bits en 1 del byte es impar, se agrega un 1. (por ejemplo 00000111**1**)
+-   El receptor chequeará que este byte que le avisaron que se iba a enviar se condiga con el que recibió.
+-   Es un método muy limitado y básico.
+
+##### Checksum
+
+-   Funciona igual que en la Capa de Transporte:
+    -   Se calcula un valor numérico basado en los datos que se van a enviar y se adjunta a esos datos.
+    -   El receptor realiza el mismo cálculo y compara el resultado con el checksum que recibió.
+    -   Si coinciden, se asume que los datos no tienen errores.
+
+##### Cyclic Redundancy Check
+
+-   Es el método más fuerte y usado.
+-   Es similar al checksum pero más complejo, y puede detectar muchos más errores que el checksum regular no detectaría.
+
+1. Se elige un polinomio de X cantidad de bits.
+2. Se concatenan X - 1 ceros al final del byte de datos.
+3. Se hace una división binaria (XOR) entre el byte de datos y el polinomio.
+4. El resto de la división es el checksum CRC.
+5. Este resto se concatena al final del byte de datos.
+6. El receptor realiza el mismo mecanismo para verificar que el byte que obtiene es el mismo.
 
 #### Tipos de enlaces
 
-1. Punto a punto
-    - PPP para acceso discado
-    - Entre switch Ethernet y Host
-2. Broadcast
-    - Ethernet "legacy"
-    - Hybrid Fiber Cable
-    - 802.11: red wireless
+1. **Punto a punto**:
+    - PPP para acceso discado.
+    - Entre switch Ethernet y Host.
+2. **Broadcast**:
+    - Ethernet "legacy".
+    - Hybrid Fiber Cable.
+    - 802.11: red wireless.
 
 #### Protocolos de acceso múltiple
 
--   Si dos o más nodos quieren transmitir por el mismo medio al mismo tiempo se produce interferencia.
+-   Si dos o más nodos quieren transmitir por el mismo medio al mismo tiempo se produce **interferencia**.
 -   Los protocolos de A.M determinan cómo los nodos comparten el medio y cuál de ellos gana acceso al mismo y cuándo.
 -   Estos protocolos se dividen en 3 clases:
-    -   Particionado del canal.
-    -   Acceso randómico.
-    -   "Toma de turnos".
+    1. Particionado del canal.
+    2. Acceso randómico.
+    3. "Toma de turnos".
 
-#### Protocolos de particionado del canal
+#### 1. Protocolos de particionado del canal
 
 ##### Time Division Multiple Access (TDMA)
 
@@ -1511,7 +1544,7 @@ Y esto trae los siguientes beneficios:
 
 -   División de frecuencia de longitud fija.
 
-#### Protocolos de acceso randómico
+#### 2. Protocolos de acceso randómico
 
 -   Los nodos transmiten cuando quieren sin preocuparse por si hay colisión o no.
 -   Requiere métodos de detección y de solución de colisiones.
@@ -1523,20 +1556,23 @@ Y esto trae los siguientes beneficios:
 -   Si el canal está libre, se transmite.
 -   Si está ocupado:
     -   Volver a escuchar luego de un tiempo.
-    -   ...
+    -   Seguir escuchando hasta que quede libre y transmitir.
 -   No detecta ni soluciona colisiones.
 
 ##### Carrier Sense Multiple Access Colision Detection
 
 -   Es igual al anterior solo que agrega detección de colisiones.
--   ...
+-   Esta detección es fácil en LANs cableadas, pero compleja en LANs inalámbricas.
 
-#### Protocolos de "Toma de turnos"
+#### 3. Protocolos de "Toma de turnos"
 
 -   Buscan lo mejor de los otros 2 protocolos.
 -   Se logra vía **polling**:
     -   El nodo master "invita" a los nodos slaves a transmitir en turnos.
-    -
+    -   Evita colisiones.
+    -   Es determinístico.
+    -   Defectos: overheard por polling, latencia y único punto de falla (el master).
+-   Ejemplo: bluetooth, WiFi.
 
 #### LAN
 
@@ -1550,13 +1586,128 @@ Y esto trae los siguientes beneficios:
 -   Cada adaptador en la LAN tiene una dirección MAC única.
 -   La dirección MAC FF:FF:FF:FF:FF:FF es de broadcast.
 
+#### Ethernet
+
+-   Es la tecnología cableada LAN dominante.
+-   Velocidades: 10 Mbps a 10 Gbps.
+-   El adaptador del **emisor** encapsula el datagrama IP en una trama Ethernet.
+-   La trama Ethernet se compone de 5 partes:
+
+1. **Preamble**:
+    - 7 bytes con el patrón 10101010 seguido por un byte con el patrón 1010101**1**
+    - Se usa para despertar al receptor y sincronizar los relojes de emisor y receptor.
+2. **Direcciones**:
+    - 6 bytes cada una.
+    - Si el adaptador recibe una trama con dirección destino igual a la suya, o igual a la dirección broadcast, pasa los datos de la trama al protocolo de capa de red.
+    - Si no, descarta la trama.
+3. **Type**:
+    - Se usa para multiplexación.
+    - Indica el protocolo de capa superior (usualmente IP).
+4. **Data**:
+    - De 46 a 1500 bytes.
+5. **CRC**:
+    - 4 bytes.
+    - Lo chequea el receptor, si se detecta un error descarta la trama.
+    - Para calcularlo se usa todo excepto el Preamble.
+
+Ethernet no es orientado a conexión y no es confiable. Utiliza el protocolo MAC CSMA/CD.
+
 ## Dispositivos de Capa de Enlace
 
-...
+#### Qué es un dominio de colisión?
+
+-   Indica hasta dónde pueden extenderse las colisiones o hasta dónde llega la señal de una trama unicast.
+-   Todas las estaciones en un mismo D.C ven los datos transmitidos de cada una.
+-   Un repetidor o un hub **extienden** un D.C.
+
+#### Repetidor
+
+-   Amplificador digital.
+-   Tiene 2 puertos.
+-   Regenera la señal y une dominios de colisión generando uno solo, permite extensión.
+
+#### Hub
+
+-   Repetidor multipuerto.
+-   Los bits que llegan en un link salen por **todos** los otros links a la misma velocidad.
+-   Todos los nodos conectados al hub pueden colisionar con los demás.
+-   Existen 3 tipos:
+    1. Hubs pasivos: solo envían la señal por todos los puertos restantes.
+    2. Hubs activos: regeneran la señal, mayor alcance.
+    3. Hubs inteligentes: pueden poseer administración, permiten detectar problemas.
+
+#### Bridge
+
+-   Permiten adaptar entre dos protocolos de enlace distintos.
+-   Dividen dominios de colisión.
+-   Dividen la red en partes más pequeñas.
+-   Permiten escalabilidad.
+
+#### Switch
+
+-   Más inteligente que los hubs.
+-   Almacenan y envían tramas Ethernet.
+-   Es un bridge multipuerto que trabaja con la misma tecnología de enlace en cada una de sus interfaces.
+-   Dividen dominios de colisión.
+-   Son transparentes para los hosts.
+-   No necesitan ser configurados para sus operaciones básicas.
+-   Los hosts tienen conexiones dedicadas y directas al switch.
+
+##### Funciones
+
+1. Aprender direcciones MAC: el dispositivo guarda las MAC asociadas a cada interfaz en una tabla.
+2. Reenviar/filtrar paquetes: al recibir una trama, el switch revisa su tabla para determinar a través de cuál/cuales de sus interfaces enviar esa trama. Si no encuentra la MAC de la trama en ninguna de sus interfaces, hace forwarding de esa trama por todas sus interfaces excepto por la cual llegó.
+3. Evitar bucles.
+
+#### Switches vs Routers
+
+| Switch                                           | Router                            |
+| ------------------------------------------------ | --------------------------------- |
+| Dispositivo de Capa de Enlace.                   | Dispositivo de Capa de Red.       |
+| Mantiene tabla de Switch.                        | Mantiene tabla de routing.        |
+| Implementa algoritmos de filtrado y aprendizaje. | Implementa algoritmos de routing. |
+
+<h1 align="center">Clase 13 - 18 de junio, 2024</h1>
 
 ## ARP
 
-<h1 align="center">Clase 13 - 18 de junio, 2024</h1>
+#### Introducción
+
+-   Address Resolution Protocol.
+-   Mappea direcciones lógicas (IP) a direcciones de hardware (MAC).
+-   Trabaja en conjunto con Ethernet.
+-   Trabaja dinámicamente, sin configurar, auto-aprendizaje.
+-   Alternativamente, puede configurarse de forma estática.
+-   Permite que los dispositivos en una LAN encuentren la MAC asociada a una determinada IP. Esto es crucial porque sin la dirección MAC asociada a una IP destino con la cual se quiere comunicar, no es posible transmitir datos.
+
+#### Funcionamiento
+
+-   Cuando un dispositivo A necesita la MAC de un dispositivo B, **hay 2 casos. Que B esté en la red local y que esté en otra red**.
+
+##### B está en la red local
+
+-   Primero envía un ARP Request de forma broadcast que llega a todos los dispositivos de la red local.
+-   Todos los dispositivos de la red local reciben el ARP Request del dispositivo A, pero solo el dispositivo B responde con un ARP Reply que contiene su MAC.
+-   El dispositivo A guarda esta nueva MAC recibida y la asocia a la IP del dispositivo B.
+
+##### B está en otra red
+
+-   El dispositivo A se da cuenta, debido a que la IP destino no pertenece a su propia red local, que el dispositivo B se encuentra en otra red.
+-   Por esto, A tiene que enviar el ARP Request a su default gateway.
+-   Para poder lograr esto, A necesita la MAC de su default gateway, entonces realiza un ARP Request de forma broadcast.
+-   A recibe la MAC de su D.G y le envía el Request.
+-   El D.G routea según la IP del dispositivo B. Si el next-hop es otro router, este otro router se fija si puede hacer el ARP Request por la MAC de B o si tiene que volver a pasarselo a otro router.
+-   El router que finalmente sea el de la red de B es el que realiza el ARP Request para encontrar la MAC de B.
+-   B responde con su MAC.
+-   El D.G le devuelve la MAC al dispositivo A.
+
+#### RARP
+
+-   Reverse Address Resolution Protocol.
+-   Mappea direcciones de hardware (MAC) a direcciones lógicas (IP), lo inverso a ARP.
+-   Se usa en redes multiacceso como Ethernet.
+-   Lo usan estaciones sin disco para obtener su IP.
+-   Hoy en día es obsoleto, lo reemplazó DHCP.
 
 ## Características extras de Capa de Enlace
 
@@ -1575,10 +1726,6 @@ Y esto trae los siguientes beneficios:
 -   Cada VLAN es un dominio de broadcast independiente.
 -   Las VLANs se conectan entre sí mediante uplinks o routers.
 -   Tagging: dentro de la trama se agregan campos que tienen que ver con los tags de las VLANs.
-
-#### Protocolo ?
-
--   Evita que se generen bucles con las tramas, similar a los bucles de los datagramas IP.
 
 ## Wireless
 
