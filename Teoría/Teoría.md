@@ -1729,8 +1729,146 @@ Ethernet no es orientado a conexión y no es confiable. Utiliza el protocolo MAC
 
 ## Wireless
 
--   No hay más switches, se usan Access Points.
--   3 topologías básicas:
-    -   IBSS
-    -   BSS
-    -   ESS
+#### Introducción
+
+-   Una de las organizaciones encargadas de generar los estándares y tecnologías apropiadas para cada requerimiento de redes wireless es la IEEE, en particular la 802.11.
+-   La 802.11 no reemplaza a las redes cableadas, si no que es una alternativa ante la necesidad de conectividad local.
+-   Funcionan sobre medios no guiados, mayormente Radio Frecuencias en bandas no licenciadas.
+-   Permiten la movilidad de los usuarios y el alcance a lugares que dificultan una instalación cableada.
+-   Permiten ponerse en funcionamiento más rápidamente que una red cableada.
+-   El rendimiento es inferior a una red cableada: 200 Mpbs vs 1 - 10 Gbps.
+-   Tecnologías Wireless:
+
+![Tecnologías Wireless](https://i.imgur.com/FdN5Tvo.png)
+
+#### WLAN
+
+-   Wireless LAN.
+-   Se compone de:
+    1. STA (Estaciones Terminales)
+        1. Antenas
+        2. WNICS
+        3. pigtails
+    2. AP (Access Point)
+        1. Antenas
+        2. WNICS
+        3. pigtails
+    3. WM (Espacio por donde se propagan las señales)
+    4. DS (Sistema de Distribución)
+
+##### Antenas
+
+-   Convierten energía eléctrica en ondas de Radio Frecuencia al Tx y viceversa al Rx.
+-   Las WLAN 802.11 usan frecuencias de entre 2GHz y 5 GHz, por ende requieren una antena pequeña.
+-   Proveen 4 cosas:
+    -   Polarización.
+    -   Dirección.
+    -   Patrón de radiación.
+    -   Ganancia.
+-   Se clasifican en 2 categorías:
+    1. **Omni-direccionales**: irradian de una forma homogenea.
+    2. **Direccionales**: cubren una región particular aumentando la ganancia.
+
+#### Capa Física
+
+-   Sus funciones son:
+    1. Determinar las frecuencias físicas.
+    2. Definir las modulaciones y codificaciones: técnicas que lidian con la interferencia (Spread Spectrum, OFDM, etc)
+    3. Convertir bits en símbolos.
+    4. Máquinas de estado: transmitir (Tx) y recibir (Rx) los símbolos.
+
+#### Capa MAC
+
+-   Se encuentra sobre la capa Física y controla la transmisión de los datos del usuario.
+-   Soporta Broadcast y Multicast.
+-   Usa 802.2 como encapsulamiento.
+-   Utiliza ACKs positivos.
+-   Tiene tramas de distintos tipos: datos, administración, y control.
+-   El formato de la trama es más complejo comparado a Ethernet.
+-   Unicast contempla fragmentación.
+-   Existen 3 tipos de Redes Wireless:
+
+##### 1. Independent Basic Service Set (IBSS)
+
+-   No se usan Access Points.
+-   Conocidas como redes Ad-Hoc.
+-   TTL limitado.
+
+##### 2. Infrastructure Basic Service Set (BSS)
+
+-   Usan Access Points.
+-   Los AP son STA especiales, tienen el rol de hub/switch wireless.
+-   Las estaciones se asocian al AP y solo se comunican entre ellas a través del AP.
+-   Algunos AP tienen conexión a red cableada.
+
+##### 3. Extended Service Set (ESS)
+
+-   Se unen varios BSS a través de un backbone (un Distribution System).
+-   Las estaciones se unen a un solo AP.
+-   Los APs se comunican entre ellos vía red cableada o **Wireless Distribution System**.
+
+##### Wireless Distribution System
+
+-   Interconecta APs de forma wireless.
+-   Permite que un AP se comunique con otro/s AP/s.
+-   Extiende el rango de la red sin necesitar un backbone.
+
+##### AP "Repetidor"
+
+-   AP no conectado a una red cableada.
+-   Extiende el rango.
+-   Hace de AP y cliente a la vez.
+
+##### AP "Bridge"
+
+-   AP que conecta una red cableada con otra cableada, a través de un segundo AP.
+-   Los APs solo se comunican entre ellos de forma Wireless.
+
+##### Service Set Identifier (SSID)
+
+-   Le da un ID a la red.
+-   Se usa en el momento de asociar una WLAN con un nombre.
+-   2 a 32 caracteres, case sensitive.
+-   Un AP puede tener múltiples SSID: MSSID.
+-   Se puede repetir el mismo SSID en varios APs.
+
+##### Basic Service Set Identifier (BSSID)
+
+-   Identifica unívocamente una celda física wireless.
+-   Es la MAC del AP que cubre la celda.
+-   En el caso de MSSID, también se requieren múltiples BSSID.
+
+##### Acceso al Medio
+
+-   Existen 3 mecanismos:
+    1. Distributed Coordination Function (DCF): obligatorio, no determinístico. Se implementa con CSMA/CA.
+    2. Point Coordination Function (PCF): determinístico.
+    3. Hybrid Coordination Function (HCF): para QoS.
+
+##### CSMA/CA
+
+-   CS (Carrier Sense): Antes de transmitir se verifica que el medio esté libre.
+-   MA (Multiple Access): Implica que varias estaciones pueden intentar acceder a la vez.
+-   CA (Collision Avoidance): No implica que no existan las colisiones, pero se tratan de evitar.
+
+##### Collision Avoidance
+
+-   Antes de enviar espera IFS (Interframe Space).
+-   No se envía si el medio está ocupado.
+-   Corre backoff recién cuando detecta el medio libre si:
+    1. El evento anterior fue Medio Ocupado.
+    2. Es una re-transmisión.
+    3. Luego de un envío unicast exitoso inmediato.
+-   No corre backoff:
+    -   Es un nuevo paquete, lueo de DIFS, Medio Libre y no viene de una transmisión previa.
+
+##### Tramas MAC
+
+-   Tipos:
+    1. Management.
+    2. Control.
+    3. Data
+-   Partes:
+    -   Cabecera: info de control, direcciones, etc.
+    -   Cuerpo: datos, payload.
+    -   Cola o trailer: FCS (Frame Check Sequence) o CRC de 32 bits.
